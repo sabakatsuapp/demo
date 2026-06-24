@@ -7,13 +7,13 @@
 <title>サバ活 試作品｜ルート記録（戦術マップ注釈）</title>
 <style>
   :root{
-    --bg:#15171C; --card:#1E222A; --line:#2A2F3A;
-    --text:#F2F4F8; --sub:#9AA3B2;
-    --accent:#FF5A47; --lime:#B8E62E; --gold:#FFD700;
+    --bg:#14211A; --card:#1E2E24; --line:#33473B;
+    --text:#E8F0EA; --sub:#7A9980;
+    --accent:#C7A652; --lime:#B8E62E; --gold:#FFD700;
     --p1:#3D7BFF; --p2:#37C871; --p3:#B05CFF;
   }
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
-  body{background:#0D0E12; color:var(--text); font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI",Meiryo,sans-serif; padding:16px 12px 48px; display:flex; justify-content:center;}
+  body{background:#0A140F; color:var(--text); font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI",Meiryo,sans-serif; padding:16px 12px 48px; display:flex; justify-content:center;}
   .wrap{width:100%; max-width:480px;}
   h1{font-size:18px; font-weight:900; letter-spacing:.5px;}
   h1 small{display:block; font-size:11px; color:var(--lime); font-weight:700; margin-bottom:2px; letter-spacing:1px;}
@@ -24,9 +24,9 @@
   .step.cur{color:var(--lime); border-color:var(--lime); background:rgba(184,230,46,.1);}
   .steps .ar{color:#5A6272;}
 
-  .appframe{border:2.5px solid #3A4150; border-radius:18px; overflow:hidden; background:var(--bg);}
+  .appframe{border:2.5px solid #3A4A40; border-radius:18px; overflow:hidden; background:var(--bg);}
   .screen[hidden]{display:none;}
-  .nav{display:flex; align-items:center; justify-content:space-between; padding:13px 12px 11px; background:#1C1C1F; border-bottom:1px solid var(--line);}
+  .nav{display:flex; align-items:center; justify-content:space-between; padding:13px 12px 11px; background:#16241C; border-bottom:1px solid var(--line);}
   .nav .side{color:var(--accent); font-size:13px; font-weight:700; cursor:pointer; min-width:64px;}
   .nav .side.right{text-align:right;}
   .nav .ttl{font-size:14px; font-weight:bold;}
@@ -67,7 +67,7 @@
   .seg .btn.on{background:rgba(184,230,46,.14);}
   .wideBtn{display:block; width:100%; border:1.5px solid var(--lime); background:rgba(184,230,46,.08); color:var(--lime); border-radius:999px; padding:11px 0; font-size:13px; font-weight:800; text-align:center; margin-top:10px; cursor:pointer;}
 
-  .canvas-wrap{position:relative; border:2px solid #3A4150; border-radius:14px; overflow:hidden; touch-action:none; background:#10120F;}
+  .canvas-wrap{position:relative; border:2px solid #3A4A40; border-radius:14px; overflow:hidden; touch-action:none; background:#0E1A12;}
   svg{display:block; width:100%; height:auto;}
   .hint{position:absolute; left:0; right:0; bottom:8px; display:flex; justify-content:center; pointer-events:none;}
   .hint span{background:rgba(13,14,18,.8); border:1.5px dashed var(--lime); color:var(--lime); font-size:11.5px; font-weight:700; padding:7px 13px; border-radius:10px;}
@@ -87,7 +87,7 @@
   .sliders input[type=range]::-moz-range-thumb{width:17px; height:17px; border-radius:50%; background:#fff; border:2.5px solid var(--lime); cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,.5);}
   .sliders input[type=range]::-moz-range-track{height:8px; border-radius:99px; background:transparent;}
 
-  .selpanel{display:flex; flex-direction:column; gap:7px; background:rgba(255,90,71,.08); border:1.5px solid var(--accent); border-radius:12px; padding:9px 11px; margin-top:8px;}
+  .selpanel{display:flex; flex-direction:column; gap:7px; background:rgba(199,166,82,.10); border:1.5px solid var(--accent); border-radius:12px; padding:9px 11px; margin-top:8px;}
   .selpanel .selRow1{font-size:12px; font-weight:800; color:var(--text); white-space:nowrap;}
   .selpanel .selRow2{display:flex; align-items:center; gap:7px;}
   .selpanel .seltitle{font-size:12px; font-weight:800; color:var(--text); margin-right:2px;}
@@ -104,7 +104,7 @@
   .howto h2{font-size:13px; color:var(--lime); margin-bottom:6px;}
   .howto li{list-style:none; font-size:12px; color:#C9D1DE; line-height:1.8;}
   .howto b{color:var(--text);}
-  .ask{background:rgba(255,90,71,.07); border:1.5px dashed var(--accent); border-radius:12px; padding:12px 14px; margin-top:10px;}
+  .ask{background:rgba(199,166,82,.08); border:1.5px dashed var(--accent); border-radius:12px; padding:12px 14px; margin-top:10px;}
   .ask h2{font-size:13px; color:var(--accent); margin-bottom:6px;}
   .ask li{list-style:none; font-size:12px; color:#C9D1DE; line-height:1.8; margin-bottom:4px;}
   .foot{color:#6B7383; font-size:10.5px; margin-top:14px; line-height:1.7; text-align:center;}
@@ -137,7 +137,7 @@
           <span class="routeBadge" id="badge0" style="display:none;">ルートあり</span><span class="chev">›</span>
         </div>
         <div class="gcard" data-g="1">
-          <div class="tx"><p class="t1">第2戦 復活戦　<span style="color:var(--accent);font-weight:900;">LOSE</span></p><p class="t2">キル 3 ／ デス 2 ／ セミ</p></div>
+          <div class="tx"><p class="t1">第2戦 復活戦　<span style="color:#FF5A47;font-weight:900;">LOSE</span></p><p class="t2">キル 3 ／ デス 2 ／ セミ</p></div>
           <span class="routeBadge" id="badge1" style="display:none;">ルートあり</span><span class="chev">›</span>
         </div>
         <p class="grayNote">※ 試作デモです。ゲームの中身は架空データ。第2戦は復活戦＝線を複数本に分けて描く練習に。</p>
@@ -172,14 +172,13 @@
 
     <!-- ══ 画面C: エディタ ══ -->
     <div class="screen" id="scrC" hidden>
-      <div class="nav"><span class="side" id="cancelEdit">キャンセル</span><span class="ttl">ルートを描く</span><span class="side right" id="saveEdit" style="color:var(--lime);">保存</span></div>
+      <div class="nav"><span class="side" id="cancelEdit">キャンセル</span><span class="ttl">ルートを描く</span><span class="side right" style="display:flex; gap:12px; align-items:center; justify-content:flex-end;"><button class="btn" id="lockBtn" style="padding:5px 11px; font-size:11.5px;">🔒 ロック</button><span id="saveEdit" style="color:var(--lime); cursor:pointer; font-weight:700; font-size:13px;">保存</span></span></div>
       <div class="body">
         <div class="bar">
           <button class="btn on" id="toolPen">✏️ 自分ルート</button>
           <button class="btn" id="toolDeath">💀 やられた</button>
           <button class="btn" id="toolHit">🎯 ヒット</button>
           <button class="btn" id="toolFlag">🚩 フラッグ</button>
-          <button class="btn" id="lockBtn" style="margin-left:auto;">🔒 ロック</button>
         </div>
         <div class="bar">
           <button class="btn" id="toolEnemy">🟧 フリーライン</button>
