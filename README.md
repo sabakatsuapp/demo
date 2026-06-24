@@ -5,13 +5,15 @@
 
 ## 公開URL
 
-**https://sabakatsuapp.github.io/demo/**
+👉 **[フィールドトラッカー（ルート記録）デモを開く](https://sabakatsuapp.github.io/demo/field-tracker-demo.html)**
+
+`https://sabakatsuapp.github.io/demo/field-tracker-demo.html`
 
 ## 収録デモ
 
 | デモ | 内容 | リンク |
 |---|---|---|
-| フィールドトラッカー（ルート記録）v9 | 試合後の動きをマップ写真に指でなぞって残す「戦術マップ注釈」の試作。マーカー⇄ルートの関係づけ・キル/デスの自動集計まで。 | https://sabakatsuapp.github.io/demo/ （`index.html`） |
+| フィールドトラッカー（ルート記録）v9 | 試合後の動きをマップ写真に指でなぞって残す「戦術マップ注釈」の試作。マーカー⇄ルートの関係づけ・キル/デスの自動集計まで。 | [開く](https://sabakatsuapp.github.io/demo/field-tracker-demo.html)（`field-tracker-demo.html`） |
 
 ## メモ
 
