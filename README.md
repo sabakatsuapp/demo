@@ -13,7 +13,8 @@
 
 | デモ | 内容 | リンク |
 |---|---|---|
-| フィールドトラッカー（ルート記録）v9 | 試合後の動きをマップ写真に指でなぞって残す「戦術マップ注釈」の試作。マーカー⇄ルートの関係づけ・キル/デスの自動集計まで。 | [開く](https://sabakatsuapp.github.io/demo/field-tracker-demo.html)（`field-tracker-demo.html`） |
+| フィールドトラッカー（ルート記録）v10 | 試合後の動きをマップ写真に指でなぞって残す「戦術マップ注釈」の試作。マーカー⇄ルートの関係づけ・キル/デスの自動集計、かんたん/詳細モード、自分/味方/敵の3系統ライン。**実際に動く試作**。 | [開く](https://sabakatsuapp.github.io/demo/field-tracker-demo.html)（`field-tracker-demo.html`） |
+| フィールドトラッカー UIデザイン比較サンプル | 同じ第1戦を4つのUI方針（A整理ツールバー / B全画面＋ボトムシート / C3ステップ・ウィザード / Dフローティング・FAB）で描き分けた**静的サンプル**。方向性を見極める叩き台。**ボタンは飾りで動きません**。 | [開く](https://sabakatsuapp.github.io/demo/field-tracker-ui-samples.html)（`field-tracker-ui-samples.html`） |
 
 ## メモ
 
