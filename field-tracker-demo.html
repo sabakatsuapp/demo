@@ -122,7 +122,7 @@
 <body>
 <div class="wrap">
   <h1><small>サバ活 開発室 — 次期バージョン試作品 v10</small>ルート記録（戦術マップ注釈）</h1>
-  <p class="lead">試合後に「どう動いたか」をマップ写真に指でなぞって残す新機能の試作です。<b style="color:var(--text);">自分のルート・敵ルート予想・やられた/ヒット地点</b>を関係づけ、<b style="color:var(--lime);">マップからキル/デスを自動集計</b>します。まずは下の「第1戦」をタップ！</p>
+  <p class="lead">試合後に「どう動いたか」をマップ写真に指でなぞって残す新機能の試作です。<b style="color:var(--text);">自分・味方・敵のルート、やられた/ヒット地点</b>を関係づけ、<b style="color:var(--lime);">マップからキル/デスを自動集計</b>します。まずは下の「第1戦」をタップ！</p>
 
   <div class="steps">
     <span class="step cur" id="st1">① 1日の記録</span><span class="ar">▸</span>
@@ -191,6 +191,7 @@
         </div>
         <div class="bar advRow" id="advRow1" style="display:none;">
           <button class="btn" id="toolHit">🎯 ヒット</button>
+          <button class="btn" id="toolMate">🟨 味方ルート</button>
           <button class="btn" id="toolEnemy">🟧 敵ルート予想</button>
           <button class="btn" id="toolFlag">🚩 フラッグ</button>
         </div>
@@ -268,8 +269,8 @@
 
   <div class="howto">
     <h2>あそびかた（v10・かんたん/詳細モード＋選択メニューに削除ボタン）</h2>
-    <li><b>かんたん / 詳しく</b>：最初は<b>自分ルート</b>と<b>やられた</b>だけ表示。<b>「詳しく記録する ▾」</b>でヒット・敵ルート予想・スタート・フラッグが出る（記録圧を下げる狙い）</li>
-    <li><b>✏️ 自分ルート / 🟧 敵ルート予想</b>：指でなぞって線を描く。自分は<b>時間で色分け</b>（序盤青/中盤緑/終盤紫）、敵ルート予想は<b>オレンジの自由な線</b>（敵の動き・射線・気づきなど）。復活ぶんは指を離してまた描けば増える</li>
+    <li><b>かんたん / 詳しく</b>：最初は<b>自分ルート</b>と<b>やられた</b>だけ表示。<b>「詳しく記録する ▾」</b>でヒット・味方ルート・敵ルート予想・スタート・フラッグが出る（記録圧を下げる狙い）</li>
+    <li><b>✏️ 自分ルート / 🟨 味方ルート / 🟧 敵ルート予想</b>：指でなぞって線を描く。自分は<b>時間で色分け</b>（序盤青/中盤緑/終盤紫）、味方は<b>黄の線</b>、敵ルート予想は<b>オレンジの線</b>（敵の動き・射線・気づきなど）。復活ぶんは指を離してまた描けば増える</li>
     <li><b>🟦味方スタート / 🟪敵スタート</b>：面取り四角を設置。吸着・紐づけ・メニューはなし。<b>各1個まで</b>（同じ色を置き直すと移動）。ドラッグで移動、<b>角の少し外側をドラッグでサイズ変更</b></li>
     <li><b>💀 やられた</b>：<b>ルート終端（始点には吸着しない）</b>に近づけると吸着＝自死。<b>終端1個につき1個まで</b>。自死は<b>反省点をプルダウンで選択</b>（無ければその場で追記可）。<b>ルートから離して置くと「味方の被弾」＝半透明</b>で、同じ場所の多発はカウンタ（−／＋）で数える</li>
     <li><b>🎯 ヒット</b>：ルート近くに置くと<b>赤い線で接続＝キル</b>。接続点には<b>塗りつぶし赤丸</b>（ヒットの半分の大きさ）が表示され、つかみ位置が一目で分かる。<b>マーカーを1秒長押し</b>すると操作対象が赤丸に切り替わり、そのままルート上の好きな位置へつかみ直せる（赤丸はルート内だけを移動）。単体で置けば未接続（半透明・キルに数えない）</li>
@@ -303,6 +304,7 @@
   let H = 1000;
   const C = ['#3D7BFF', '#37C871', '#B05CFF'];
   const ENEMY_COLOR = '#FF9F43';   // 敵ルート予想（旧フリーライン・オレンジ）
+  const MATE_COLOR = '#FFE000';    // 味方ルート（黄）
   const HIT_LINE = '#FF6A6A';      // ヒット→ルートの接続線
   const DOT_COLOR = '#FF3B30';     // ヒット接続点（赤丸）
   const SNAP = 0.13;               // やられたがルート端に吸着するしきい値（正規化距離）
@@ -380,8 +382,9 @@
   //     hit  linked   = キル（ルートへ赤線接続・接続点ax,ayは赤丸で個別に調整可・count で複数撃破を数える）／!linked = 単体置き（キルに数えない）
   //     ※記録のK/D：キル=Σ(hit.linked.count)／デス=count(death.linked)
   //   { kind:'start', team:'ally'|'enemy', x, y, size }  … スタート地点（吸着・紐づけ・メニューなし）
-  const getSelfStrokes  = () => work.history.filter((h) => h.kind === 'stroke' && h.team !== 'enemy').map((h) => h.pts);
+  const getSelfStrokes  = () => work.history.filter((h) => h.kind === 'stroke' && h.team !== 'enemy' && h.team !== 'ally').map((h) => h.pts);
   const getEnemyStrokes = () => work.history.filter((h) => h.kind === 'stroke' && h.team === 'enemy').map((h) => h.pts);
+  const getAllyStrokes  = () => work.history.filter((h) => h.kind === 'stroke' && h.team === 'ally').map((h) => h.pts);
   const getPins = () => work.history.filter((h) => h.kind === 'pin');
   const getStarts = () => work.history.filter((h) => h.kind === 'start');
 
@@ -400,9 +403,9 @@
   $('routeThumb').onclick = openEditor;
   $('cancelEdit').onclick = () => { selectedPin = null; renderGameScreen(); show('scrB'); };
   $('saveEdit').onclick = () => {
-    const strokes = getSelfStrokes(), enemy = getEnemyStrokes(), pins = getPins(), starts = getStarts();
-    routes[curGame] = (strokes.length > 0 || enemy.length > 0 || pins.length > 0 || starts.length > 0)
-      ? { strokes, enemy, pins, starts, f1: work.f1, f2: work.f2, bg, viewH: H, href: photoHref }
+    const strokes = getSelfStrokes(), enemy = getEnemyStrokes(), ally = getAllyStrokes(), pins = getPins(), starts = getStarts();
+    routes[curGame] = (strokes.length > 0 || enemy.length > 0 || ally.length > 0 || pins.length > 0 || starts.length > 0)
+      ? { strokes, enemy, ally, pins, starts, f1: work.f1, f2: work.f2, bg, viewH: H, href: photoHref }
       : null;
     selectedPin = null; renderGameScreen(); show('scrB');
     if (routes[curGame]) {                       // v10：保存後サマリー（Strava型の「記録したら成果が見える」）
@@ -419,6 +422,7 @@
     if (saved) {
       saved.strokes.forEach((pts) => work.history.push({ kind: 'stroke', team: 'self', pts: pts.slice() }));
       (saved.enemy || []).forEach((pts) => work.history.push({ kind: 'stroke', team: 'enemy', pts: pts.slice() }));
+      (saved.ally || []).forEach((pts) => work.history.push({ kind: 'stroke', team: 'ally', pts: pts.slice() }));
       saved.pins.forEach((p) => work.history.push({ kind: 'pin', type: p.type, x: p.x, y: p.y, linked: p.linked, ax: p.ax, ay: p.ay, endX: p.endX, endY: p.endY, count: p.count || 1, memo: p.memo }));
       (saved.starts || []).forEach((s) => work.history.push({ kind: 'start', team: s.team, x: s.x, y: s.y, size: s.size }));
       (saved.pins || []).forEach((p) => { if (p.memo && reflectionOptions.indexOf(p.memo) < 0) reflectionOptions.push(p.memo); });
@@ -499,7 +503,8 @@
     } else if (r.bg === 'sample') { bgHtml = SAMPLE_SVG; }
     const html = bgHtml
       + coloredRoute(r.strokes, r.f1, r.f2, h, 22, 14)
-      + enemyRouteHtml(r.enemy || [], h, 11)
+      + freeLineHtml(r.ally || [], h, 11, MATE_COLOR)
+      + freeLineHtml(r.enemy || [], h, 11, ENEMY_COLOR)
       + startGoalMarkers(r.strokes, h, 12)
       + startsHtml(r.starts || [], h)
       + hitLinesHtml(r.pins, h)
@@ -782,8 +787,8 @@
     }).join('');
   }
 
-  function enemyRouteHtml(strokes, h, w){
-    return strokes.filter((s) => s.length >= 2).map((s) => pathHtml(pathStr(s, h), 'rgba(0,0,0,.4)', w + 5) + pathHtml(pathStr(s, h), ENEMY_COLOR, w)).join('');
+  function freeLineHtml(strokes, h, w, color){
+    return strokes.filter((s) => s.length >= 2).map((s) => pathHtml(pathStr(s, h), 'rgba(0,0,0,.4)', w + 5) + pathHtml(pathStr(s, h), color, w)).join('');
   }
   function hitLinesHtml(pins, h){
     return pins.filter((p) => p.type === 'hit' && p.linked && p.ax != null).map((p) =>
@@ -866,7 +871,7 @@
       render(); return;
     }
 
-    if (mode === 'pen' || mode === 'enemy') { selectedPin = null; drawing = true; curStroke = [p]; render(); return; }
+    if (mode === 'pen' || mode === 'enemy' || mode === 'mate') { selectedPin = null; drawing = true; curStroke = [p]; render(); return; }
     if (mode === 'allyStart' || mode === 'enemyStart') {
       const s = placeStart(p, mode === 'allyStart' ? 'ally' : 'enemy');
       dragPin = s; dragExisting = false; dragMoved = false; dragStart = p; dragIsStartCorner = false;
@@ -941,7 +946,7 @@
     if (dist(p, curStroke[curStroke.length - 1]) > 0.004) { curStroke.push(p); render(); }
   });
   function endStroke(){
-    if (drawing && curStroke && curStroke.length >= 3) { work.history.push({ kind: 'stroke', team: (mode === 'enemy' ? 'enemy' : 'self'), pts: curStroke }); work.redo = []; work.clearedSnapshot = null; }
+    if (drawing && curStroke && curStroke.length >= 3) { work.history.push({ kind: 'stroke', team: (mode === 'enemy' ? 'enemy' : mode === 'mate' ? 'ally' : 'self'), pts: curStroke }); work.redo = []; work.clearedSnapshot = null; }
     drawing = false; curStroke = null;
     render();
   }
@@ -963,12 +968,12 @@
   // ── 描画 ─────────────────────────────────────────────
   function render(){
     if (!work) return;
-    const self = getSelfStrokes(), enemy = getEnemyStrokes(), pins = getPins(), starts = getStarts();
+    const self = getSelfStrokes(), enemy = getEnemyStrokes(), ally = getAllyStrokes(), pins = getPins(), starts = getStarts();
     $('routeLayer').innerHTML = coloredRoute(self, work.f1, work.f2, H, 13, 7.5)
-      + enemyRouteHtml(enemy, H, 6) + startGoalMarkers(self, H, 15) + hitLinesHtml(pins, H);
+      + freeLineHtml(ally, H, 6, MATE_COLOR) + freeLineHtml(enemy, H, 6, ENEMY_COLOR) + startGoalMarkers(self, H, 15) + hitLinesHtml(pins, H);
     $('startLayer').innerHTML = startsHtml(starts, H);
     // 描いている途中の線（自分=白破線／敵=オレンジ破線・確定すると色がつく）
-    const liveCol = (mode === 'enemy') ? ENEMY_COLOR : 'rgba(255,255,255,.92)';
+    const liveCol = (mode === 'enemy') ? ENEMY_COLOR : (mode === 'mate') ? MATE_COLOR : 'rgba(255,255,255,.92)';
     $('liveLayer').innerHTML = (drawing && curStroke && curStroke.length >= 2)
       ? pathHtml(pathStr(curStroke, H), liveCol, 7, '14 10') : '';
     $('pinLayer').innerHTML = pinsHtml(pins, H, PIN_FS, selectedPin) + hitDotsHtml(pins, H, PIN_FS);
@@ -1083,6 +1088,7 @@
   // ── ツール ────────────────────────────────────────────
   const HINTS = {
     pen:       '指で“自分の動き”をなぞる（復活は離してまた描く）・2本指で拡大',
+    mate:      '“味方ルート”を黄でなぞる（仲間の動き・展開など）',
     enemy:     '“敵ルート予想”をオレンジでなぞる（敵の動き・射線・気づきなど自由に）',
     death:     '💀タップで設置→ルート終端に吸着＝自死（終端1個につき1個まで）／離すと味方の被弾。アイコンをタップで選択し下のメニューで編集',
     hit:       '🎯タップで設置（自動接続はしません）→ドラッグでルート近くへ→接続＝キル。接続済みマーカーをダブルタップすると接続点（赤丸）を掴んでルート上を調整できる',
@@ -1090,9 +1096,10 @@
     allyStart: '🟦 味方スタートを設置（1個まで）・移動／角の少し外側をドラッグでサイズ変更',
     enemyStart:'🟪 敵スタートを設置（1個まで）・移動／角の少し外側をドラッグでサイズ変更',
   };
-  const TOOL_MAP = { pen:'toolPen', enemy:'toolEnemy', death:'toolDeath', hit:'toolHit', flag:'toolFlag', allyStart:'toolAllyStart', enemyStart:'toolEnemyStart' };
+  const TOOL_MAP = { pen:'toolPen', mate:'toolMate', enemy:'toolEnemy', death:'toolDeath', hit:'toolHit', flag:'toolFlag', allyStart:'toolAllyStart', enemyStart:'toolEnemyStart' };
   function setTool(w){ selectedPin = null; mode = w; Object.entries(TOOL_MAP).forEach(([m, id]) => $(id).classList.toggle('on', m === w)); $('hintText').textContent = HINTS[w] || ''; render(); }
   $('toolPen').onclick = () => setTool('pen');
+  $('toolMate').onclick = () => setTool('mate');
   $('toolEnemy').onclick = () => setTool('enemy');
   $('toolDeath').onclick = () => setTool('death');
   $('toolHit').onclick = () => setTool('hit');
@@ -1106,7 +1113,7 @@
     $('modeToggle').textContent = detailMode ? 'かんたんに ▴' : '詳しく記録する ▾';
     $('modeToggle').classList.toggle('on', detailMode);
     $('todoGuide').style.display = detailMode ? 'none' : '';
-    if (!detailMode && ['hit', 'flag', 'enemy', 'allyStart', 'enemyStart'].indexOf(mode) >= 0) setTool('pen');
+    if (!detailMode && ['hit', 'flag', 'mate', 'enemy', 'allyStart', 'enemyStart'].indexOf(mode) >= 0) setTool('pen');
   }
   $('modeToggle').onclick = () => { detailMode = !detailMode; applyMode(); };
   $('undoBtn').onclick = () => {
