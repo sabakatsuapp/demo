@@ -108,12 +108,21 @@
   .ask h2{font-size:13px; color:var(--accent); margin-bottom:6px;}
   .ask li{list-style:none; font-size:12px; color:#C9D1DE; line-height:1.8; margin-bottom:4px;}
   .foot{color:#6B7383; font-size:10.5px; margin-top:14px; line-height:1.7; text-align:center;}
+
+  /* v10 追加：今やることガイド／タップ判定44px／削除ボタン・未接続ラベル／トースト */
+  .todoGuide{background:rgba(184,230,46,.08); border:1px solid var(--line); color:var(--lime); font-size:11.5px; font-weight:700; border-radius:10px; padding:8px 11px; margin-bottom:8px; line-height:1.6;}
+  .bar .btn{min-height:44px;}
+  .selpanel .selNote{font-size:11px; color:#FFB44A; font-weight:700;}
+  .selpanel .selActions{display:flex; gap:7px; flex-wrap:wrap; margin-top:2px;}
+  .selpanel #selDel{border-color:#FF5A47; color:#FF7A6A;}
+  .toast{position:fixed; left:50%; bottom:22px; transform:translateX(-50%); display:flex; align-items:center; gap:12px; background:#0E1A12; border:1.5px solid var(--lime); color:var(--text); font-size:12.5px; font-weight:700; border-radius:12px; padding:10px 14px; z-index:50; box-shadow:0 6px 20px rgba(0,0,0,.55); max-width:90vw;}
+  .toast .btn{padding:7px 13px; font-size:12px; border-color:var(--lime); color:var(--lime); min-height:auto;}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1><small>サバ活 開発室 — 次期バージョン試作品 v9</small>ルート記録（戦術マップ注釈）</h1>
-  <p class="lead">試合後に「どう動いたか」をマップ写真に指でなぞって残す新機能の試作です。<b style="color:var(--text);">自分のルート・フリーライン・やられた/ヒット地点</b>を関係づけ、<b style="color:var(--lime);">マップからキル/デスを自動集計</b>します。まずは下の「第1戦」をタップ！</p>
+  <h1><small>サバ活 開発室 — 次期バージョン試作品 v10</small>ルート記録（戦術マップ注釈）</h1>
+  <p class="lead">試合後に「どう動いたか」をマップ写真に指でなぞって残す新機能の試作です。<b style="color:var(--text);">自分のルート・敵ルート予想・やられた/ヒット地点</b>を関係づけ、<b style="color:var(--lime);">マップからキル/デスを自動集計</b>します。まずは下の「第1戦」をタップ！</p>
 
   <div class="steps">
     <span class="step cur" id="st1">① 1日の記録</span><span class="ar">▸</span>
@@ -174,14 +183,18 @@
     <div class="screen" id="scrC" hidden>
       <div class="nav"><span class="side" id="cancelEdit">キャンセル</span><span class="ttl">ルートを描く</span><span class="side right" style="display:flex; gap:12px; align-items:center; justify-content:flex-end;"><button class="btn" id="lockBtn" style="padding:5px 11px; font-size:11.5px;">🔒 ロック</button><span id="saveEdit" style="color:var(--lime); cursor:pointer; font-weight:700; font-size:13px;">保存</span></span></div>
       <div class="body">
+        <div class="todoGuide" id="todoGuide">今やること：① 自分の動きを指でなぞる → ② やられた場所をタップ → 保存（描かなくてもOK）</div>
         <div class="bar">
           <button class="btn on" id="toolPen">✏️ 自分ルート</button>
           <button class="btn" id="toolDeath">💀 やられた</button>
+          <button class="btn right" id="modeToggle">詳しく記録する ▾</button>
+        </div>
+        <div class="bar advRow" id="advRow1" style="display:none;">
           <button class="btn" id="toolHit">🎯 ヒット</button>
+          <button class="btn" id="toolEnemy">🟧 敵ルート予想</button>
           <button class="btn" id="toolFlag">🚩 フラッグ</button>
         </div>
-        <div class="bar">
-          <button class="btn" id="toolEnemy">🟧 フリーライン</button>
+        <div class="bar advRow" id="advRow2" style="display:none;">
           <button class="btn" id="toolAllyStart">🟦 味方スタート</button>
           <button class="btn" id="toolEnemyStart">🟪 敵スタート</button>
         </div>
@@ -214,6 +227,7 @@
 
         <div class="selpanel" id="selPanel" style="display:none;">
           <div class="selRow1"><span class="seltitle" id="selTitle">選択中</span></div>
+          <div class="selNote" id="selNote" style="display:none;"></div>
           <div class="selRow2" id="selRow2">
             <div class="selcount" id="selCount" style="display:none;">
               <button class="btn" id="selMinus">−</button>
@@ -227,6 +241,9 @@
               <input type="text" id="selMemoInput" placeholder="反省点を入力">
               <button class="btn" id="selMemoAddOk">追加</button>
             </div>
+          </div>
+          <div class="selActions">
+            <button class="btn" id="selDel">🗑 削除</button>
           </div>
         </div>
         <div class="legend">
@@ -250,29 +267,32 @@
   </div>
 
   <div class="howto">
-    <h2>あそびかた（v9・操作系を整理：削除＝ダブルタップ／ヒット紐づけ＝長押し）</h2>
-    <li><b>✏️ 自分ルート / 🟧 フリーライン</b>：指でなぞって線を描く。自分は<b>時間で色分け</b>（序盤青/中盤緑/終盤紫）、フリーラインは<b>オレンジの自由な線</b>（敵の動き・気づきなど意味付けは自由）。復活ぶんは指を離してまた描けば増える</li>
+    <h2>あそびかた（v10・かんたん/詳細モード＋選択メニューに削除ボタン）</h2>
+    <li><b>かんたん / 詳しく</b>：最初は<b>自分ルート</b>と<b>やられた</b>だけ表示。<b>「詳しく記録する ▾」</b>でヒット・敵ルート予想・スタート・フラッグが出る（記録圧を下げる狙い）</li>
+    <li><b>✏️ 自分ルート / 🟧 敵ルート予想</b>：指でなぞって線を描く。自分は<b>時間で色分け</b>（序盤青/中盤緑/終盤紫）、敵ルート予想は<b>オレンジの自由な線</b>（敵の動き・射線・気づきなど）。復活ぶんは指を離してまた描けば増える</li>
     <li><b>🟦味方スタート / 🟪敵スタート</b>：面取り四角を設置。吸着・紐づけ・メニューはなし。<b>各1個まで</b>（同じ色を置き直すと移動）。ドラッグで移動、<b>角の少し外側をドラッグでサイズ変更</b></li>
     <li><b>💀 やられた</b>：<b>ルート終端（始点には吸着しない）</b>に近づけると吸着＝自死。<b>終端1個につき1個まで</b>。自死は<b>反省点をプルダウンで選択</b>（無ければその場で追記可）。<b>ルートから離して置くと「味方の被弾」＝半透明</b>で、同じ場所の多発はカウンタ（−／＋）で数える</li>
     <li><b>🎯 ヒット</b>：ルート近くに置くと<b>赤い線で接続＝キル</b>。接続点には<b>塗りつぶし赤丸</b>（ヒットの半分の大きさ）が表示され、つかみ位置が一目で分かる。<b>マーカーを1秒長押し</b>すると操作対象が赤丸に切り替わり、そのままルート上の好きな位置へつかみ直せる（赤丸はルート内だけを移動）。単体で置けば未接続（半透明・キルに数えない）</li>
     <li><b>ヒット⇄やられたの重なり回避</b>：直径の半分以上重なったら、直前に動かしていた方が、相手の中心が見える最短距離まで自動でよける</li>
-    <li><b>アイコンをタップ＝選択</b>：キャンバス下に<b>簡素メニュー</b>が出る。内容は「選択中：アイコン＋名称」と<b>数（−／＋）</b>（やられた・接続済みのみ反省点プルダウン）。<b>削除はダブルタップ</b>に分離。フラッグは編集項目が無いのでメニューは出ない</li>
-    <li><b>ダブルタップ＝削除</b>：💀🎯🚩とスタート、すべてのマーカーに共通</li>
+    <li><b>アイコンをタップ＝選択</b>：キャンバス下にメニューが出る。「選択中：アイコン＋名称」＋<b>数（−／＋）</b>や反省点プルダウンに加え、<b>🗑 削除</b>ボタンを常設（フラッグ・スタートも選択して削除できる）。未接続は<b>「キル/デスに数えません」</b>を明示</li>
+    <li><b>削除＝🗑ボタンが標準</b>／<b>ダブルタップは上級ショートカット</b>：💀🎯🚩とスタート共通。<b>削除後は「元に戻す」トースト</b>が出る</li>
     <li><b>キル/デスを自動集計</b>：<b>キル＝ヒット（接続）のカウンタ合計</b>／<b>デス＝ルート接続のやられた数</b>。下の「この記録に反映」に出る</li>
     <li><b>戻す/全消し</b>：↩戻す/↪やり直し。<b>全消しも「戻す」で復活</b>できる</li>
     <li><b>拡大</b>：2本指でつまむと拡大・移動（最大5倍）。「🔍 全体」で戻る。<b>🔒 ロック</b>で編集固定。<b>🖼 画像として保存</b>でPNG書き出し</li>
   </div>
 
   <div class="ask">
-    <h2>🙏 確かめてほしいこと（v9・操作系の整理）</h2>
-    <li><b>①</b> <b style="color:var(--gold);">やられたの終端1個1個制限・始点には吸着しない</b>仕様は触ってしっくりくる？</li>
-    <li><b>②</b> <b style="color:var(--gold);">ヒットの長押し→赤丸でルート上の接続位置を調整</b>、長押し1秒のタイミングや操作感はどう？</li>
-    <li><b>③</b> <b style="color:var(--gold);">ダブルタップ＝削除</b>と<b style="color:var(--gold);">ヒット1秒長押し＝赤丸つかみ替え</b>、操作の分かれ方は迷わない？簡素メニュー（数・反省点）の位置は？</li>
-    <li><b>④</b> <b style="color:var(--gold);">スタートマーカーの角ドラッグでのサイズ変更</b>、つかみやすさ・誤操作のしにくさは十分？</li>
-    <li><b>⑤</b> 全消しのUndo・ヒット/やられたの重なり回避、その他の手触りで気になる所</li>
+    <h2>🙏 確かめてほしいこと（v10・かんたん/詳細モード＋削除ボタン）</h2>
+    <li><b>①</b> <b style="color:var(--gold);">かんたんモード（自分ルート＋やられただけ）</b>で「描く→やられた→保存」まで迷わず行ける？「詳しく記録する」への導線は分かる？</li>
+    <li><b>②</b> <b style="color:var(--gold);">選択メニューの🗑削除ボタン＋元に戻すトースト</b>、ダブルタップ削除より安心？</li>
+    <li><b>③</b> <b style="color:var(--gold);">「敵ルート予想」への改名</b>（旧フリーライン）はしっくりくる？他に良い呼び名は？</li>
+    <li><b>④</b> <b style="color:var(--gold);">ボタンの大きさ（44px相当）</b>、屋外・片手・疲れた状態で押しやすい？</li>
+    <li><b>⑤</b> 保存後サマリー・やられたの吸着・ヒットの長押し赤丸調整など、これまでの手触りで気になる所</li>
   </div>
 
-  <p class="foot">サバ活（サバゲー記録アプリ・開発中）の次期バージョン試作品 v9 です。<br>データは保存されません（リロードで消えます）。 © 63works</p>
+  <div class="toast" id="delToast" style="display:none;"><span id="toastMsg"></span><button class="btn" id="toastUndo">元に戻す</button></div>
+
+  <p class="foot">サバ活（サバゲー記録アプリ・開発中）の次期バージョン試作品 v10 です。<br>データは保存されません（リロードで消えます）。 © 63works</p>
 </div>
 
 <script>
@@ -282,7 +302,7 @@
   const W = 1000;
   let H = 1000;
   const C = ['#3D7BFF', '#37C871', '#B05CFF'];
-  const ENEMY_COLOR = '#FF9F43';   // フリーライン（オレンジ）
+  const ENEMY_COLOR = '#FF9F43';   // 敵ルート予想（旧フリーライン・オレンジ）
   const HIT_LINE = '#FF6A6A';      // ヒット→ルートの接続線
   const DOT_COLOR = '#FF3B30';     // ヒット接続点（赤丸）
   const SNAP = 0.13;               // やられたがルート端に吸着するしきい値（正規化距離）
@@ -349,6 +369,8 @@
   let longPressTimer = null;  // ヒットの赤丸つかみ替え用 1秒長押しタイマー（#7）
   let longPressArmed = null;  // 長押し待機中のヒットピン
   let reflectionOptions = REFLECTION_PRESETS.slice(); // 反省点プルダウンの選択肢（その場で追記可）
+  let detailMode = false;     // かんたん(false)/詳細(true)モード（v10・UI/UXレビューv2 §5-2A）
+  let toastTimer = null;      // 削除/保存トーストの自動消去タイマー
 
   // history の要素:
   //   { kind:'stroke', team:'self'|'enemy', pts:[{x,y}] }
@@ -383,6 +405,11 @@
       ? { strokes, enemy, pins, starts, f1: work.f1, f2: work.f2, bg, viewH: H, href: photoHref }
       : null;
     selectedPin = null; renderGameScreen(); show('scrB');
+    if (routes[curGame]) {                       // v10：保存後サマリー（Strava型の「記録したら成果が見える」）
+      const m = kdFromPins(pins);
+      const unconn = pins.filter((p) => p.linked === false).length;
+      showToast('保存しました ／ マップ集計 キル' + m.k + ' デス' + m.d + (unconn ? ' ／ 未接続' + unconn + '件' : ''));
+    }
   };
 
   function openEditor(){
@@ -404,7 +431,9 @@
     paintSliders();
     $('hint').style.display = (bg !== 'none' && work.history.length === 0) ? '' : 'none';
     setLocked(false);
+    detailMode = false;
     setTool('pen');
+    applyMode();
     render();
     show('scrC');
   }
@@ -685,12 +714,26 @@
     lastTapInfo = result ? null : { target, time: now };
     return result;
   }
-  function deleteHistoryItem(item){
+  // 削除は選択メニューの「🗑 削除」が標準・ダブルタップはショートカット。削除後はトーストで元に戻せる（UI/UXレビューv2 §5-2B）
+  function performDelete(item){
     if (!work) return;
     const i = work.history.indexOf(item);
-    if (i >= 0) { work.history.splice(i, 1); work.redo = []; work.clearedSnapshot = null; }
+    if (i < 0) return;
+    work.history.splice(i, 1); work.redo = []; work.clearedSnapshot = null;
     if (selectedPin === item) selectedPin = null;
+    showToast('削除しました', () => { work.history.splice(Math.min(i, work.history.length), 0, item); render(); });
+    render();
   }
+  function showToast(msg, undoFn){
+    const t = $('delToast');
+    $('toastMsg').textContent = msg;
+    $('toastUndo').style.display = undoFn ? '' : 'none';
+    t._undo = undoFn || null;
+    t.style.display = 'flex';
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.style.display = 'none'; t._undo = null; }, undoFn ? 4500 : 2600);
+  }
+  $('toastUndo').onclick = () => { const t = $('delToast'); if (t._undo) t._undo(); t.style.display = 'none'; t._undo = null; };
   function cancelDrag(){
     dragPin = null; dragExisting = false; dragMoved = false; dragIsDot = false; dragIsStartCorner = false;
     deathDragBlocked = null; deathDragPendingKey = null;
@@ -734,7 +777,8 @@
     return starts.map((s) => {
       const cx = s.x * W, cy = s.y * h, chamfer = s.size * 0.24;
       const d = chamferSquarePath(cx, cy, s.size, chamfer);
-      return '<path d="' + d + '" fill="none" stroke="' + START_COLOR[s.team] + '" stroke-width="3.5"/>';
+      const sel = (s === selectedPin) ? '<path d="' + d + '" fill="rgba(184,230,46,.12)" stroke="#B8E62E" stroke-width="6"/>' : '';
+      return sel + '<path d="' + d + '" fill="none" stroke="' + START_COLOR[s.team] + '" stroke-width="3.5"/>';
     }).join('');
   }
 
@@ -802,7 +846,7 @@
     //    ・ヒットを1秒長押し＝赤丸つかみ替え（ルート上で接続点を調整／#7）
     const ex = pinAt(p);
     if (ex) {
-      if (isDoubleTap(ex)) { deleteHistoryItem(ex); cancelDrag(); render(); return; }
+      if (isDoubleTap(ex)) { cancelDrag(); performDelete(ex); return; }
       selectedPin = ex; dragPin = ex; dragExisting = true; dragMoved = false; dragStart = p; dragIsDot = false;
       if (ex.type === 'death') { deathDragBlocked = new Set(); deathDragPendingKey = (!ex.linked && nearestRawEndKey(p)) || null; }
       if (ex.type === 'hit') armHitLongPress(ex);
@@ -817,8 +861,8 @@
     }
     const stBody = startAt(p);
     if (stBody) {
-      if (isDoubleTap(stBody)) { deleteHistoryItem(stBody); cancelDrag(); render(); return; } // #8 スタートもダブルタップ削除
-      dragPin = stBody; dragExisting = true; dragMoved = false; dragStart = p; dragIsStartCorner = false;
+      if (isDoubleTap(stBody)) { cancelDrag(); performDelete(stBody); return; } // スタートもダブルタップ削除（v10：選択メニューの🗑でも可）
+      selectedPin = stBody; dragPin = stBody; dragExisting = true; dragMoved = false; dragStart = p; dragIsStartCorner = false;
       render(); return;
     }
 
@@ -970,30 +1014,37 @@
   function renderSel(){
     const p = selectedPin, panel = $('selPanel');
     if (!p || !work || work.history.indexOf(p) < 0) { panel.style.display = 'none'; return; }
-    if (p.type === 'flag') { panel.style.display = 'none'; return; } // フラッグは編集項目なし＝メニュー非表示（削除はダブルタップ／#1簡素化）
+
+    // v10：全オブジェクトに選択メニュー（削除ボタン常設）。未接続は「数えません」を明示
+    let label = '', note = '';
+    if (p.kind === 'start') {
+      label = (p.team === 'ally') ? '🟦 味方スタート' : '🟪 敵スタート';
+    } else if (p.type === 'flag') {
+      label = '🚩 フラッグ';
+    } else if (p.type === 'hit') {
+      label = '🎯 ヒット' + (p.linked ? '（接続）' : '（未接続）');
+      if (!p.linked) note = '未接続：キルに反映されません';
+    } else if (p.type === 'death') {
+      label = p.linked ? '💀 やられた（自死）' : '💀 やられた（味方）';
+      if (!p.linked) note = '未接続：自分のデスには数えません';
+    }
+    $('selTitle').textContent = '選択中：' + label;
+    $('selNote').textContent = note;
+    $('selNote').style.display = note ? '' : 'none';
 
     const isDeathConnected = (p.type === 'death' && p.linked);
     const counted = (p.type === 'hit') || (p.type === 'death' && !p.linked);
-    const label = p.type === 'flag' ? '🚩 フラッグ'
-      : p.type === 'hit' ? ('🎯 ヒット' + (p.linked ? '（接続）' : '（未接続）'))
-      : p.type === 'death' ? (p.linked ? '💀 やられた（自死）' : '💀 やられた（味方）')
-      : '🚩';
-    $('selTitle').textContent = '選択中：' + label;
-
     $('selMemoWrap').style.display = isDeathConnected ? 'flex' : 'none';
-    $('selRow2').style.display = isDeathConnected ? 'none' : 'flex';
-    if (isDeathConnected) {
-      buildMemoSelect(p);
-      $('selMemoAddRow').style.display = 'none';
-    } else {
-      $('selCount').style.display = counted ? 'flex' : 'none';
-      $('selNum').textContent = p.count || 1;
-    }
+    $('selRow2').style.display = counted ? 'flex' : 'none';
+    if (isDeathConnected) { buildMemoSelect(p); $('selMemoAddRow').style.display = 'none'; }
+    $('selCount').style.display = counted ? 'flex' : 'none';
+    if (counted) $('selNum').textContent = p.count || 1;
 
     panel.style.display = 'flex';
   }
   $('selPlus').onclick = () => { if (selectedPin) { selectedPin.count = (selectedPin.count || 1) + 1; render(); } };
   $('selMinus').onclick = () => { if (selectedPin && (selectedPin.count || 1) > 1) { selectedPin.count = (selectedPin.count || 1) - 1; render(); } };
+  $('selDel').onclick = () => { if (selectedPin) performDelete(selectedPin); };
   $('selMemoSelect').addEventListener('change', () => {
     const p = selectedPin, v = $('selMemoSelect').value;
     if (!p) return;
@@ -1032,7 +1083,7 @@
   // ── ツール ────────────────────────────────────────────
   const HINTS = {
     pen:       '指で“自分の動き”をなぞる（復活は離してまた描く）・2本指で拡大',
-    enemy:     '“フリーライン”をオレンジでなぞる（敵の動き・気づきなど自由に）',
+    enemy:     '“敵ルート予想”をオレンジでなぞる（敵の動き・射線・気づきなど自由に）',
     death:     '💀タップで設置→ルート終端に吸着＝自死（終端1個につき1個まで）／離すと味方の被弾。アイコンをタップで選択し下のメニューで編集',
     hit:       '🎯タップで設置（自動接続はしません）→ドラッグでルート近くへ→接続＝キル。接続済みマーカーをダブルタップすると接続点（赤丸）を掴んでルート上を調整できる',
     flag:      '🚩タップで設置・アイコンをタップで選択し下のメニューで削除',
@@ -1048,6 +1099,16 @@
   $('toolFlag').onclick = () => setTool('flag');
   $('toolAllyStart').onclick = () => setTool('allyStart');
   $('toolEnemyStart').onclick = () => setTool('enemyStart');
+  // かんたん/詳細モード（v10・UI/UXレビューv2 §5-2A）。初回はかんたん＝自分ルート＋やられたのみ
+  function applyMode(){
+    $('advRow1').style.display = detailMode ? 'flex' : 'none';
+    $('advRow2').style.display = detailMode ? 'flex' : 'none';
+    $('modeToggle').textContent = detailMode ? 'かんたんに ▴' : '詳しく記録する ▾';
+    $('modeToggle').classList.toggle('on', detailMode);
+    $('todoGuide').style.display = detailMode ? 'none' : '';
+    if (!detailMode && ['hit', 'flag', 'enemy', 'allyStart', 'enemyStart'].indexOf(mode) >= 0) setTool('pen');
+  }
+  $('modeToggle').onclick = () => { detailMode = !detailMode; applyMode(); };
   $('undoBtn').onclick = () => {
     if (work.history.length === 0 && work.clearedSnapshot) { work.history = work.clearedSnapshot; work.clearedSnapshot = null; selectedPin = null; render(); return; } // 全消しの取り消し
     if (work.history.length) { work.redo.push(work.history.pop()); selectedPin = null; render(); }
