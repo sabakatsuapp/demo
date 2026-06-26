@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
+<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>サバ活 試作品｜ルート記録（戦術マップ注釈）</title>
@@ -57,6 +56,36 @@
   .thumbWrap .cap b{color:var(--lime);}
   .grayNote{color:#5A6272; font-size:10px; margin-top:2px;}
 
+  /* ── 本番準拠：1日の記録（記録詳細）画面 app/day/[id].tsx 相当 ── */
+  .ddDate{font-size:13px; color:var(--sub); margin-bottom:4px;}
+  .ddFieldRow{display:flex; align-items:center; gap:6px; margin-bottom:6px;}
+  .ddFieldName{font-size:22px; font-weight:700; color:var(--text);}
+  .ddFieldLink{color:var(--accent); font-size:18px; line-height:1;}
+  .ddStars{color:var(--gold); font-size:14px; letter-spacing:2px;}
+  .ddRatingRow{display:flex; align-items:center; gap:8px; margin-bottom:10px;}
+  .ddRatingSub{font-size:12px; color:var(--sub);}
+  .ddChips{display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; margin-bottom:6px;}
+  .ddChip{display:flex; align-items:baseline; gap:3px;}
+  .ddChip .l{font-size:11px; color:var(--sub);}
+  .ddChip .v{font-size:15px; font-weight:600; color:var(--text);}
+  .ddDot{width:10px; height:10px; border-radius:50%; display:inline-block;}
+  .ddSecHead{font-size:17px; font-weight:600; color:var(--text); margin:20px 0 8px;}
+  .companionRow{display:flex; flex-wrap:wrap; gap:6px;}
+  .companionChip{display:flex; align-items:center; gap:4px; padding:5px 10px; border-radius:14px; border:1px solid rgba(199,166,82,.55); background:rgba(199,166,82,.10); color:var(--text); font-size:12px;}
+  .statGrid{display:flex; gap:8px;}
+  .statCell{flex:1; text-align:center; padding:10px 0; border-radius:10px; background:var(--card); border:1px solid var(--line);}
+  .statVal{font-size:22px; font-weight:700; color:var(--text); line-height:1.1;}
+  .statTitle{font-size:11px; color:var(--sub); margin-top:2px;}
+  .gcard .gh{display:flex; align-items:center; gap:6px; margin-bottom:5px;}
+  .gIdx{font-size:11px; padding:2px 6px; border-radius:10px; background:var(--bg); color:var(--sub);}
+  .gRes{font-size:18px; font-weight:700;}
+  .gType{font-size:15px; font-weight:600; color:var(--text); flex:1;}
+  .gKd{font-size:12px; padding:2px 6px; border-radius:10px; background:var(--bg); color:var(--sub);}
+  .gSub{display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-size:12px; color:var(--sub);}
+  .memoCard{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-size:14px; line-height:1.6; color:var(--text);}
+  .photoStrip{display:flex; gap:8px; overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  .thumbPh{width:104px; height:104px; border-radius:10px; flex-shrink:0; border:1px solid var(--line);}
+
   .bar{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; align-items:center;}
   .btn{border:1.5px solid var(--line); background:var(--card); color:var(--sub); border-radius:999px; padding:8px 12px; font-size:12px; font-weight:700; cursor:pointer; user-select:none;}
   .btn.on{border-color:var(--lime); color:var(--lime); background:rgba(184,230,46,.1);}
@@ -87,14 +116,15 @@
   .sliders input[type=range]::-moz-range-thumb{width:17px; height:17px; border-radius:50%; background:#fff; border:2.5px solid var(--lime); cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,.5);}
   .sliders input[type=range]::-moz-range-track{height:8px; border-radius:99px; background:transparent;}
 
-  .selpanel{display:flex; flex-direction:column; gap:7px; background:rgba(199,166,82,.10); border:1.5px solid var(--accent); border-radius:12px; padding:9px 11px; margin-top:8px;}
-  .selpanel .selRow1{font-size:12px; font-weight:800; color:var(--text); white-space:nowrap;}
-  .selpanel .selRow2{display:flex; align-items:center; gap:7px;}
+  .selpanel{display:flex; flex-direction:row; align-items:center; gap:7px; flex-wrap:wrap; background:rgba(199,166,82,.10); border:1.5px solid var(--accent); border-radius:12px; padding:7px 11px; margin-top:8px;}
+  .selpanel .selRow1{font-size:12px; font-weight:800; color:var(--text); white-space:nowrap; flex-shrink:0;}
+  .selpanel .selRow2{display:flex; align-items:center; gap:7px; flex-basis:100%;}
   .selpanel .seltitle{font-size:12px; font-weight:800; color:var(--text); margin-right:2px;}
   .selpanel .selcount{display:flex; align-items:center; gap:7px;}
   .selpanel .selnum{font-size:15px; font-weight:900; color:var(--lime); min-width:18px; text-align:center;}
   .selpanel .btn{padding:6px 11px; font-size:11.5px;}
-  .selpanel .memoWrap{display:flex; flex-direction:column; gap:5px;}
+  .selpanel .memoWrap{display:flex; flex-direction:row; align-items:flex-start; gap:7px; flex-basis:100%;}
+  .selpanel .memoContent{display:flex; flex-direction:column; gap:5px; flex:1; min-width:0;}
   .selpanel select{background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:6px 8px; font-size:12px; max-width:210px;}
   .selpanel .memoAddRow{display:flex; gap:5px;}
   .selpanel .memoAddRow input{flex:1; background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:6px 8px; font-size:12px; min-width:0;}
@@ -112,16 +142,57 @@
   /* v10 追加：今やることガイド／タップ判定44px／削除ボタン・未接続ラベル／トースト */
   .todoGuide{background:rgba(184,230,46,.08); border:1px solid var(--line); color:var(--lime); font-size:11.5px; font-weight:700; border-radius:10px; padding:8px 11px; margin-bottom:8px; line-height:1.6;}
   .bar .btn{min-height:44px;}
-  .selpanel .selNote{font-size:11px; color:#FFB44A; font-weight:700;}
-  .selpanel .selActions{display:flex; gap:7px; flex-wrap:wrap; margin-top:2px;}
+  .selpanel .selNote{font-size:11px; color:#FFB44A; font-weight:700; white-space:nowrap; flex-shrink:0;}
+  .selpanel .selActions{display:flex; gap:7px; flex-wrap:nowrap; margin-left:auto;}
   .selpanel #selDel{border-color:#FF5A47; color:#FF7A6A;}
   .toast{position:fixed; left:50%; bottom:22px; transform:translateX(-50%); display:flex; align-items:center; gap:12px; background:#0E1A12; border:1.5px solid var(--lime); color:var(--text); font-size:12.5px; font-weight:700; border-radius:12px; padding:10px 14px; z-index:50; box-shadow:0 6px 20px rgba(0,0,0,.55); max-width:90vw;}
   .toast .btn{padding:7px 13px; font-size:12px; border-color:var(--lime); color:var(--lime); min-height:auto;}
+
+  /* ── エディタ（トップバー＋マップ＋ボトムシートを縦に積む） ── */
+  .editorWrap{display:flex; flex-direction:column; overflow:hidden; background:#0A140F;}
+  .topOverlayB{flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:8px 16px; background:rgba(10,20,15,.98);}
+  .bX{font-size:18px; color:#fff; font-weight:800; cursor:pointer;}
+  .bTitle{font-size:13px; font-weight:800; color:#fff; flex:1; text-align:center; padding:0 8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .bSave{color:var(--lime); font-weight:900; font-size:14px; cursor:pointer;}
+  .cwFull{flex-shrink:0; position:relative; touch-action:none; overflow:hidden;}
+  .cwFull svg{display:block; width:100%; height:auto;}
+  .cwFull .starter{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; background:rgba(13,14,18,.6); padding:20px; z-index:20;}
+  .cwFull .starter p{color:var(--sub); font-size:12px; text-align:center; line-height:1.7;}
+  .cwFull .starter .big{background:var(--accent); color:#fff; border:none; border-radius:999px; padding:13px 22px; font-size:14px; font-weight:800; cursor:pointer;}
+  .cwFull .starter .small{background:transparent; color:var(--sub); border:1.5px solid var(--line); border-radius:999px; padding:9px 16px; font-size:12px; font-weight:700; cursor:pointer;}
+  .editorStatB{position:absolute; top:8px; left:14px; background:rgba(13,14,18,.78); border:1.5px solid var(--lime); color:var(--lime); font-size:11.5px; font-weight:800; border-radius:999px; padding:6px 12px; z-index:10; pointer-events:none;}
+  .zoomResetB{position:absolute; bottom:8px; right:14px; z-index:10; background:rgba(13,14,18,.8); border:1.5px solid var(--line); color:var(--sub); border-radius:999px; padding:6px 12px; font-size:11.5px; font-weight:700; cursor:pointer;}
+  .bsheetB{flex-shrink:0; background:#16241C; border-top:1.5px solid var(--line); border-radius:18px 18px 0 0; padding:6px 12px 18px; box-shadow:0 -8px 24px rgba(0,0,0,.5);}
+  .bsheetHandle{width:42px; height:5px; border-radius:99px; background:#3A4A40; margin:4px auto 10px;}
+  .toolrowB{display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
+  .toolrowB::-webkit-scrollbar{display:none;}
+  .tc{flex:none; display:flex; flex-direction:column; align-items:center; gap:4px; width:60px; border:1.5px solid var(--line); background:var(--card); color:var(--sub); border-radius:14px; padding:9px 4px 8px; font-size:18px; cursor:pointer; -webkit-tap-highlight-color:transparent; user-select:none; min-height:44px;}
+  .tc span{font-size:10px; font-weight:800;}
+  .tc.on{border-color:var(--lime); color:var(--lime); background:rgba(184,230,46,.12);}
+  .tc:disabled{opacity:.32; cursor:default;}
+  .bsheetSecond{display:flex; gap:6px; flex-wrap:wrap; padding:6px 14px;}
+  .scBtn{border:1.5px solid var(--line); background:var(--card); color:var(--sub); border-radius:999px; padding:7px 12px; font-size:11.5px; font-weight:700; cursor:pointer; min-height:38px; -webkit-tap-highlight-color:transparent;}
+  .scBtn.on{border-color:var(--lime); color:var(--lime); background:rgba(184,230,46,.1);}
+  .scBtn:disabled{opacity:.32; cursor:default;}
+  .bsheetLegend{display:flex; gap:8px; margin-top:6px; font-size:11px; font-weight:700; align-items:center; flex-wrap:nowrap;}
+  .bsheetLegend span{display:flex; align-items:center; gap:5px; color:var(--sub);}
+  .bsheetLegend .legPhase{display:none; flex-shrink:1; min-width:0; overflow:hidden;}
+  .bsheetLegend .legPhase.show{display:flex;}
+  .bsheetKD{font-size:11.5px; color:var(--text); text-align:right; white-space:nowrap; margin-top:3px;}
+  .bsheetKD b{color:var(--lime); font-weight:900;}
+  .paletteRow{display:none; gap:7px; flex-wrap:wrap; margin-top:8px; align-items:center;}
+  .paletteRow.show{display:flex;}
+  .palSwatch{width:26px; height:26px; border-radius:50%; cursor:pointer; border:2.5px solid transparent; flex-shrink:0;}
+  .palSwatch.on{border-color:#B8E62E; box-shadow:0 0 0 2px rgba(184,230,46,.3);}
+  .shapeRow{display:none; gap:5px; flex-wrap:wrap; margin-top:6px;}
+  .shapeRow.show{display:flex;}
+  .shapePick{border:1.5px solid var(--line); background:var(--card); color:var(--sub); border-radius:10px; padding:4px 8px; font-size:13px; font-weight:800; cursor:pointer; min-width:34px; min-height:34px; display:flex; align-items:center; justify-content:center; line-height:1;}
+  .shapePick.on{border-color:var(--lime); color:var(--lime); background:rgba(184,230,46,.12);}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1><small>サバ活 開発室 — 次期バージョン試作品 v10</small>ルート記録（戦術マップ注釈）</h1>
+  <h1><small>サバ活 開発室 — 次期バージョン試作品 v11</small>ルート記録（戦術マップ注釈）</h1>
   <p class="lead">試合後に「どう動いたか」をマップ写真に指でなぞって残す新機能の試作です。<b style="color:var(--text);">自分・味方・敵のルート、やられた/ヒット地点</b>を関係づけ、<b style="color:var(--lime);">マップからキル/デスを自動集計</b>します。まずは下の「第1戦」をタップ！</p>
 
   <div class="steps">
@@ -134,27 +205,66 @@
 
     <!-- ══ 画面A ══ -->
     <div class="screen" id="scrA">
-      <div class="nav"><span class="side">‹ 記録</span><span class="ttl">1日の記録</span><span class="side right">✎</span></div>
+      <div class="nav"><span class="side">‹ 記録</span><span class="ttl"></span><span class="side right">⤴　✎</span></div>
       <div class="body">
-        <p class="meta">2026/6/13（土）・定例会</p>
-        <p class="fieldName">グリーンバレー</p>
-        <p class="stars">★★★★☆ <span class="meta">過去平均 4.2（7回目）</span></p>
-        <p class="sh">ゲーム（2戦）</p>
+        <p class="ddDate">2026/6/13（土）</p>
+        <div class="ddFieldRow"><span class="ddFieldName">グリーンバレー</span><span class="ddFieldLink">›</span></div>
+        <div class="ddRatingRow"><span class="ddStars">★★★★☆</span><span class="ddRatingSub">7回目・過去平均 ★4.2</span></div>
+        <div class="ddChips">
+          <div class="ddChip"><span class="l">開催</span><span class="v">定例会</span></div>
+          <div class="ddChip"><span class="l">参加</span><span class="v">20人</span></div>
+          <div class="ddChip"><span class="l">時間帯</span><span class="v">昼</span></div>
+          <div class="ddChip"><span class="l">天気</span><span class="v">☀</span></div>
+          <div class="ddChip"><span class="ddDot" style="background:#FFD700;"></span><span class="v">黄</span></div>
+        </div>
+
+        <p class="ddSecHead" style="margin-top:8px;">同行者</p>
+        <div class="companionRow">
+          <span class="companionChip">👤 タロウ</span>
+          <span class="companionChip">👤 ケン</span>
+        </div>
+
+        <p class="ddSecHead">戦果</p>
+        <div class="statGrid">
+          <div class="statCell"><div class="statVal" style="color:#44BB55;">1</div><div class="statTitle">勝</div></div>
+          <div class="statCell"><div class="statVal" style="color:#FF5555;">1</div><div class="statTitle">負</div></div>
+          <div class="statCell"><div class="statVal">5/3</div><div class="statTitle">キル/デス</div></div>
+          <div class="statCell"><div class="statVal">40<span style="font-size:12px;font-weight:400;">分</span></div><div class="statTitle">プレイ</div></div>
+        </div>
+
+        <p class="ddSecHead">ゲーム（2戦）</p>
         <div class="hintbar">💡 ゲームの行をタップすると開きます</div>
         <div class="gcard" data-g="0">
-          <div class="tx"><p class="t1">第1戦 殲滅戦　<span style="color:var(--p2);font-weight:900;">WIN</span></p><p class="t2">キル 2 ／ デス 1 ／ セミ</p></div>
-          <span class="routeBadge" id="badge0" style="display:none;">ルートあり</span><span class="chev">›</span>
+          <div class="tx">
+            <div class="gh"><span class="gIdx">第1戦</span><span class="gRes" style="color:#44BB55;">○</span><span class="gType">殲滅戦</span><span class="gKd">K2 / D1</span></div>
+            <div class="gSub"><span>セミ</span><span class="routeBadge" id="badge0" style="display:none;">ルートあり</span></div>
+          </div>
+          <span class="chev">›</span>
         </div>
         <div class="gcard" data-g="1">
-          <div class="tx"><p class="t1">第2戦 復活戦　<span style="color:#FF5A47;font-weight:900;">LOSE</span></p><p class="t2">キル 3 ／ デス 2 ／ セミ</p></div>
-          <span class="routeBadge" id="badge1" style="display:none;">ルートあり</span><span class="chev">›</span>
+          <div class="tx">
+            <div class="gh"><span class="gIdx">第2戦</span><span class="gRes" style="color:#FF5555;">×</span><span class="gType">復活戦</span><span class="gKd">K3 / D2</span></div>
+            <div class="gSub"><span>セミ</span><span class="routeBadge" id="badge1" style="display:none;">ルートあり</span></div>
+          </div>
+          <span class="chev">›</span>
         </div>
-        <p class="grayNote">※ 試作デモです。ゲームの中身は架空データ。第2戦は復活戦＝線を複数本に分けて描く練習に。</p>
+
+        <p class="ddSecHead">メモ</p>
+        <div class="memoCard">中央の旗台を巡る攻防が熱かった。午後は風で弾道が流れたので次回はホップ強め。復活戦は味方との連携をもっと意識する。</div>
+
+        <p class="ddSecHead">写真・マップ</p>
+        <div class="photoStrip">
+          <div class="thumbPh" style="background:linear-gradient(135deg,#2e4a32,#1c2b16);"></div>
+          <div class="thumbPh" style="background:linear-gradient(135deg,#3a4a30,#243520);"></div>
+          <div class="thumbPh" style="background:linear-gradient(135deg,#4a4030,#2b2516);"></div>
+        </div>
+
+        <p class="grayNote" style="margin-top:14px;">※ 試作デモです。ゲームの中身は架空データ。第2戦は復活戦＝線を複数本に分けて描く練習に。</p>
       </div>
     </div>
 
     <!-- ══ 画面B ══ -->
-    <div class="screen" id="scrB" hidden>
+    <div class="screen" id="scrB" hidden="">
       <div class="nav"><span class="side" id="backToA">‹ 1日の記録</span><span class="ttl" id="gameTitle">第1戦</span><span class="side right"></span></div>
       <div class="body">
         <div class="sect">
@@ -179,38 +289,32 @@
       </div>
     </div>
 
-    <!-- ══ 画面C: エディタ ══ -->
-    <div class="screen" id="scrC" hidden>
-      <div class="nav"><span class="side" id="cancelEdit">キャンセル</span><span class="ttl">ルートを描く</span><span class="side right" style="display:flex; gap:12px; align-items:center; justify-content:flex-end;"><button class="btn" id="lockBtn" style="padding:5px 11px; font-size:11.5px;">🔒 ロック</button><span id="saveEdit" style="color:var(--lime); cursor:pointer; font-weight:700; font-size:13px;">保存</span></span></div>
-      <div class="body">
-        <div class="todoGuide" id="todoGuide">今やること：① 自分の動きを指でなぞる → ② やられた場所をタップ → 保存（描かなくてもOK）</div>
-        <div class="bar">
-          <button class="btn on" id="toolPen">✏️ 自分ルート</button>
-          <button class="btn" id="toolDeath">💀 やられた</button>
-          <button class="btn right" id="modeToggle">詳しく記録する ▾</button>
-        </div>
-        <div class="bar advRow" id="advRow1" style="display:none;">
-          <button class="btn" id="toolHit">🎯 ヒット</button>
-          <button class="btn" id="toolMate">🟨 味方ルート</button>
-          <button class="btn" id="toolEnemy">🟧 敵ルート予想</button>
-          <button class="btn" id="toolFlag">🚩 フラッグ</button>
-        </div>
-        <div class="bar advRow" id="advRow2" style="display:none;">
-          <button class="btn" id="toolAllyStart">🟦 味方スタート</button>
-          <button class="btn" id="toolEnemyStart">🟪 敵スタート</button>
-        </div>
-        <div class="bar">
-          <button class="btn" id="undoBtn">↩ 戻す</button>
-          <button class="btn" id="redoBtn">↪ やり直し</button>
-          <button class="btn right" id="clearBtn">全消し</button>
-        </div>
-        <input type="file" id="filePick" accept="image/*" style="display:none;">
+    <!-- ══ 画面C: エディタ（トップバー＋マップ＋ボトムシート） ══ -->
+    <div class="screen" id="scrC" hidden="">
+      <div class="editorWrap">
 
-        <div class="canvas-wrap" id="cw">
+        <!-- トップバー（flex アイテム 1） -->
+        <div class="topOverlayB">
+          <span class="bX" id="cancelEdit">✕</span>
+          <span class="bTitle" id="editorGameTitle">ルートを描く</span>
+          <span class="bSave" id="saveEdit">保存</span>
+        </div>
+
+        <!-- サブコントロール行（マップの上、通常フロー） -->
+        <div class="bsheetSecond" id="bsheetSecond">
+          <button class="scBtn" id="undoBtn">↩ 戻す</button>
+          <button class="scBtn" id="redoBtn">↪</button>
+          <button class="scBtn" id="clearBtn">全消し</button>
+          <button class="scBtn" id="lockBtn">🔒 ロック</button>
+          <button class="scBtn" id="changePhoto">📷 変更</button>
+        </div>
+
+        <!-- キャンバス（flex アイテム 2、flex:1 で残りを占有） -->
+        <div class="cwFull" id="cw">
           <svg id="cv" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
             <g id="bgPhoto" style="display:none;">
-              <rect id="photoBack" width="1000" height="1000" fill="#10120F"/>
-              <image id="photoImg" width="1000" height="1000" preserveAspectRatio="xMidYMid meet"/>
+              <rect id="photoBack" width="1000" height="1000" fill="#10120F"></rect>
+              <image id="photoImg" width="1000" height="1000" preserveAspectRatio="xMidYMid meet"></image>
             </g>
             <g id="bgSample" style="display:none;"></g>
             <g id="routeLayer"></g>
@@ -223,53 +327,82 @@
             <button class="big" id="loadPhotoBtn">📷 マップ写真を読み込む</button>
             <button class="small" id="useSampleBtn">写真がない人はこちら（サンプルマップで試す）</button>
           </div>
-          <div class="hint" id="hint" style="display:none;"><span id="hintText">指でなぞって描く（復活は指を離してまた描く）。2本指でつまむと拡大・移動</span></div>
+          <!-- ステータスバッジ（キャンバス内、絶対配置） -->
+          <div class="editorStatB" id="editorStat">📷 マップを読み込む</div>
+          <!-- ズームリセット（キャンバス内、右下） -->
+          <button class="zoomResetB" id="zoomReset" style="display:none;">🔍 全体</button>
         </div>
 
-        <div class="selpanel" id="selPanel" style="display:none;">
-          <div class="selRow1"><span class="seltitle" id="selTitle">選択中</span></div>
-          <div class="selNote" id="selNote" style="display:none;"></div>
-          <div class="selRow2" id="selRow2">
-            <div class="selcount" id="selCount" style="display:none;">
-              <button class="btn" id="selMinus">−</button>
-              <span class="selnum" id="selNum">1</span>
-              <button class="btn" id="selPlus">＋</button>
+        <!-- ボトムシート -->
+        <div class="bsheetB">
+          <div class="bsheetHandle"></div>
+          <!-- ツール行（横スクロール） -->
+          <div class="toolrowB">
+            <button class="tc on" id="toolPen">✏️<span>自分ルート</span></button>
+            <button class="tc" id="toolHit">🎯<span>ヒット</span></button>
+            <button class="tc" id="toolDeath">💀<span>やられた</span></button>
+            <button class="tc" id="toolFlag">🚩<span>フラッグ</span></button>
+            <button class="tc" id="toolFreemark">〰️<span>フリーマーク</span></button>
+          </div>
+          <!-- フリーマーク選択時：アイコン種別・カラーパレット -->
+          <div class="shapeRow" id="shapeRow"></div>
+          <div class="paletteRow" id="paletteRow"></div>
+          <!-- 選択パネル（マーカー選択時に表示） -->
+          <div class="selpanel" id="selPanel" style="display:none;">
+            <div class="selRow1"><span class="seltitle" id="selTitle">選択中</span></div>
+            <div class="selNote" id="selNote" style="display:none;"></div>
+            <div class="selRow2" id="selRow2">
+              <div class="selcount" id="selCount" style="display:none;">
+                <button class="btn" id="selMinus">−</button>
+                <span class="selnum" id="selNum">1</span>
+                <button class="btn" id="selPlus">＋</button>
+              </div>
+            </div>
+            <div class="memoWrap" id="selMemoWrap" style="display:none;">
+              <div class="memoContent">
+                <select id="selMemoSelect"></select>
+                <div class="memoAddRow" id="selMemoAddRow" style="display:none;">
+                  <input type="text" id="selMemoInput" placeholder="反省点を入力">
+                  <button class="btn" id="selMemoAddOk">追加</button>
+                </div>
+              </div>
+            </div>
+            <div class="selActions" id="selActions">
+              <button class="btn" id="selConnectBtn" style="display:none;">🔗 接続</button>
+              <button class="btn" id="selDisconnectBtn" style="display:none;">⛓ 接続解除</button>
+              <button class="btn" id="selDupBtn" style="display:none;">📋 複製</button>
+              <button class="btn" id="selDel">🗑 削除</button>
             </div>
           </div>
-          <div class="memoWrap" id="selMemoWrap" style="display:none;">
-            <select id="selMemoSelect"></select>
-            <div class="memoAddRow" id="selMemoAddRow" style="display:none;">
-              <input type="text" id="selMemoInput" placeholder="反省点を入力">
-              <button class="btn" id="selMemoAddOk">追加</button>
+          <!-- スライダー（自分ルートモード時） -->
+          <div class="sliders" id="sliders">
+            <p>序盤 ⇔ 中盤 の境界（描いた全部の線を"描いた順"でつなげて配分）</p>
+            <input type="range" id="s1" min="0" max="100" value="33">
+            <p>中盤 ⇔ 終盤 の境界</p>
+            <input type="range" id="s2" min="0" max="100" value="67">
+            <p style="color:#6B7383;margin-top:2px;">スライダーを端まで動かすと1〜2色にできます</p>
+          </div>
+          <!-- 凡例・PNG・K/D 同一行 -->
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:5px; gap:6px;">
+            <div class="bsheetLegend" style="flex:1; margin:0;">
+              <span class="legPhase" id="leg1"><i class="dot" style="background:var(--p1)"></i>序盤 <b id="pct1"></b></span>
+              <span class="legPhase" id="leg2"><i class="dot" style="background:var(--p2)"></i>中盤 <b id="pct2"></b></span>
+              <span class="legPhase" id="leg3"><i class="dot" style="background:var(--p3)"></i>終盤 <b id="pct3"></b></span>
             </div>
+            <button class="scBtn" id="exportBtn" style="flex:none; padding:6px 10px; font-size:11px;">🖼 PNG</button>
+            <div class="bsheetKD" id="kdRead" style="flex:1; margin:0;">キル&#160;<b><span id="kK">0</span></b>&#160;／&#160;デス&#160;<b><span id="kD">0</span></b></div>
           </div>
-          <div class="selActions">
-            <button class="btn" id="selDel">🗑 削除</button>
-          </div>
         </div>
-        <div class="legend">
-          <span id="leg1"><i class="dot" style="background:var(--p1)"></i>序盤 <b id="pct1"></b></span>
-          <span id="leg2"><i class="dot" style="background:var(--p2)"></i>中盤 <b id="pct2"></b></span>
-          <span id="leg3"><i class="dot" style="background:var(--p3)"></i>終盤 <b id="pct3"></b></span>
-          <span style="margin-left:auto; display:flex; gap:6px;"><button class="btn" id="zoomReset" style="padding:5px 10px; font-size:11px; display:none;">🔍 全体</button><button class="btn" id="changePhoto" style="padding:5px 10px; font-size:11px;">📷 画像を変える</button></span>
-        </div>
-        <div class="sliders" id="sliders">
-          <p>序盤 ⇔ 中盤 の境界（描いた全部の線を“描いた順”でつなげて配分）</p>
-          <input type="range" id="s1" min="0" max="100" value="33">
-          <p>中盤 ⇔ 終盤 の境界</p>
-          <input type="range" id="s2" min="0" max="100" value="67">
-          <p style="color:#6B7383;margin-top:2px;">スライダーを端まで動かすと1〜2色にできます（例：初動でやられた＝青だけ）</p>
-        </div>
-        <div class="kdread" id="kdRead">この記録に反映 → <b>キル <span id="kK">0</span></b> ／ <b>デス <span id="kD">0</span></b> <span class="grayNote">（キル＝ヒット接続のカウンタ合計／デス＝ルート接続のやられた数）</span></div>
-        <button class="wideBtn" id="exportBtn" style="display:none;">🖼 この内容を画像として保存</button>
+
+        <input type="file" id="filePick" accept="image/*" style="display:none;">
       </div>
     </div>
 
   </div>
 
   <div class="howto">
-    <h2>あそびかた（v10・かんたん/詳細モード＋選択メニューに削除ボタン）</h2>
-    <li><b>かんたん / 詳しく</b>：最初は<b>自分ルート</b>と<b>やられた</b>だけ表示。<b>「詳しく記録する ▾」</b>でヒット・味方ルート・敵ルート予想・スタート・フラッグが出る（記録圧を下げる狙い）</li>
+    <h2>あそびかた（v11・全画面マップ＋ボトムシート）</h2>
+    <li><b>ツール選択</b>：画面下のボトムシートをスクロールして道具を選ぶ。✏️自分・💀やられた・🎯ヒット・🟨味方・🟧敵予想・🚩旗・🟦/🟪スタートがまとめて並ぶ。</li>
     <li><b>✏️ 自分ルート / 🟨 味方ルート / 🟧 敵ルート予想</b>：指でなぞって線を描く。自分は<b>時間で色分け</b>（序盤青/中盤緑/終盤紫）、味方は<b>黄の線</b>、敵ルート予想は<b>オレンジの線</b>（敵の動き・射線・気づきなど）。復活ぶんは指を離してまた描けば増える</li>
     <li><b>🟦味方スタート / 🟪敵スタート</b>：面取り四角を設置。吸着・紐づけ・メニューはなし。<b>各1個まで</b>（同じ色を置き直すと移動）。ドラッグで移動、<b>角の少し外側をドラッグでサイズ変更</b></li>
     <li><b>💀 やられた</b>：<b>ルート終端（始点には吸着しない）</b>に近づけると吸着＝自死。<b>終端1個につき1個まで</b>。自死は<b>反省点をプルダウンで選択</b>（無ければその場で追記可）。<b>ルートから離して置くと「味方の被弾」＝半透明</b>で、同じ場所の多発はカウンタ（−／＋）で数える</li>
@@ -293,7 +426,7 @@
 
   <div class="toast" id="delToast" style="display:none;"><span id="toastMsg"></span><button class="btn" id="toastUndo">元に戻す</button></div>
 
-  <p class="foot">サバ活（サバゲー記録アプリ・開発中）の次期バージョン試作品 v10 です。<br>データは保存されません（リロードで消えます）。 © 63works</p>
+  <p class="foot">サバ活（サバゲー記録アプリ・開発中）の次期バージョン試作品 v11 です。<br>データは保存されません（リロードで消えます）。 © 63works</p>
 </div>
 
 <script>
@@ -317,9 +450,14 @@
   const START_COLOR = { ally: '#3D7BFF', enemy: '#B05CFF' };
   const START_SIZE = PIN_FS * 1.5;         // スタートマーカー初期辺長
   const REFLECTION_PRESETS = ['索敵不足', '射線を晒した', '無理に前進した', '味方と離れすぎた', '背後を取られた', 'その他'];
+  const PALETTE = ['#FFFFFF','#FFE000','#FF9F43','#FF5A47','#FF80D0','#00C8FF','#3D7BFF','#B05CFF','#37C871','#B8E62E'];
+  const SHAPES = ['line','circle','cross','triangle','square','diamond','star','arrow8','arrowU','arrowD','arrowL','arrowR'];
+  const SHAPE_LABELS = { line:'〰', circle:'●', cross:'✕', triangle:'▲', square:'■', diamond:'◆', star:'★', arrow8:'✳', arrowU:'↑', arrowD:'↓', arrowL:'←', arrowR:'→' };
+  const FM_R = PIN_FS * 0.45;
+  const THUMB_FM_R = THUMB_FS * 0.45;
   const GAMES = [
-    { title: '第1戦', res: 'WIN', type: '殲滅戦', kd: '2 / 1', resColor: '#37C871' },
-    { title: '第2戦', res: 'LOSE', type: '復活戦', kd: '3 / 2', resColor: '#FF5A47' },
+    { title: '第1戦', res: 'WIN', type: '殲滅戦', kd: '2 / 1', resColor: '#44BB55' },
+    { title: '第2戦', res: 'LOSE', type: '復活戦', kd: '3 / 2', resColor: '#FF5555' },
   ];
 
   const SAMPLE_H = 750;
@@ -371,8 +509,11 @@
   let longPressTimer = null;  // ヒットの赤丸つかみ替え用 1秒長押しタイマー（#7）
   let longPressArmed = null;  // 長押し待機中のヒットピン
   let reflectionOptions = REFLECTION_PRESETS.slice(); // 反省点プルダウンの選択肢（その場で追記可）
-  let detailMode = false;     // かんたん(false)/詳細(true)モード（v10・UI/UXレビューv2 §5-2A）
   let toastTimer = null;      // 削除/保存トーストの自動消去タイマー
+  let freeDrawColor = '#FF9F43';  // フリーライン/フリーマークの描画色
+  let freeMarkShape = 'line';     // フリーマークの形状（line=フリーライン描画、それ以外=マーク設置）
+  let dotAnchor = null;           // 赤丸ドラッグ開始時の接続点座標（感度75%用）
+  let dragFreeMoveEntry = null;   // freeline/freemark移動のundoエントリ（ドラッグ中は未コミット）
 
   // history の要素:
   //   { kind:'stroke', team:'self'|'enemy', pts:[{x,y}] }
@@ -382,11 +523,11 @@
   //     hit  linked   = キル（ルートへ赤線接続・接続点ax,ayは赤丸で個別に調整可・count で複数撃破を数える）／!linked = 単体置き（キルに数えない）
   //     ※記録のK/D：キル=Σ(hit.linked.count)／デス=count(death.linked)
   //   { kind:'start', team:'ally'|'enemy', x, y, size }  … スタート地点（吸着・紐づけ・メニューなし）
-  const getSelfStrokes  = () => work.history.filter((h) => h.kind === 'stroke' && h.team !== 'enemy' && h.team !== 'ally').map((h) => h.pts);
-  const getEnemyStrokes = () => work.history.filter((h) => h.kind === 'stroke' && h.team === 'enemy').map((h) => h.pts);
-  const getAllyStrokes  = () => work.history.filter((h) => h.kind === 'stroke' && h.team === 'ally').map((h) => h.pts);
-  const getPins = () => work.history.filter((h) => h.kind === 'pin');
-  const getStarts = () => work.history.filter((h) => h.kind === 'start');
+  const getSelfStrokes = () => work.history.filter((h) => h.kind === 'stroke').map((h) => h.pts);
+  const getPins    = () => work.history.filter((h) => h.kind === 'pin');
+  const getStarts  = () => work.history.filter((h) => h.kind === 'start');
+  const getFreeLines = () => work.history.filter((h) => h.kind === 'freeline');
+  const getFreeMarks = () => work.history.filter((h) => h.kind === 'freemark');
 
   // ── 画面遷移 ──────────────────────────────────────────
   function show(which){
@@ -403,9 +544,10 @@
   $('routeThumb').onclick = openEditor;
   $('cancelEdit').onclick = () => { selectedPin = null; renderGameScreen(); show('scrB'); };
   $('saveEdit').onclick = () => {
-    const strokes = getSelfStrokes(), enemy = getEnemyStrokes(), ally = getAllyStrokes(), pins = getPins(), starts = getStarts();
-    routes[curGame] = (strokes.length > 0 || enemy.length > 0 || ally.length > 0 || pins.length > 0 || starts.length > 0)
-      ? { strokes, enemy, ally, pins, starts, f1: work.f1, f2: work.f2, bg, viewH: H, href: photoHref }
+    const strokes = getSelfStrokes(), pins = getPins(), starts = getStarts();
+    const freeLines = getFreeLines(), freeMarks = getFreeMarks();
+    routes[curGame] = (strokes.length > 0 || pins.length > 0 || starts.length > 0 || freeLines.length > 0 || freeMarks.length > 0)
+      ? { strokes, pins, starts, freeLines, freeMarks, f1: work.f1, f2: work.f2, bg, viewH: H, href: photoHref }
       : null;
     selectedPin = null; renderGameScreen(); show('scrB');
     if (routes[curGame]) {                       // v10：保存後サマリー（Strava型の「記録したら成果が見える」）
@@ -421,10 +563,10 @@
     curStroke = null; selectedPin = null; cancelDrag();
     if (saved) {
       saved.strokes.forEach((pts) => work.history.push({ kind: 'stroke', team: 'self', pts: pts.slice() }));
-      (saved.enemy || []).forEach((pts) => work.history.push({ kind: 'stroke', team: 'enemy', pts: pts.slice() }));
-      (saved.ally || []).forEach((pts) => work.history.push({ kind: 'stroke', team: 'ally', pts: pts.slice() }));
       saved.pins.forEach((p) => work.history.push({ kind: 'pin', type: p.type, x: p.x, y: p.y, linked: p.linked, ax: p.ax, ay: p.ay, endX: p.endX, endY: p.endY, count: p.count || 1, memo: p.memo }));
       (saved.starts || []).forEach((s) => work.history.push({ kind: 'start', team: s.team, x: s.x, y: s.y, size: s.size }));
+      (saved.freeLines || []).forEach((fl) => work.history.push({ kind: 'freeline', pts: fl.pts.map((q) => ({ x: q.x, y: q.y })), color: fl.color || '#FF9F43' }));
+      (saved.freeMarks || []).forEach((fm) => work.history.push({ kind: 'freemark', x: fm.x, y: fm.y, shape: fm.shape || 'circle', color: fm.color || '#FF5A47' }));
       (saved.pins || []).forEach((p) => { if (p.memo && reflectionOptions.indexOf(p.memo) < 0) reflectionOptions.push(p.memo); });
       work.f1 = saved.f1; work.f2 = saved.f2;
       if (saved.bg === 'photo' && saved.href) { photoHref = saved.href; setBg('photo', saved.viewH); }
@@ -433,11 +575,9 @@
     $('s1').value = Math.round(work.f1 * 100);
     $('s2').value = Math.round(work.f2 * 100);
     paintSliders();
-    $('hint').style.display = (bg !== 'none' && work.history.length === 0) ? '' : 'none';
+    $('editorGameTitle').textContent = GAMES[curGame].title + ' ' + GAMES[curGame].type;
     setLocked(false);
-    detailMode = false;
     setTool('pen');
-    applyMode();
     render();
     show('scrC');
   }
@@ -459,7 +599,7 @@
   function pickPhoto(){ $('filePick').click(); }
   $('loadPhotoBtn').onclick = pickPhoto;
   $('changePhoto').onclick = pickPhoto;
-  $('useSampleBtn').onclick = () => { clearAll(); setBg('sample', SAMPLE_H); $('hint').style.display = ''; render(); };
+  $('useSampleBtn').onclick = () => { clearAll(); setBg('sample', SAMPLE_H); render(); };
   $('filePick').addEventListener('change', (e) => {
     const f = e.target.files && e.target.files[0];
     if (!f) return;
@@ -471,7 +611,6 @@
         const ratio = Math.min(2.4, Math.max(0.4, img.naturalHeight / img.naturalWidth));
         clearAll();
         setBg('photo', Math.round(W * ratio));
-        $('hint').style.display = '';
         render();
       };
       img.src = reader.result;
@@ -503,13 +642,13 @@
     } else if (r.bg === 'sample') { bgHtml = SAMPLE_SVG; }
     const html = bgHtml
       + coloredRoute(r.strokes, r.f1, r.f2, h, 22, 14)
-      + freeLineHtml(r.ally || [], h, 11, MATE_COLOR)
-      + freeLineHtml(r.enemy || [], h, 11, ENEMY_COLOR)
+      + freeLinesHtml(r.freeLines || [], h)
       + startGoalMarkers(r.strokes, h, 12)
       + startsHtml(r.starts || [], h)
       + hitLinesHtml(r.pins, h)
       + pinsHtml(r.pins, h, THUMB_FS)
-      + hitDotsHtml(r.pins, h, THUMB_FS);
+      + hitDotsHtml(r.pins, h, THUMB_FS)
+      + freeMarksHtml(r.freeMarks || [], h, THUMB_FM_R);
     $('thumbSvg').setAttribute('viewBox', '0 0 ' + W + ' ' + h);
     $('thumbSvg').innerHTML = html;
   }
@@ -624,7 +763,7 @@
     const pins = getPins();
     for (let i = pins.length - 1; i >= 0; i--) {
       const q = pins[i];
-      if (q.type === 'hit' && q.linked && q.ax != null && dist(p, { x: q.ax, y: q.ay }) < DOT_HIT_NORM) return q;
+      if (q.type === 'hit' && q.linked && q.ax != null && dist(p, { x: q.ax, y: q.ay }) < DOT_HIT_NORM * 2) return q;
     }
     return null;
   }
@@ -655,6 +794,9 @@
     return pin;
   }
   function placeFlag(p){ const n = nudge(p.x, p.y); return commitAdd({ kind: 'pin', type: 'flag', x: n.x, y: n.y, linked: true }); }
+  function placeFreemark(p){
+    return commitAdd({ kind:'freemark', x:Math.min(1,Math.max(0,p.x)), y:Math.min(1,Math.max(0,p.y)), shape:freeMarkShape, color:freeDrawColor });
+  }
   function placeStart(p, team){
     const existing = getStarts().find((s) => s.team === team);
     if (existing) { existing.x = p.x; existing.y = p.y; return existing; } // #2: 味方/敵スタートは各1個まで。既にあれば移動（再配置）
@@ -724,9 +866,11 @@
     if (!work) return;
     const i = work.history.indexOf(item);
     if (i < 0) return;
-    work.history.splice(i, 1); work.redo = []; work.clearedSnapshot = null;
+    work.history.splice(i, 1);
+    work.history.push({ kind: 'delete', item, idx: i });
+    work.redo = []; work.clearedSnapshot = null;
     if (selectedPin === item) selectedPin = null;
-    showToast('削除しました', () => { work.history.splice(Math.min(i, work.history.length), 0, item); render(); });
+    showToast('削除しました');
     render();
   }
   function showToast(msg, undoFn){
@@ -741,7 +885,7 @@
   $('toastUndo').onclick = () => { const t = $('delToast'); if (t._undo) t._undo(); t.style.display = 'none'; t._undo = null; };
   function cancelDrag(){
     dragPin = null; dragExisting = false; dragMoved = false; dragIsDot = false; dragIsStartCorner = false;
-    deathDragBlocked = null; deathDragPendingKey = null;
+    deathDragBlocked = null; deathDragPendingKey = null; dotAnchor = null; dragFreeMoveEntry = null;
     clearLongPress();
   }
 
@@ -790,6 +934,97 @@
   function freeLineHtml(strokes, h, w, color){
     return strokes.filter((s) => s.length >= 2).map((s) => pathHtml(pathStr(s, h), 'rgba(0,0,0,.4)', w + 5) + pathHtml(pathStr(s, h), color, w)).join('');
   }
+  // フリーライン描画
+  function freeLinesHtml(lines, h, sel){
+    return lines.filter((l) => l.pts && l.pts.length >= 2).map((l) => {
+      const ps = pathStr(l.pts, h);
+      const outline = sel === l
+        ? pathHtml(ps, 'rgba(184,230,46,0.65)', 13)
+        : pathHtml(ps, 'rgba(0,0,0,.42)', 11);
+      return outline + pathHtml(ps, l.color, 6);
+    }).join('');
+  }
+  // フリーマーク単体SVG
+  function freeMarkSvg(shape, cx, cy, color, r){
+    const f = color;
+    switch(shape){
+      case 'circle':
+        return '<circle cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" r="' + r.toFixed(1) + '" fill="' + f + '"/>';
+      case 'triangle':{
+        const pts = [cx + ',' + (cy-r), (cx+r*0.866) + ',' + (cy+r*0.5), (cx-r*0.866) + ',' + (cy+r*0.5)].join(' ');
+        return '<polygon points="' + pts + '" fill="' + f + '"/>';
+      }
+      case 'square':
+        return '<rect x="' + (cx-r).toFixed(1) + '" y="' + (cy-r).toFixed(1) + '" width="' + (r*2).toFixed(1) + '" height="' + (r*2).toFixed(1) + '" fill="' + f + '"/>';
+      case 'diamond':{
+        const pts = [cx + ',' + (cy-r), (cx+r) + ',' + cy, cx + ',' + (cy+r), (cx-r) + ',' + cy].join(' ');
+        return '<polygon points="' + pts + '" fill="' + f + '"/>';
+      }
+      case 'cross':{
+        const t = r*0.32, s = Math.SQRT2*0.5;
+        const raw = [[-t,-r],[t,-r],[t,-t],[r,-t],[r,t],[t,t],[t,r],[-t,r],[-t,t],[-r,t],[-r,-t],[-t,-t]];
+        const pts = raw.map(([px,py]) => ((px*s-py*s+cx).toFixed(1) + ',' + (px*s+py*s+cy).toFixed(1))).join(' ');
+        return '<polygon points="' + pts + '" fill="' + f + '"/>';
+      }
+      case 'star':{
+        const inner = r*0.4, pts = [];
+        for(let i=0;i<10;i++){ const a=(Math.PI*i/5)-Math.PI/2, rd=i%2===0?r:inner; pts.push((cx+Math.cos(a)*rd).toFixed(1)+','+(cy+Math.sin(a)*rd).toFixed(1)); }
+        return '<polygon points="' + pts.join(' ') + '" fill="' + f + '"/>';
+      }
+      case 'arrow8':{
+        const inner = r*0.35, pts = [];
+        for(let i=0;i<16;i++){ const a=(Math.PI*i/8)-Math.PI/2, rd=i%2===0?r:inner; pts.push((cx+Math.cos(a)*rd).toFixed(1)+','+(cy+Math.sin(a)*rd).toFixed(1)); }
+        return '<polygon points="' + pts.join(' ') + '" fill="' + f + '"/>';
+      }
+      case 'person1':{
+        const hR=r*0.32, hCy=cy-r*0.52;
+        const head='<circle cx="'+cx.toFixed(1)+'" cy="'+hCy.toFixed(1)+'" r="'+hR.toFixed(1)+'" fill="'+f+'"/>';
+        const bTop=cy-r*0.18, bBot=cy+r*0.92, bW=r*0.65;
+        return head+'<polygon points="'+cx+','+bTop+' '+(cx+bW)+','+bBot+' '+(cx-bW)+','+bBot+'" fill="'+f+'"/>';
+      }
+      case 'person2':{
+        const hR=r*0.32, hCy=cy-r*0.52;
+        const head='<circle cx="'+cx.toFixed(1)+'" cy="'+hCy.toFixed(1)+'" r="'+hR.toFixed(1)+'" fill="'+f+'"/>';
+        const bTop=cy-r*0.18, bBot=cy+r*0.92, bW=r*0.65;
+        return head+'<polygon points="'+(cx-bW)+','+bTop+' '+(cx+bW)+','+bTop+' '+cx+','+bBot+'" fill="'+f+'"/>';
+      }
+      case 'arrowU': case 'arrowD': case 'arrowL': case 'arrowR':{
+        const ang = {arrowU:0, arrowR:90, arrowD:180, arrowL:270}[shape] * Math.PI / 180;
+        const cs = Math.cos(ang), sn = Math.sin(ang);
+        const base = [[0,-r],[r*0.46,-r*0.08],[r*0.22,-r*0.08],[r*0.22,r],[-r*0.22,r],[-r*0.22,-r*0.08],[-r*0.46,-r*0.08]];
+        const pts = base.map(([dx,dy]) => [(dx*cs-dy*sn+cx).toFixed(1),(dx*sn+dy*cs+cy).toFixed(1)].join(',')).join(' ');
+        return '<polygon points="' + pts + '" fill="' + f + '"/>';
+      }
+      default: return '';
+    }
+  }
+  // フリーマーク一覧描画
+  function freeMarksHtml(marks, h, r){
+    return marks.map((m) => {
+      const cx=m.x*W, cy=m.y*h;
+      const selRing=(m===selectedPin)?'<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+(r*1.7).toFixed(1)+'" fill="none" stroke="#B8E62E" stroke-width="'+(r*0.18).toFixed(1)+'" stroke-dasharray="'+(r*0.45).toFixed(1)+' '+(r*0.28).toFixed(1)+'"/>':'';
+      return selRing + freeMarkSvg(m.shape, cx, cy, m.color, r);
+    }).join('');
+  }
+  // フリーラインのタップ判定（線分上の最近接点との距離）
+  function freeLineAt(p){
+    const thr=0.038, lines=getFreeLines();
+    for(let i=lines.length-1;i>=0;i--){
+      const fl=lines[i]; if(!fl.pts||fl.pts.length<2) continue;
+      for(let j=1;j<fl.pts.length;j++){
+        const a=fl.pts[j-1],b=fl.pts[j],dx=b.x-a.x,dy=b.y-a.y,len2=dx*dx+dy*dy;
+        const t=len2>0?Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.y-a.y)*dy)/len2)):0;
+        if(dist(p,{x:a.x+dx*t,y:a.y+dy*t})<thr) return fl;
+      }
+    }
+    return null;
+  }
+  // フリーマークのタップ判定
+  function freeMarkAt(p){
+    const marks=getFreeMarks();
+    for(let i=marks.length-1;i>=0;i--){ if(dist(p,marks[i])<0.05) return marks[i]; }
+    return null;
+  }
   function hitLinesHtml(pins, h){
     return pins.filter((p) => p.type === 'hit' && p.linked && p.ax != null).map((p) =>
       '<path d="M' + (p.x * W).toFixed(1) + ' ' + (p.y * h).toFixed(1) + ' L' + (p.ax * W).toFixed(1) + ' ' + (p.ay * h).toFixed(1) + '" stroke="' + HIT_LINE + '" stroke-width="4" stroke-dasharray="9 7" fill="none" stroke-linecap="round"/>'
@@ -835,20 +1070,26 @@
       return;
     }
     if (locked) return;                  // ロック中は1本指の描画/ピンを無効（ズーム/パンは2本指で可）
-    $('hint').style.display = 'none';
     const p = toNorm(e);
 
-    // 1) ヒットの接続点（赤丸）：マーカーと同位置でもこちらを優先（#7）
+    // 1) ヒットの接続点（赤丸）—マーカーと同位置でもこちらを優先
     const dotHit = dotAt(p);
     if (dotHit) {
       selectedPin = dotHit; dragPin = dotHit; dragExisting = true; dragMoved = false; dragStart = p; dragIsDot = true;
+      dotAnchor = { x: dotHit.ax, y: dotHit.ay };
       render(); return;
     }
 
-    // 2) 既存ピン（💀🎯🚩）：
-    //    ・ダブルタップ＝削除（全マーカー共通／#8）
-    //    ・シングルタップ＝選択（簡素メニュー）＋ドラッグ移動
-    //    ・ヒットを1秒長押し＝赤丸つかみ替え（ルート上で接続点を調整／#7）
+    // 2) フリーマーク
+    const fmHit = freeMarkAt(p);
+    if (fmHit) {
+      if (isDoubleTap(fmHit)) { cancelDrag(); performDelete(fmHit); return; }
+      selectedPin = fmHit; dragPin = fmHit; dragExisting = true; dragMoved = false; dragStart = p; dragIsDot = false;
+      dragFreeMoveEntry = { kind: 'move', target: fmHit, oldX: fmHit.x, oldY: fmHit.y, newX: null, newY: null };
+      render(); return;
+    }
+
+    // 3) 既存ピン（💀🎯🚩）
     const ex = pinAt(p);
     if (ex) {
       if (isDoubleTap(ex)) { cancelDrag(); performDelete(ex); return; }
@@ -858,7 +1099,16 @@
       render(); return;
     }
 
-    // 3) スタートマーカー：角の少し外側＝リサイズ／本体＝移動
+    // 4) フリーライン
+    const flHit = freeLineAt(p);
+    if (flHit) {
+      if (isDoubleTap(flHit)) { cancelDrag(); performDelete(flHit); return; }
+      selectedPin = flHit; dragPin = flHit; dragExisting = true; dragMoved = false; dragStart = p; dragIsDot = false;
+      dragFreeMoveEntry = { kind: 'move', target: flHit, oldPts: flHit.pts.map(q => ({x:q.x, y:q.y})), newPts: null };
+      render(); return;
+    }
+
+    // 5) スタートマーカー：角の少し外側＝リサイズ／本体＝移動
     const stCorner = startCornerAt(p);
     if (stCorner) {
       dragPin = stCorner; dragExisting = true; dragMoved = false; dragStart = p; dragIsStartCorner = true;
@@ -866,18 +1116,18 @@
     }
     const stBody = startAt(p);
     if (stBody) {
-      if (isDoubleTap(stBody)) { cancelDrag(); performDelete(stBody); return; } // スタートもダブルタップ削除（v10：選択メニューの🗑でも可）
+      if (isDoubleTap(stBody)) { cancelDrag(); performDelete(stBody); return; }
       selectedPin = stBody; dragPin = stBody; dragExisting = true; dragMoved = false; dragStart = p; dragIsStartCorner = false;
       render(); return;
     }
 
-    if (mode === 'pen' || mode === 'enemy' || mode === 'mate') { selectedPin = null; drawing = true; curStroke = [p]; render(); return; }
-    if (mode === 'allyStart' || mode === 'enemyStart') {
-      const s = placeStart(p, mode === 'allyStart' ? 'ally' : 'enemy');
-      dragPin = s; dragExisting = false; dragMoved = false; dragStart = p; dragIsStartCorner = false;
+    if (mode === 'pen' || (mode === 'freemark' && freeMarkShape === 'line')) { selectedPin = null; drawing = true; curStroke = [p]; render(); return; }
+    if (mode === 'freemark') {
+      const nm = placeFreemark(p);
+      dragPin = nm; dragExisting = false; dragMoved = false; dragStart = p; dragIsDot = false; selectedPin = nm;
       render(); return;
     }
-    // ピンモード（death/hit/flag）：空きをタップ＝新規設置（置いたら選択状態に）
+    // ピンモード（death/hit/flag）：空きをタップ＝新規設置
     if (mode === 'death') { deathDragBlocked = new Set(); deathDragPendingKey = null; }
     const np = (mode === 'death') ? placeDeath(p) : (mode === 'hit') ? placeHit(p) : placeFlag(p);
     if (np) { dragPin = np; dragExisting = false; dragMoved = false; dragStart = p; dragIsDot = false; selectedPin = np; }
@@ -892,6 +1142,7 @@
       const proj = projectToRoute(hit);
       if (proj) { hit.ax = proj.x; hit.ay = proj.y; hit.linked = true; } // ルートが無ければ何もしない
       dragPin = hit; dragIsDot = true; selectedPin = hit;
+      dotAnchor = { x: hit.ax != null ? hit.ax : hit.x, y: hit.ay != null ? hit.ay : hit.y };
       render();
     }, 1000);
   }
@@ -914,15 +1165,25 @@
     if (dragPin) {                       // ピンのドラッグ（移動）
       e.preventDefault();
       const p = toNorm(e);
-      if (dist(p, dragStart) > 0.015) { dragMoved = true; if (!dragIsDot) clearLongPress(); } // 動かしたら長押し待機を解除（赤丸ドラッグ中は除く）
+      if (dist(p, dragStart) > 0.015) { dragMoved = true; if (!dragIsDot) clearLongPress(); }
 
-      if (dragIsStartCorner) {           // スタートのリサイズ（中心固定で対角距離から辺長を決定）
+      if (dragIsStartCorner) {
         const cPx = toPx(dragPin), pPx = toPx(p);
         const dpx = pxDist(cPx, pPx);
         dragPin.size = Math.max(28, Math.min(400, dpx * Math.SQRT2));
-      } else if (dragIsDot) {            // ヒット接続点（赤丸）はルート上に常に拘束（#7）
-        const proj = projectToRoute(p);
+      } else if (dragIsDot) {
+        // 感度75%：指の総移動量の75%を仮想位置に適用してルート投影
+        const delta75 = { x: (p.x - dragStart.x) * 0.75, y: (p.y - dragStart.y) * 0.75 };
+        const vp = { x: dotAnchor.x + delta75.x, y: dotAnchor.y + delta75.y };
+        const proj = projectToRoute(vp);
         if (proj) { dragPin.ax = proj.x; dragPin.ay = proj.y; }
+      } else if (dragPin.kind === 'freeline') {
+        const dx = p.x - dragStart.x, dy = p.y - dragStart.y;
+        dragPin.pts = dragPin.pts.map((q) => ({ x: Math.min(1, Math.max(0, q.x + dx)), y: Math.min(1, Math.max(0, q.y + dy)) }));
+        dragStart = p;
+      } else if (dragPin.kind === 'freemark') {
+        dragPin.x = Math.min(1, Math.max(0, p.x));
+        dragPin.y = Math.min(1, Math.max(0, p.y));
       } else if (dragPin.kind === 'start') {
         dragPin.x = p.x; dragPin.y = p.y;
       } else if (dragPin.type === 'death') {
@@ -930,9 +1191,9 @@
         resolveOverlap(dragPin);
       } else if (dragPin.type === 'hit') {
         dragPin.x = p.x; dragPin.y = p.y;
-        if (!dragPin.linked) {           // 未接続はルート“近く”まで来たら接続（遠ければ単体のまま）
+        if (!dragPin.linked) {
           const a = projectToRoute(p); if (a && a.d < HIT_SNAP) { dragPin.ax = a.x; dragPin.ay = a.y; dragPin.linked = true; }
-        }                                 // 接続済み hit は ax,ay 固定＝赤線だけ追従（赤丸はダブルタップで個別に動かす）
+        }
         resolveOverlap(dragPin);
       } else if (dragPin.type === 'flag') {
         dragPin.x = p.x; dragPin.y = p.y;
@@ -946,7 +1207,16 @@
     if (dist(p, curStroke[curStroke.length - 1]) > 0.004) { curStroke.push(p); render(); }
   });
   function endStroke(){
-    if (drawing && curStroke && curStroke.length >= 3) { work.history.push({ kind: 'stroke', team: (mode === 'enemy' ? 'enemy' : mode === 'mate' ? 'ally' : 'self'), pts: curStroke }); work.redo = []; work.clearedSnapshot = null; }
+    if (drawing && curStroke && curStroke.length >= 3) {
+      if (mode === 'freemark' && freeMarkShape === 'line') {
+        const fl = { kind: 'freeline', pts: curStroke, color: freeDrawColor };
+        work.history.push(fl);
+        selectedPin = fl;
+      } else {
+        work.history.push({ kind: 'stroke', team: 'self', pts: curStroke });
+      }
+      work.redo = []; work.clearedSnapshot = null;
+    }
     drawing = false; curStroke = null;
     render();
   }
@@ -955,6 +1225,12 @@
     pointers.delete(e.pointerId);
     if (pointers.size < 2) pinchPrev = null;
     if (dragPin) {                       // ドラッグ終了（タップ＝選択のまま・移動はリアルタイム反映済み）
+      if (dragMoved && dragFreeMoveEntry) {
+        const me = dragFreeMoveEntry;
+        if (me.target.kind === 'freeline') me.newPts = me.target.pts.map(q => ({x:q.x, y:q.y}));
+        else { me.newX = me.target.x; me.newY = me.target.y; }
+        work.history.push(me); work.redo = [];
+      }
       cancelDrag();
       render();                          // 指を離した直後にメニュー表示（#10,#11。renderSel が idle 状態で表示する）
       return;
@@ -968,19 +1244,29 @@
   // ── 描画 ─────────────────────────────────────────────
   function render(){
     if (!work) return;
-    const self = getSelfStrokes(), enemy = getEnemyStrokes(), ally = getAllyStrokes(), pins = getPins(), starts = getStarts();
+    const self = getSelfStrokes(), pins = getPins(), starts = getStarts();
+    const freeLines = getFreeLines(), freeMarks = getFreeMarks();
     $('routeLayer').innerHTML = coloredRoute(self, work.f1, work.f2, H, 13, 7.5)
-      + freeLineHtml(ally, H, 6, MATE_COLOR) + freeLineHtml(enemy, H, 6, ENEMY_COLOR) + startGoalMarkers(self, H, 15) + hitLinesHtml(pins, H);
+      + freeLinesHtml(freeLines, H, selectedPin) + startGoalMarkers(self, H, 15) + hitLinesHtml(pins, H);
     $('startLayer').innerHTML = startsHtml(starts, H);
-    // 描いている途中の線（自分=白破線／敵=オレンジ破線・確定すると色がつく）
-    const liveCol = (mode === 'enemy') ? ENEMY_COLOR : (mode === 'mate') ? MATE_COLOR : 'rgba(255,255,255,.92)';
+    const liveCol = (mode === 'freemark' && freeMarkShape === 'line') ? freeDrawColor : 'rgba(255,255,255,.92)';
     $('liveLayer').innerHTML = (drawing && curStroke && curStroke.length >= 2)
       ? pathHtml(pathStr(curStroke, H), liveCol, 7, '14 10') : '';
-    $('pinLayer').innerHTML = pinsHtml(pins, H, PIN_FS, selectedPin) + hitDotsHtml(pins, H, PIN_FS);
+    $('pinLayer').innerHTML = freeMarksHtml(freeMarks, H, FM_R) + pinsHtml(pins, H, PIN_FS, selectedPin) + hitDotsHtml(pins, H, PIN_FS);
 
     const hasRoute = self.length > 0;
-    $('sliders').classList.toggle('show', hasRoute && !drawing);
-    $('exportBtn').style.display = (!drawing && (hasRoute || enemy.length > 0 || pins.length > 0)) ? '' : 'none';
+    const statEl = $('editorStat');
+    if (bg === 'none') { statEl.textContent = '📷 マップを読み込む'; }
+    else if (!hasRoute && pins.length === 0 && starts.length === 0 && freeLines.length === 0 && freeMarks.length === 0) { statEl.textContent = '📝 ルートを指でなぞる'; }
+    else { const { k: sk, d: sd } = kdFromPins(pins); statEl.textContent = '🗺 キル ' + sk + ' / デス ' + sd; }
+    const showSliders = hasRoute && mode === 'pen';
+    $('sliders').classList.toggle('show', showSliders);
+    ['leg1','leg2','leg3'].forEach(id => $(id).classList.toggle('show', showSliders));
+
+    const showPalette = mode === 'freemark' || (selectedPin && (selectedPin.kind === 'freeline' || selectedPin.kind === 'freemark'));
+    $('paletteRow').classList.toggle('show', showPalette);
+    const showShape = mode === 'freemark' || (selectedPin && selectedPin.kind === 'freemark');
+    $('shapeRow').classList.toggle('show', showShape);
     // 0%のフェーズは凡例から隠す（「ゲージ100%なのに0%表記」の誤解を防ぐ）
     const a1 = work.f1, a2 = work.f2 - work.f1, a3 = 1 - work.f2;
     $('leg1').style.display = (hasRoute && a1 > 0.005) ? '' : 'none';
@@ -1020,36 +1306,84 @@
     const p = selectedPin, panel = $('selPanel');
     if (!p || !work || work.history.indexOf(p) < 0) { panel.style.display = 'none'; return; }
 
-    // v10：全オブジェクトに選択メニュー（削除ボタン常設）。未接続は「数えません」を明示
+    // 全条件表示要素をリセット
+    $('selRow2').style.display = 'none';
+    $('selCount').style.display = 'none';
+    $('selMemoWrap').style.display = 'none';
+    $('selConnectBtn').style.display = 'none';
+    $('selDisconnectBtn').style.display = 'none';
+    $('selDupBtn').style.display = 'none';
+    // 削除・接続ボタンを selActions に戻す
+    const delBtn = $('selDel');
+    $('selActions').appendChild($('selConnectBtn'));
+    $('selActions').appendChild($('selDisconnectBtn'));
+    $('selActions').appendChild(delBtn);
+    delBtn.style.marginLeft = '';
+    $('selConnectBtn').style.marginLeft = '';
+    $('selDisconnectBtn').style.marginLeft = '';
+
     let label = '', note = '';
-    if (p.kind === 'start') {
-      label = (p.team === 'ally') ? '🟦 味方スタート' : '🟪 敵スタート';
+
+    if (p.kind === 'freeline') {
+      label = '〰 フリーライン';
+      $('selDupBtn').style.display = '';
+    } else if (p.kind === 'freemark') {
+      label = '◉ フリーマーク';
+      $('selDupBtn').style.display = '';
+    } else if (p.kind === 'start') {
+      label = p.team === 'ally' ? '🟦 味方スタート' : '🟪 敵スタート';
     } else if (p.type === 'flag') {
       label = '🚩 フラッグ';
     } else if (p.type === 'hit') {
       label = '🎯 ヒット' + (p.linked ? '（接続）' : '（未接続）');
       if (!p.linked) note = '未接続：キルに反映されません';
+      $('selRow2').style.display = 'flex';
+      $('selCount').style.display = 'flex';
+      $('selNum').textContent = p.count || 1;
+      // 接続/接続解除 → 削除 の順で selRow2 右端へ
+      const connBtn = p.linked ? $('selDisconnectBtn') : $('selConnectBtn');
+      const hideBtn = p.linked ? $('selConnectBtn') : $('selDisconnectBtn');
+      connBtn.style.display = ''; hideBtn.style.display = 'none';
+      connBtn.style.marginLeft = 'auto';
+      $('selRow2').appendChild(connBtn);
+      $('selRow2').appendChild(hideBtn);
+      $('selRow2').appendChild(delBtn);
     } else if (p.type === 'death') {
       label = p.linked ? '💀 やられた（自死）' : '💀 やられた（味方）';
       if (!p.linked) note = '未接続：自分のデスには数えません';
+      if (!p.linked) { $('selRow2').style.display = 'flex'; $('selCount').style.display = 'flex'; $('selNum').textContent = p.count || 1; $('selRow2').appendChild(delBtn); delBtn.style.marginLeft = 'auto'; }
+      if (p.linked) { $('selMemoWrap').style.display = 'flex'; buildMemoSelect(p); $('selMemoAddRow').style.display = 'none'; $('selMemoWrap').appendChild(delBtn); }
     }
+
     $('selTitle').textContent = '選択中：' + label;
     $('selNote').textContent = note;
     $('selNote').style.display = note ? '' : 'none';
-
-    const isDeathConnected = (p.type === 'death' && p.linked);
-    const counted = (p.type === 'hit') || (p.type === 'death' && !p.linked);
-    $('selMemoWrap').style.display = isDeathConnected ? 'flex' : 'none';
-    $('selRow2').style.display = counted ? 'flex' : 'none';
-    if (isDeathConnected) { buildMemoSelect(p); $('selMemoAddRow').style.display = 'none'; }
-    $('selCount').style.display = counted ? 'flex' : 'none';
-    if (counted) $('selNum').textContent = p.count || 1;
-
     panel.style.display = 'flex';
   }
   $('selPlus').onclick = () => { if (selectedPin) { selectedPin.count = (selectedPin.count || 1) + 1; render(); } };
   $('selMinus').onclick = () => { if (selectedPin && (selectedPin.count || 1) > 1) { selectedPin.count = (selectedPin.count || 1) - 1; render(); } };
   $('selDel').onclick = () => { if (selectedPin) performDelete(selectedPin); };
+  $('selConnectBtn').onclick = () => {
+    const p = selectedPin; if (!p || p.type !== 'hit') return;
+    const proj = projectToRoute(p);
+    if (proj) { p.ax = proj.x; p.ay = proj.y; p.linked = true; }
+    render();
+  };
+  $('selDisconnectBtn').onclick = () => {
+    const p = selectedPin; if (!p || p.type !== 'hit') return;
+    p.linked = false; delete p.ax; delete p.ay;
+    render();
+  };
+  $('selDupBtn').onclick = () => {
+    if (!selectedPin || !work) return;
+    const orig = selectedPin; let dup;
+    if (orig.kind === 'freeline') {
+      dup = { kind:'freeline', pts: orig.pts.map((q) => ({ x: Math.min(1, q.x + 0.025), y: Math.min(1, q.y + 0.025) })), color: orig.color };
+    } else if (orig.kind === 'freemark') {
+      dup = { kind:'freemark', x: Math.min(1, orig.x + 0.025), y: Math.min(1, orig.y + 0.025), shape: orig.shape, color: orig.color };
+    }
+    if (dup) { work.history.push(dup); work.redo = []; selectedPin = dup; render(); }
+  };
   $('selMemoSelect').addEventListener('change', () => {
     const p = selectedPin, v = $('selMemoSelect').value;
     if (!p) return;
@@ -1086,41 +1420,51 @@
   $('s2').addEventListener('input', () => { if (+$('s2').value < +$('s1').value) $('s1').value = $('s2').value; work.f1 = +$('s1').value / 100; work.f2 = +$('s2').value / 100; paintSliders(); render(); });
 
   // ── ツール ────────────────────────────────────────────
-  const HINTS = {
-    pen:       '指で“自分の動き”をなぞる（復活は離してまた描く）・2本指で拡大',
-    mate:      '“味方ルート”を黄でなぞる（仲間の動き・展開など）',
-    enemy:     '“敵ルート予想”をオレンジでなぞる（敵の動き・射線・気づきなど自由に）',
-    death:     '💀タップで設置→ルート終端に吸着＝自死（終端1個につき1個まで）／離すと味方の被弾。アイコンをタップで選択し下のメニューで編集',
-    hit:       '🎯タップで設置（自動接続はしません）→ドラッグでルート近くへ→接続＝キル。接続済みマーカーをダブルタップすると接続点（赤丸）を掴んでルート上を調整できる',
-    flag:      '🚩タップで設置・アイコンをタップで選択し下のメニューで削除',
-    allyStart: '🟦 味方スタートを設置（1個まで）・移動／角の少し外側をドラッグでサイズ変更',
-    enemyStart:'🟪 敵スタートを設置（1個まで）・移動／角の少し外側をドラッグでサイズ変更',
-  };
-  const TOOL_MAP = { pen:'toolPen', mate:'toolMate', enemy:'toolEnemy', death:'toolDeath', hit:'toolHit', flag:'toolFlag', allyStart:'toolAllyStart', enemyStart:'toolEnemyStart' };
-  function setTool(w){ selectedPin = null; mode = w; Object.entries(TOOL_MAP).forEach(([m, id]) => $(id).classList.toggle('on', m === w)); $('hintText').textContent = HINTS[w] || ''; render(); }
-  $('toolPen').onclick = () => setTool('pen');
-  $('toolMate').onclick = () => setTool('mate');
-  $('toolEnemy').onclick = () => setTool('enemy');
-  $('toolDeath').onclick = () => setTool('death');
-  $('toolHit').onclick = () => setTool('hit');
-  $('toolFlag').onclick = () => setTool('flag');
-  $('toolAllyStart').onclick = () => setTool('allyStart');
-  $('toolEnemyStart').onclick = () => setTool('enemyStart');
-  // かんたん/詳細モード（v10・UI/UXレビューv2 §5-2A）。初回はかんたん＝自分ルート＋やられたのみ
-  function applyMode(){
-    $('advRow1').style.display = detailMode ? 'flex' : 'none';
-    $('advRow2').style.display = detailMode ? 'flex' : 'none';
-    $('modeToggle').textContent = detailMode ? 'かんたんに ▴' : '詳しく記録する ▾';
-    $('modeToggle').classList.toggle('on', detailMode);
-    $('todoGuide').style.display = detailMode ? 'none' : '';
-    if (!detailMode && ['hit', 'flag', 'mate', 'enemy', 'allyStart', 'enemyStart'].indexOf(mode) >= 0) setTool('pen');
+  const TOOL_MAP = { pen:'toolPen', hit:'toolHit', death:'toolDeath', flag:'toolFlag', freemark:'toolFreemark' };
+  function setTool(w){
+    selectedPin = null; mode = w;
+    Object.entries(TOOL_MAP).forEach(([m, id]) => $(id).classList.toggle('on', m === w));
+    render();
   }
-  $('modeToggle').onclick = () => { detailMode = !detailMode; applyMode(); };
+  $('toolPen').onclick = () => setTool('pen');
+  $('toolHit').onclick = () => setTool('hit');
+  $('toolDeath').onclick = () => setTool('death');
+  $('toolFlag').onclick = () => setTool('flag');
+  $('toolFreemark').onclick = () => setTool('freemark');
   $('undoBtn').onclick = () => {
-    if (work.history.length === 0 && work.clearedSnapshot) { work.history = work.clearedSnapshot; work.clearedSnapshot = null; selectedPin = null; render(); return; } // 全消しの取り消し
-    if (work.history.length) { work.redo.push(work.history.pop()); selectedPin = null; render(); }
+    if (work.history.length === 0 && work.clearedSnapshot) { work.history = work.clearedSnapshot; work.clearedSnapshot = null; selectedPin = null; render(); return; }
+    if (!work.history.length) return;
+    const last = work.history[work.history.length - 1];
+    if (last.kind === 'move') {
+      if (last.target.kind === 'freeline') last.target.pts = last.oldPts.map(q => ({x:q.x, y:q.y}));
+      else { last.target.x = last.oldX; last.target.y = last.oldY; }
+      work.redo.push(work.history.pop()); selectedPin = null; render();
+    } else if (last.kind === 'delete') {
+      work.history.pop();
+      work.history.splice(Math.min(last.idx, work.history.length), 0, last.item);
+      work.redo.push(last);
+      selectedPin = null; render();
+    } else {
+      work.redo.push(work.history.pop()); selectedPin = null; render();
+    }
   };
-  $('redoBtn').onclick = () => { if (work.redo.length) { work.history.push(work.redo.pop()); render(); } };
+  $('redoBtn').onclick = () => {
+    if (!work.redo.length) return;
+    const last = work.redo[work.redo.length - 1];
+    if (last.kind === 'move') {
+      if (last.target.kind === 'freeline') last.target.pts = last.newPts.map(q => ({x:q.x, y:q.y}));
+      else { last.target.x = last.newX; last.target.y = last.newY; }
+      work.history.push(work.redo.pop()); render();
+    } else if (last.kind === 'delete') {
+      work.redo.pop();
+      const i = work.history.indexOf(last.item);
+      if (i >= 0) work.history.splice(i, 1);
+      work.history.push(last);
+      selectedPin = null; render();
+    } else {
+      work.history.push(work.redo.pop()); render();
+    }
+  };
   $('clearBtn').onclick = () => { if (work.history.length) { work.clearedSnapshot = work.history.slice(); work.history = []; work.redo = []; selectedPin = null; render(); } }; // 「戻す」で復活できる
   $('zoomReset').onclick = resetView;
   function setLocked(v){
@@ -1137,7 +1481,6 @@
 
   // ── 画像として保存 ────────────────────────────────────
   $('exportBtn').onclick = () => {
-    $('hint').style.display = 'none';
     const clone = svg.cloneNode(true);
     clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     clone.setAttribute('viewBox', '0 0 ' + W + ' ' + H); // ズーム中でも全体を書き出す
@@ -1155,8 +1498,230 @@
     img.src = url;
   };
 
+  // パレットとシェイプ行を生成
+  (function buildPalette(){
+    const row = $('paletteRow');
+    PALETTE.forEach((c) => {
+      const s = document.createElement('div');
+      s.className = 'palSwatch' + (c === freeDrawColor ? ' on' : '');
+      s.style.cssText = 'background:' + c + ';';
+      s.dataset.color = c;
+      s.onclick = () => {
+        freeDrawColor = c;
+        if (selectedPin && (selectedPin.kind === 'freeline' || selectedPin.kind === 'freemark')) { selectedPin.color = c; render(); }
+        row.querySelectorAll('.palSwatch').forEach((sw) => sw.classList.toggle('on', sw.dataset.color === c));
+      };
+      row.appendChild(s);
+    });
+  })();
+  (function buildShapeRow(){
+    const row = $('shapeRow');
+    SHAPES.forEach((sh) => {
+      const b = document.createElement('button');
+      b.className = 'shapePick' + (sh === freeMarkShape ? ' on' : '');
+      b.textContent = SHAPE_LABELS[sh];
+      b.dataset.shape = sh;
+      b.onclick = () => {
+        freeMarkShape = sh;
+        if (selectedPin && selectedPin.kind === 'freemark') { selectedPin.shape = sh; render(); }
+        row.querySelectorAll('.shapePick').forEach((bp) => bp.classList.toggle('on', bp.dataset.shape === sh));
+      };
+      row.appendChild(b);
+    });
+  })();
+
   renderDayScreen();
 })();
 </script>
-</body>
-</html>
+
+
+<linkclump-plus><span style="margin: 0px auto; border: 0px dotted red; position: absolute; z-index: 2147483646; visibility: hidden;"></span><span style="z-index: 2147483647; display: inline-block; visibility: hidden; position: absolute; top: 0px; left: 0px; line-height: 16px; font-size: 16px; font-weight: 400; color: black; background-color: transparent; padding: 8px; border-radius: 8px; border: 4px double transparent;"></span></linkclump-plus></body><div><template shadowrootmode="closed"><style>
+.common li, .common span, .common a, .common input, .common img, .common h4,
+.popup, .engine-editor{
+    direction: ltr;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 10pt;
+	font-weight: normal;
+	text-decoration: none;
+	font-family: sans-serif;
+	vertical-align: baseline;
+	background: transparent;
+	color: #202020;
+	text-align: left;
+	line-height: normal;
+	white-space: normal;
+	-webkit-box-shadow: none;
+	-webkit-border-radius:0;
+	text-shadow: none;
+	float: none;
+	overflow: visible;
+}
+.common li, .common p, .common div, .common ul, .common h4{
+	display: block;
+}
+.common h4{
+	font-weight: bold;
+}
+.common ul{
+	list-style-type: none;
+}
+.common span, .common img{
+	display: inline;
+}
+.common input{
+	display: inline-block;
+	white-space: pre;
+}
+.common a:after, .common a[href^="http"]:after {
+  content: '';
+}
+.engine-editor{
+
+    z-index: 2147483647;
+	padding: 0.5em;
+	width: 35em;
+	font-size: 9pt;
+	background: #EDEDED;
+	border: 3px solid #878787;
+	-webkit-border-radius: 5px;
+	-webkit-box-shadow: 0px 0px 8px #B0B0B0;
+}
+.engine-editor input[type='text']{
+	width: 100%;
+	margin-bottom: 0.5em;
+	padding: 0.1em 0;
+	display: block;
+	border: 1px solid #A0A0A0;
+	background: #fff;
+	-webkit-border-radius: 2px;
+}
+.engine-editor input[type='button']{
+	width: auto;
+	display: inline-block;
+	margin-top: 0.5em;
+	margin-right: 0.5em;
+	padding: 0.2em 0.4em;
+	text-align: center;
+	background: -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#E0E0E0));
+	border: 1px solid #A0A0A0;
+	-webkit-border-radius: 2px;
+}
+.engine-editor input[type='button']:hover{
+	border: 1px solid #7C7C7C;
+}
+.engine-editor input[type='button']:active{
+	background: -webkit-gradient(linear, left top, left bottom, from(#E0E0E0), to(#F5F5F5));
+}
+.engine-editor input[type='button']:disabled{
+	color: #AAAAAA;
+	background: -webkit-gradient(linear, left top, left bottom, from(#E7E7E7), to(#D3D3D3));
+}
+.engine-editor h4{
+	margin: 0;
+	height: 1.5em;
+	font-size: 1.1em;
+	padding-bottom: 0.3em;
+	margin-bottom: 0.5em;
+	border-bottom: 1px solid #CECECE;
+}
+.engine-editor input.close{
+	float: right;
+	margin: 0;
+	height: 1.4em;
+	width: 1.4em;
+	padding-bottom: 0.3em;
+	vertical-align: middle;
+}
+.engine-editor span.title{
+	float: left;
+	font-weight: bold;
+	line-height: 1.5em;
+}
+
+
+.popup{
+ width: 12em;
+ position: absolute;
+ background: #EDECEC;
+ border: solid 1px #AEAAA7;
+ padding: 0.3em 0.3em;
+ font-size: 9pt;
+ margin: 0;
+ list-style-type: none;
+ -webkit-box-shadow: 0px 1px 10px #ccc;
+ display: block;
+ font-family: sans-serif;
+z-index: 2147483647;
+}
+.popup li{
+ margin: 1px 0;
+ padding: 0;
+ text-align: left;
+ color: #202020;
+ display: block;
+ font-family: sans-serif;
+}
+.popup input{
+	width: 10.1em;
+}
+.popup img{
+ width: 16px;
+ height: 16px;
+ vertical-align: middle;
+ border:none;
+ margin: 0;
+ margin-right: 4px;
+ display: inline;
+}
+.popup.mainmenu > li:first-child {
+ overflow: hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+ border-bottom: solid 1px #AEAAA7;
+ margin-bottom: 0.5em;
+ padding: 0.2em 0.3em;
+}
+.popup a{
+ margin: 1px;
+ text-decoration: none;
+ color: #202020;
+ display: block;
+ padding: 0.2em 0.3em;
+ -webkit-border-radius: 3px;
+ font-family: sans-serif;
+}
+.popup a:hover, .popup a.active{
+ background: #96B8E1;
+}
+.popup .engine-name{
+ display: inline-block;
+ width: 8.5em;
+ overflow: hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+ vertical-align: middle;
+}
+.button {
+ position:absolute;
+ background: #fafafa;
+ background-repeat: no-repeat;
+ background-position: center center;
+ -webkit-border-radius: 3px;
+ border: 1px solid #aaaaaa;
+ width: 16px;
+ height: 16px;
+ font-family: sans-serif;
+ z-index: 2147483647;
+}
+.popup .engine-separator{
+ height: 1px;
+ margin: 3px 0;
+ background: #AEAAA7;
+}
+.popup.hidden{
+	display: none;
+}
+</style><style></style><style></style><div style="display: none; position: absolute;" class="engine-editor common"><h4 style="padding-left: 20px; background: url(&#39;chrome-extension://gipnlpdeieaidmmeaichnddnmjmcakoe/img/icon16.png&#39;) no-repeat left top;"><input style="background: url(&#39;chrome-extension://gipnlpdeieaidmmeaichnddnmjmcakoe/img/close.png&#39;) no-repeat center center;" class="close" type="button" value=""><span class="title">Add search engine</span></h4><div style="display: none;"><span>Name:</span><input type="text"><span>Url:</span><input type="text"><span>Icon url:</span><input type="text"></div><div style="background: url(&quot;chrome-extension://gipnlpdeieaidmmeaichnddnmjmcakoe/img/ajax-loader.gif&quot;) center center no-repeat; height: 50px; width: 100%;"></div><p style="display: none; color: #CB4345;"></p><input type="button" value="Save"><input type="button" value="Cancel"></div><ul class="popup common hidden mainmenu"><li><input type="text"></li><li><a class="engine-url"><img class="engine-img" referrerpolicy="no-referrer" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAsVBMVEVHcEz8/Pz7+/v+/v75+fr////5+vr4+Pj////8/Pz////29vb////////7+/v////s7e3r7O3/uEc1T/X///81qlXsTkFHiPXrRjf8wBHrPy/9/Po4gfUhpUlBhfT6vQDW4vyQs/j0pJ/72NJDrl/h8eT/9+cqe/SHrfhhuXfylpC1zPrtX0rR6NZ+w4794J6vtS6s1rDuc2/3u7f8zFZyofb3pABqrbhqouOHx5U8ooarLy5yAAAAE3RSTlMAYtPBeeCROqb4DUNE6EkWISHojGzqvgAAAWpJREFUOI2dk9l2gjAQhhURiEttz0kEwmYjKFC1rt3e/8GazBAFY2/6XyX5/kwmM0mv19bInUzcUe8PuR6hIOK5j/CQtjQ0LB69k9flw3sugzziS1HXYmk6BrAQCc4DKc5FBAsDzfu4ex7MG/EAo/QbA3KukNwvbcEGQ1DkthquAsD16VRzrjm1wTBVw6M0cIHLQnM6VXwGAT7kfmHedaZTfA/DzdHkkKajbngOwwwzL19R5ULNHF3kTBpWYFj7KWj9pgt+NWBqsY+Ku4bwFiGW6higDOcszA5Q74XSJfXjhS7EE9wi2zN2vT5NZQSYPelKR3uWs0rzMvXTy63W0MtDkucs36ph8SlzWMMJ2M8xhKiYVMKqKk/Yjx+XEGCM3bLAkTN5SqPkC7jVtPsFT94lV/6NK8/dF0OLHUuk2K64NaKRo/MvtttCj532q7XNRtp3/4Z0MTE/l92yENvAEMWxSBQRy3n0Nf+vX4gnPfthEwRuAAAAAElFTkSuQmCC"><span class="engine-name">Google</span></a></li><li><a class="engine-url"><img class="engine-img" referrerpolicy="no-referrer" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABr0lEQVRYhe3Xv48MYQDG8c87uTjubkmEjd+hkEs0crfRiUahYVfhDxCUCpVoVBKiENGKnEKiccUFEY2C2uxFIuQo/CgUGw171p5iRzEzCiGxs5sdxT3J5H0zmed9vsX7zjwTkiRRpqJS01cB/geAkE8StXEcxSx2o4oKJrNxQ/Z8wPq/rPcVCXrZvI1v2djCezTxMIhXfgEkavuxkAWPQh/QCOIXIVFbhzfYMaLwXB8xHeF4CeGwC/UIB0oIz3Uwwr4SAfZG2N6XpbqR0w2ioZzgrRE29WWZWMutizy/w6HZQQGqEaYKWWemeXqTe1fZs60owFRxgFwnDvN6nitnqUz0664M51U8voYLJ3m7wKl6X/uj9G/B2FBWWfnB9btcnqPd6Rtg2SD7YP4J52/w7lMRd7s4wOIS567xrFkkONfyGD5jyz9bOl3OXOL2A3q9QcKhFRK1xzgy6EoF9SjCq5LC4WWEuESAZl5IlrBzxOFpIQni7zgm7WujDK8Hcff3UtrAjLQbbpaWz8nsyktpJC2pf1JeShN8kR7xTna/Je2Ci7gfxF0Iq79mqwBlA/wEihVj07SFCdQAAAAASUVORK5CYII="><span class="engine-name">Youtube</span></a></li><li><a class="engine-url"><img class="engine-img" referrerpolicy="no-referrer" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAM1BMVEUAAAD////f398QEBAgICDv7+9wcHBAQECAgIC/v7/Pz8+vr6+QkJAwMDBQUFCfn59gYGBA/ZVxAAAA2ElEQVQ4jc1SSRLDIAzD7GuS/7+2yKQNENJrqwMMFiBbthB/gkSMrY/F/qik8d4bo69QJt9fd2SFOCh8An7k8aAIseMaw1KaslBSKig1kUL1NMFRxsIiWko98xBxWCx4s+CFihCJRquIqwsUJFZMvFKdYcFYmgvsEKAdHgQ4exOw3EucRfKXL2BoehSpBRo29EkkkbXN0LUIdzA1Q7clj3fvrt1FNoq8O9rhapj5Wv7ZoUzHWfDAXx1uUxHGjioJA07wVLCrQ4HdKdPufexD04jW/4Dl2PwELxkCBNiT/pD8AAAAAElFTkSuQmCC"><span class="engine-name">Twitter</span></a></li><li class="engine-separator"></li><li><a class="engine-url"><img class="engine-img" referrerpolicy="no-referrer" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABe0lEQVRYhe2XMW7CMBSGP5uKibkXaKUwcAfoBQhzWaouVByAFVh7AESlVmIpM3AB0jswwNADlDkTEkmHl9AkEFFKwB34JCtxbOf/37MT6Ski+E9cs6IJ1IASkCMb1sAMGJGnp/oswwG1EX/gHs0LUMhINA0Xj4YaMNwYCMTfTywcx6OuBgxVkPZPTh95Epc8NzrY83OLAxRY0dTIgTNFTSOn3RQlTXaf2l/IaYPiAFwMXAzEDdid7BXsDrSm8OZLS2hsZ2DHpKOYOzDuwvMdLByotmPDV7HeOBCOTgqfHYPdFhOLD2mpBnaZqLZh0pX7uSNR7MOqiKhVkf6kK+taU8lEBOU/4qe+pFjZStmGhSPRWOX4muSccSAebmsio+kGotiddCNp5kLhPfzOQEgYYTG4WmXJwtz5ET6QwwycgH/2I7oYMGRgbVB/rZGKxRQzDYwMGhiZLUw0t1r1WeLROLM4eDTUK18aQA0Y4lEH3DNIu2FdCJHqGMyU599+1oDHJ9NWzAAAAABJRU5ErkJggg=="><span class="engine-name">Amazon</span></a></li><li><a class="engine-url"><img class="engine-img" referrerpolicy="no-referrer" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAbFBMVEX//f3///+/AAD//v69AAC8Cgr4+fm6AAC/HR3AICD59PTQbm768vK3AADw19fUenrKW1vJVVXpwsLSdXXFPDzDKCjXjIzw3Nzz4uLrycn36+vbmJjJTk7ktbXXh4e/GBi/MzPBLS3jsrLt0NC7177vAAAA+0lEQVQ4jb2TUXeCMAyFuW1Ypa0wlbkp4mT7//9xSVFkmvKyc3Zf6Em/0ySXpCj+UZiUuV+7UaHWCZRmFLlGJSbAGBc0QoDydbMhYmKrEAJUUuKOiTYDrDhu8cZPeJsFCuzJuPfnJ+5Aw8BHDrCAlyqhp6jg/WHFVmh9Jh+IpEvjjjngapRmwwygLmt1uQsnTkFahsnJ1sj3uYmbD4i00IUYhYPjMvslJ8+kNgoOf6Yo2nR8LAOXYRj/MmI1DNX59xPWWpkFmzSOrpzugH95lPc+xolAs6ab0mibU9Nt69nYoHdyR+4S9l/fx+uCzOtEHbq+jgurs7RUf9MPHKcJnmtMAWQAAAAASUVORK5CYII="><span class="engine-name">楽天</span></a></li><li><a class="engine-url"><img class="engine-img" referrerpolicy="no-referrer" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAbFBMVEX////kAAD/JgDlCwv/XED/5N//yb//Lwv/QSD/NBD/8e//k4DmEBD/rZ//TzD97+/ygID839/4v7/rQED/1s//eGD1n5/pMDD3r6/nICD/u6//alD/fWf/oI//hXDuYGD6z8/wcHDzj4/sUFCnjHU+AAAA10lEQVQ4jYXR2RKCMAwF0CZSZFc2Fffl//9RR+ltWjJjXqDNmTshGP5TZn7WxlWDXvY9z4e8cCAFqCXgEhFJEADA1oFhvkgjkCBiDM5+3qMDVgYIkCGilIHikzFnkYuRBMitjxiNAviE28yqAIOZwr8EoDFxnUPAl6hv1xHwv+RXSQz4GvRTXgAeJGgUkIh+zR9Ace3Q31REqyXYA2xJBUhoKxX4gBupoHP9O6mgR0Cvg9b1D6SCBwImFVQb13+SCrZyRwqYgh0p4IAdkQr8J750gB114vINo0UISsETS9IAAAAASUVORK5CYII="><span class="engine-name">ヨドバシ.com</span></a></li><li><a class="engine-url"><img class="engine-img" referrerpolicy="no-referrer" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAHYklEQVRYhcWXa1CU1xnHf++7y7LsBVwQFhesLgEiJNR4GV1NUUFUwmgb2xo7htakHwpO0ovjtWoaJ5qozZDSsWbSjJNETNuY1phMiyS00aJ4G6IGUnUQxStyWRbcXfa+73v6YXUpbTL9ZPh/O+d9znn+5/9cznkl7kEI8TTwS+AbPFg4gXckSdoWnxFC1IivHw0AkhBiKfDBAz71V6FWEkJ0A5mjRCAiCSHEKDkHCMuAdxQJhLT/OXpmzVFaj19nQAVJAgFkZZrQyBI9Tj82mwnfUJiePj+i10vtGxUsW5IHwGetffy06j1ml0+hZmsxABevDLJx4xHar/eT83Am82ZlkYRE2UI7hfmpAMQJ/PUf19n3WgNgJrXAisWiRxKCU42dEFawFmVw7OAXYDHz0KQ0AhIoikowGMXjDXOk+Ranz7TRRwrrn5/G0RO3qfxxPcrAHdIfzedOj4+NO09BVzsk2/F2/wyTIQGEEJ5AMCKyHtsrYLVYVtUghBAiFFZEKBwVk4r3i7TC34tzX/QJ5FfED1Y1iGhEEQE1Vkt7//gvARsEaa8J3YQ9ItG+R2B6VcB6AS8IdDvE2m3N4vMLTvHYvP0CNomnn/tYhCOKEEJ4JCGE54OGq+bvVfwBEGyvraC8ZAJPLPwTQbMOXyCKRpbQaCQURSCEwKDXYggpNB/7Ic6BAM9WfsiALoGBOx6iUUFZmZ0sq5EnF+dS995FDr1zDswG8A7y8xfKqX2p+L7wXhngricEhAEZjUbiYscAzt5uvP0BNLKEEBAcioAkoarg6fPTc6uLj49exzE1k0sXqxlrTCDqDiJHFB6ZlMZ3l+TRfOYOR/95A5AhQQPoafzkKms3NXGypRtiX8CaZmBMlhVQiEZVjEkJQISanSVUzJ9IsjmBY397ikjPEGuqp7L6FzOACMmmRAA2vHyCiyc70GZbUJMS+O22Br6z6C1qXjyCQa/ljXeXcv5YJVt/U87lKwPU7DhA6bKDCHEvCctLJrD5xWLW/aSO4a6gkplhxGzUIcsyefYxEFVJT0siGlUBhfyHxnDlmptfb/kIEseiDgbJL0xlxvICLl8dpOVEN6pOw6u/+4xQWME61kBqUiLJU6dQu7MMIURMAY1GwmJMAKIxWaSYOEO+COGIghCCQXcIZAl/IIo/EAVkks06mk7dRm+1UbN7IepgP/k5Y9i/exHrnpuO8DiRJHBMy6Tk8WwAnF3dpGSOYfECO7IsDZehzx+5H5G4AulpeoyGBGRZInucCaIqlpTEuAI3bnuZ/Eg6Lc3PICkKawjg88cO0e8KAndZ+kQue3bMA+Bml5cJ2WcJDgXjXuIEBt0hoA/XYBCvLwKEqFp3BGefD5x+Zi95HwixeddJFEUAYVov9LPh+WkAvP52G9DPrTuxxjpwNwgovP7W53RcuwtA5w03EOZm19D/EvhmQRqlpY8ztSiDRyelUVo2h95olFx7CkZDAtduelhUOY2+Xh+qKhibO5dZ04fvsIK8VEpLZzNlTg4Acx02yhbNxysLLrS7AEgxJ1I6fxZFs23xdZIQwgOYGR145f9v82Ch/bJJl8uFy+VCo9EwceJENBrNSIPbF+DaJdDqYLIDDBkABAN+AsEQFouFcDhMd3c36enpGAwGALq6utBqtVit1q8m0NTURGNjIx6PB41Gg91uZ/nyp8jMHBczOLAadtdCD7GiKUiA7QegaCknT5yg6XgzDoeDzs5Oent7sVqtLFiwgLa2Ns6fP49Wq2XmzJlUVFQA/5UD586dY+/evdjtdmbMmIHb7aa+vp7UtLFsemkb5ta/QOVyyAW+Xw3uXth3KPaeOtjP3y/1c/TP+5BlGZPJhCzHIhwMxsrOZDIxNBSrgKqqKqxWq3eEAm1tbSQnJ1NZWcm4cbET5+Xl0evsJ6qo8P4WMAC7PoXC0tgi62ZY+wo07EJbtJ5AMMS8uXMoKSmho6OD+vp69Ho9K1aswGw2c+jQIdrb2/H7/cDIzoPb7cZms8WdAxQUFDBvTjGWRC10XQUbw84BZi+NBfLWBURwiHAkSmFhIcnJyUyePBlJkrBYLGRnZ5OSkkJOTg6BQCCeVyMIZGVl0d7eTmtrKwCKonD48GHe3ldHf1iFomK4DHz0cmyBUOHdX4EETF0MSWY0MoTDYQACgUA8DPcRjUZHzGkBTp8+zdmzZ5k+fTrjx4+nrq4Oh8OBy+WiqakJh8OBWSfDs2/CJw/Dui1wsg4GnfDhIPwoF761ivDxM3jdbiKRCACqquLz+eJyA4RCIbxeL4qiDCvg9/tpb2+noKCA6upqCgsLaWlpwel0snLlSlatWkUiQEY+vPkpfHsmHL8MnYOwoRK2Ho8lmeLDlpWFXq+PbS7LZGRkkJqaGidgMpmw2WzodDogVgVRQKOq6ghp+vr6MBqNGI1GvhRd1yEpEVKH80WoKqoQyLKMJEnxMEqSFN9bVdXYNRyzCY52K47IwPZRcg7QKAHc+1Es/5qdXwWmSPdHQojdwJNAygN27AdOA5WSJA39G8bzofdUlo4qAAAAAElFTkSuQmCC"><span class="engine-name">価格.com</span></a></li></ul><div class="button common" style="display: none; background-image: url(&quot;chrome-extension://gipnlpdeieaidmmeaichnddnmjmcakoe/img/icon16.png&quot;);"></div></template></div></html>
