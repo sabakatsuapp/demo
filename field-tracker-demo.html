@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="ja"><head><meta charset="UTF-8">
 
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>サバ活 試作品｜ルート記録（戦術マップ注釈）</title>
+<title>サバ活 公開候補版 v13.1｜ルート記録（戦術マップ注釈）</title>
 <style>
   :root{
     --bg:#14211A; --card:#1E2E24; --line:#33473B;
@@ -188,12 +188,43 @@
   .shapeRow.show{display:flex;}
   .shapePick{border:1.5px solid var(--line); background:var(--card); color:var(--sub); border-radius:10px; padding:4px 8px; font-size:13px; font-weight:800; cursor:pointer; min-width:34px; min-height:34px; display:flex; align-items:center; justify-content:center; line-height:1;}
   .shapePick.on{border-color:var(--lime); color:var(--lime); background:rgba(184,230,46,.12);}
+
+  /* ── v12 公開候補版 追加 ── */
+  .todoGuide{display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
+  .todoGuide .tgStep{opacity:.5;}
+  .todoGuide .tgStep.cur{opacity:1; text-decoration:underline; text-underline-offset:3px;}
+  .todoGuide .tgStep.done{opacity:.5; text-decoration:line-through;}
+  .todoGuide .tgClose{margin-left:auto; cursor:pointer; color:var(--sub); font-weight:800; padding:2px 6px;}
+  .bsheetHandleWrap{padding:4px 0 2px; cursor:pointer;}
+  .bsheetB.collapsed .bsCollapsible{display:none !important;}
+  .modalBack{position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:60; display:flex; align-items:center; justify-content:center; padding:20px;}
+  .modalBox{background:#16241C; border:1.5px solid var(--line); border-radius:14px; padding:16px; max-width:340px; width:100%; box-shadow:0 8px 28px rgba(0,0,0,.6);}
+  .modalBox p{font-size:13px; line-height:1.7; color:var(--text); margin-bottom:12px; white-space:pre-line;}
+  .modalBtns{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;}
+  .modalBtns .btn.primary{border-color:var(--lime); color:var(--lime);}
+  .modalBtns .btn.danger{border-color:#FF5A47; color:#FF7A6A;}
+  .zoomBtnsB{position:absolute; bottom:8px; left:14px; z-index:10; display:flex; gap:6px;}
+  .zoomBtnsB button{background:rgba(13,14,18,.8); border:1.5px solid var(--line); color:var(--sub); border-radius:999px; min-width:44px; min-height:34px; font-size:12.5px; font-weight:800; cursor:pointer;}
+  .labelToggle{display:flex; align-items:center; gap:6px; font-size:11px; color:var(--sub); margin:4px 0 8px; cursor:pointer;}
+
+  /* ── v13 追加：ゆがみ補正・フィールド分析・再生 ── */
+  .modalBox{max-height:78vh; overflow-y:auto;}
+  .corrBack{position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:70; display:flex; align-items:center; justify-content:center; padding:14px;}
+  .corrBox{background:#16241C; border:1.5px solid var(--line); border-radius:14px; padding:14px; max-width:480px; width:100%;}
+  .corrTitle{font-size:13px; font-weight:800; color:var(--text); margin-bottom:4px;}
+  .corrSub{font-size:11px; color:var(--sub); line-height:1.6; margin-bottom:8px;}
+  .corrWrap{position:relative; touch-action:none; border-radius:10px; overflow:hidden; background:#000;}
+  .corrWrap canvas{display:block; width:100%; height:auto;}
+  .corrWrap svg{position:absolute; inset:0; width:100%; height:100%;}
+  .corrBtns{display:flex; gap:8px; justify-content:flex-end; margin-top:10px; flex-wrap:wrap;}
+  .corrBtns .btn.primary{border-color:var(--lime); color:var(--lime);}
+  #anaSvg{width:100%; display:block;}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1><small>サバ活 開発室 — 次期バージョン試作品 v11</small>ルート記録（戦術マップ注釈）</h1>
-  <p class="lead">試合後に「どう動いたか」をマップ写真に指でなぞって残す新機能の試作です。<b style="color:var(--text);">自分・味方・敵のルート、やられた/ヒット地点</b>を関係づけ、<b style="color:var(--lime);">マップからキル/デスを自動集計</b>します。まずは下の「第1戦」をタップ！</p>
+  <h1><small>サバ活 開発室 — 公開候補版 v13.1</small>ルート記録（戦術マップ注釈）</h1>
+  <p class="lead">試合後に「どう動いたか」をマップ写真に指でなぞって残す新機能の公開候補版です。<b style="color:var(--text);">移動ルートと、やられた/ヒットの位置</b>を関係づけ、<b style="color:var(--lime);">マップからキル/デスを自動集計</b>します。まずは下の「第1戦」をタップ！</p>
 
   <div class="steps">
     <span class="step cur" id="st1">① 1日の記録</span><span class="ar">▸</span>
@@ -247,6 +278,39 @@
             <div class="gSub"><span>セミ</span><span class="routeBadge" id="badge1" style="display:none;">ルートあり</span></div>
           </div>
           <span class="chev">›</span>
+        </div>
+
+        <p class="ddSecHead">フィールド分析</p>
+        <div class="sect" id="analysisSect">
+          <p class="grayNote" id="anaEmpty">ルートを保存すると、全ゲームを重ねた分析マップがここに表示されます</p>
+          <div id="anaBody" style="display:none;">
+            <div class="seg" style="display:inline-flex; margin-bottom:8px;">
+              <button class="btn on" data-ana="route">ルート</button>
+              <button class="btn" data-ana="kill">キル</button>
+              <button class="btn" data-ana="death">デス</button>
+            </div>
+            <svg id="anaSvg" style="border-radius:10px; border:1px solid var(--line); background:#10120F;" xmlns="http://www.w3.org/2000/svg"></svg>
+            <p class="grayNote" id="anaNote" style="margin-top:6px;"></p>
+          </div>
+        </div>
+
+        <p class="ddSecHead">集合反省会</p>
+        <div class="sect" id="meetSect">
+          <div class="seg" style="display:inline-flex; margin-bottom:8px;">
+            <button class="btn on" data-meet="0">第1戦</button>
+            <button class="btn" data-meet="1">第2戦</button>
+          </div>
+          <div class="companionRow" id="meetChips" style="margin-bottom:8px;"></div>
+          <svg id="meetSvg" style="width:100%; display:block; border-radius:10px; border:1px solid var(--line); background:#10120F;" xmlns="http://www.w3.org/2000/svg"></svg>
+          <p class="grayNote" id="meetNote" style="margin-top:6px;"></p>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
+            <button class="scBtn" id="meetSample">👥 サンプル仲間データ</button>
+            <button class="scBtn" id="meetImport">📥 仲間の記録を読み込む</button>
+            <button class="scBtn" id="meetExportJson">📤 記録ファイル書き出し</button>
+            <button class="scBtn" id="meetExportPng">🖼 透明PNG書き出し</button>
+          </div>
+          <p class="grayNote" style="margin-top:6px;">📤 で自分の記録をファイル化して仲間へ送る → 仲間が 📥 で読み込むと1枚のマップに人別の色で重なります（ファイル名がそのまま名前になります）。チップのタップで表示切替、✕で削除。</p>
+          <input type="file" id="meetFile" accept=".json,application/json" multiple style="display:none;">
         </div>
 
         <p class="ddSecHead">メモ</p>
@@ -303,10 +367,11 @@
         <!-- サブコントロール行（マップの上、通常フロー） -->
         <div class="bsheetSecond" id="bsheetSecond">
           <button class="scBtn" id="undoBtn">↩ 戻す</button>
-          <button class="scBtn" id="redoBtn">↪</button>
+          <button class="scBtn" id="redoBtn">↪ やり直す</button>
           <button class="scBtn" id="clearBtn">全消し</button>
+          <button class="scBtn" id="helpBtn" style="margin-left:auto;" title="ヘルプ">❓</button>
+          <button class="scBtn" id="changePhoto">🗺️ 変更</button>
           <button class="scBtn" id="lockBtn">🔒 ロック</button>
-          <button class="scBtn" id="changePhoto">📷 変更</button>
         </div>
 
         <!-- キャンバス（flex アイテム 2、flex:1 で残りを占有） -->
@@ -318,7 +383,6 @@
             </g>
             <g id="bgSample" style="display:none;"></g>
             <g id="routeLayer"></g>
-            <g id="startLayer"></g>
             <g id="liveLayer"></g>
             <g id="pinLayer"></g>
           </svg>
@@ -331,24 +395,39 @@
           <div class="editorStatB" id="editorStat">📷 マップを読み込む</div>
           <!-- ズームリセット（キャンバス内、右下） -->
           <button class="zoomResetB" id="zoomReset" style="display:none;">🔍 全体</button>
+          <!-- ズームボタン（屋外・手袋・片手でピンチが難しい人向け） -->
+          <div class="zoomBtnsB" id="zoomBtns" style="display:none;">
+            <button id="zoomInBtn">🔍＋</button>
+            <button id="zoomOutBtn">🔍−</button>
+          </div>
         </div>
 
         <!-- ボトムシート -->
         <div class="bsheetB">
-          <div class="bsheetHandle"></div>
-          <!-- ツール行（横スクロール） -->
-          <div class="toolrowB">
-            <button class="tc on" id="toolPen">✏️<span>自分ルート</span></button>
+          <div class="bsheetHandleWrap" id="bsheetToggle" title="タップでたたむ／ひらく"><div class="bsheetHandle"></div></div>
+          <!-- 初回3ステップガイド（保存まで導く。保存完了か✕で以後非表示） -->
+          <div class="todoGuide bsCollapsible" id="todoGuide" style="display:none;">
+            <span class="tgStep" id="tg1">① ルートをなぞる</span><span>▸</span>
+            <span class="tgStep" id="tg2">② 💀やられたを置く</span><span>▸</span>
+            <span class="tgStep" id="tg3">③ 右上の「保存」</span>
+            <span class="tgClose" id="tgClose">✕</span>
+          </div>
+          <!-- ツール行（かんたん表示：まずはMust Haveの3つ。「➕くわしく」で展開） -->
+          <div class="toolrowB bsCollapsible">
+            <button class="tc on" id="toolPen">✏️<span>移動経路</span></button>
             <button class="tc" id="toolHit">🎯<span>ヒット</span></button>
             <button class="tc" id="toolDeath">💀<span>やられた</span></button>
-            <button class="tc" id="toolFlag">🚩<span>フラッグ</span></button>
-            <button class="tc" id="toolFreemark">〰️<span>フリーマーク</span></button>
+            <button class="tc" id="moreTools">➕<span>くわしく</span></button>
+            <button class="tc" id="toolFlag" style="display:none;">🚩<span>フラッグ</span></button>
+            <button class="tc" id="toolFreemark" style="display:none;">〰️<span>追加情報</span></button>
           </div>
-          <!-- フリーマーク選択時：アイコン種別・カラーパレット -->
-          <div class="shapeRow" id="shapeRow"></div>
-          <div class="paletteRow" id="paletteRow"></div>
+          <!-- ツール説明バー -->
+          <div id="toolHintBar" class="bsCollapsible" style="display:none; font-size:10.5px; color:var(--sub); padding:4px 2px 2px; line-height:1.6;"></div>
+          <!-- 追加情報選択時：アイコン種別・カラーパレット -->
+          <div class="shapeRow bsCollapsible" id="shapeRow"></div>
+          <div class="paletteRow bsCollapsible" id="paletteRow"></div>
           <!-- 選択パネル（マーカー選択時に表示） -->
-          <div class="selpanel" id="selPanel" style="display:none;">
+          <div class="selpanel bsCollapsible" id="selPanel" style="display:none;">
             <div class="selRow1"><span class="seltitle" id="selTitle">選択中</span></div>
             <div class="selNote" id="selNote" style="display:none;"></div>
             <div class="selRow2" id="selRow2">
@@ -368,29 +447,34 @@
               </div>
             </div>
             <div class="selActions" id="selActions">
-              <button class="btn" id="selConnectBtn" style="display:none;">🔗 接続</button>
-              <button class="btn" id="selDisconnectBtn" style="display:none;">⛓ 接続解除</button>
+              <button class="btn" id="selConnectBtn" style="display:none;">🔗 キルに数える</button>
+              <button class="btn" id="selDisconnectBtn" style="display:none;">⛓ 集計から外す</button>
               <button class="btn" id="selDupBtn" style="display:none;">📋 複製</button>
               <button class="btn" id="selDel">🗑 削除</button>
             </div>
           </div>
           <!-- スライダー（自分ルートモード時） -->
-          <div class="sliders" id="sliders">
+          <div class="sliders bsCollapsible" id="sliders">
             <p>序盤 ⇔ 中盤 の境界（描いた全部の線を"描いた順"でつなげて配分）</p>
             <input type="range" id="s1" min="0" max="100" value="33">
             <p>中盤 ⇔ 終盤 の境界</p>
             <input type="range" id="s2" min="0" max="100" value="67">
             <p style="color:#6B7383;margin-top:2px;">スライダーを端まで動かすと1〜2色にできます</p>
+            <label class="labelToggle"><input type="checkbox" id="phaseLabelChk"> ルート上に「序・中・終」ラベルを表示（色が見分けにくいとき用）</label>
           </div>
-          <!-- 凡例・PNG・K/D 同一行 -->
+          <!-- 凡例・K/D 行 -->
           <div style="display:flex; align-items:center; justify-content:space-between; margin-top:5px; gap:6px;">
             <div class="bsheetLegend" style="flex:1; margin:0;">
               <span class="legPhase" id="leg1"><i class="dot" style="background:var(--p1)"></i>序盤 <b id="pct1"></b></span>
               <span class="legPhase" id="leg2"><i class="dot" style="background:var(--p2)"></i>中盤 <b id="pct2"></b></span>
               <span class="legPhase" id="leg3"><i class="dot" style="background:var(--p3)"></i>終盤 <b id="pct3"></b></span>
             </div>
-            <button class="scBtn" id="exportBtn" style="flex:none; padding:6px 10px; font-size:11px;">🖼 PNG</button>
             <div class="bsheetKD" id="kdRead" style="flex:1; margin:0;">キル&#160;<b><span id="kK">0</span></b>&#160;／&#160;デス&#160;<b><span id="kD">0</span></b></div>
+          </div>
+          <!-- 画像保存行 -->
+          <div class="bsCollapsible" style="text-align:center; margin-top:4px;">
+            <button class="scBtn" id="replayBtn" style="padding:6px 14px; font-size:11px;">▶ 再生</button>
+            <button class="scBtn" id="exportBtn" style="padding:6px 14px; font-size:11px;">🖼 画像に保存</button>
           </div>
         </div>
 
@@ -401,32 +485,55 @@
   </div>
 
   <div class="howto">
-    <h2>あそびかた（v11・全画面マップ＋ボトムシート）</h2>
-    <li><b>ツール選択</b>：画面下のボトムシートをスクロールして道具を選ぶ。✏️自分・💀やられた・🎯ヒット・🟨味方・🟧敵予想・🚩旗・🟦/🟪スタートがまとめて並ぶ。</li>
-    <li><b>✏️ 自分ルート / 🟨 味方ルート / 🟧 敵ルート予想</b>：指でなぞって線を描く。自分は<b>時間で色分け</b>（序盤青/中盤緑/終盤紫）、味方は<b>黄の線</b>、敵ルート予想は<b>オレンジの線</b>（敵の動き・射線・気づきなど）。復活ぶんは指を離してまた描けば増える</li>
-    <li><b>🟦味方スタート / 🟪敵スタート</b>：面取り四角を設置。吸着・紐づけ・メニューはなし。<b>各1個まで</b>（同じ色を置き直すと移動）。ドラッグで移動、<b>角の少し外側をドラッグでサイズ変更</b></li>
-    <li><b>💀 やられた</b>：<b>ルート終端（始点には吸着しない）</b>に近づけると吸着＝自死。<b>終端1個につき1個まで</b>。自死は<b>反省点をプルダウンで選択</b>（無ければその場で追記可）。<b>ルートから離して置くと「味方の被弾」＝半透明</b>で、同じ場所の多発はカウンタ（−／＋）で数える</li>
-    <li><b>🎯 ヒット</b>：ルート近くに置くと<b>赤い線で接続＝キル</b>。接続点には<b>塗りつぶし赤丸</b>（ヒットの半分の大きさ）が表示され、つかみ位置が一目で分かる。<b>マーカーを1秒長押し</b>すると操作対象が赤丸に切り替わり、そのままルート上の好きな位置へつかみ直せる（赤丸はルート内だけを移動）。単体で置けば未接続（半透明・キルに数えない）</li>
-    <li><b>ヒット⇄やられたの重なり回避</b>：直径の半分以上重なったら、直前に動かしていた方が、相手の中心が見える最短距離まで自動でよける</li>
-    <li><b>アイコンをタップ＝選択</b>：キャンバス下にメニューが出る。「選択中：アイコン＋名称」＋<b>数（−／＋）</b>や反省点プルダウンに加え、<b>🗑 削除</b>ボタンを常設（フラッグ・スタートも選択して削除できる）。未接続は<b>「キル/デスに数えません」</b>を明示</li>
-    <li><b>削除＝🗑ボタンが標準</b>／<b>ダブルタップは上級ショートカット</b>：💀🎯🚩とスタート共通。<b>削除後は「元に戻す」トースト</b>が出る</li>
-    <li><b>キル/デスを自動集計</b>：<b>キル＝ヒット（接続）のカウンタ合計</b>／<b>デス＝ルート接続のやられた数</b>。下の「この記録に反映」に出る</li>
-    <li><b>戻す/全消し</b>：↩戻す/↪やり直し。<b>全消しも「戻す」で復活</b>できる</li>
-    <li><b>拡大</b>：2本指でつまむと拡大・移動（最大5倍）。「🔍 全体」で戻る。<b>🔒 ロック</b>で編集固定。<b>🖼 画像として保存</b>でPNG書き出し</li>
+    <h2>あそびかた（v13・公開候補版）</h2>
+    <li><b>はじめかた</b>：マップ写真を読み込むと<b>ゆがみ補正</b>（緑の四隅を合わせて切り出し）→「① ルートをなぞる → ② 💀やられたを置く → ③ 保存」のガイドが出ます。まずはこの3ステップだけでOK。</li>
+    <li><b>ツール</b>：最初は<b>✏️移動経路・🎯ヒット・💀やられた</b>の3つだけ。<b>➕くわしく</b>を押すと 🚩フラッグ・〰️追加情報 が増える。</li>
+    <li><b>✏️ 移動経路</b>：指でなぞって線を描く。<b>時間で自動色分け</b>（序盤=青／中盤=緑／終盤=紫）。スライダーで境界を調整、復活ぶんは指を離してまた描けば増える。色が見分けにくい場合は<b>「序・中・終」ラベル表示</b>をONに。</li>
+    <li><b>🎯 ヒット</b>：キルした場所に置く。<b>ルートの近くへドラッグすると赤い線でつながり「キルに数えます」</b>になる。置いただけでは集計対象外（半透明）。<b>1秒長押し</b>で接続位置（赤丸）をルート上でつかみ直せる。複数撃破は選択して −／＋。</li>
+    <li><b>💀 やられた</b>：<b>ルートの終点に近づけると「自分のデス」</b>として数える（終点1つにつき1個・始点には付かない）。反省点をプルダウンで残せる（その場で追記も可）。ルートから離して置くと<b>「味方の被弾」メモ</b>（半透明・−／＋で数を記録）。</li>
+    <li><b>🚩 フラッグ / 〰️ 追加情報</b>：旗を取った/守った場所のメモと、矢印・図形・自由線での気づきメモ。形と色は下の一覧から選べる。</li>
+    <li><b>選択と削除</b>：アイコンをタップ＝選択でメニューが出る。<b>🗑 削除</b>のあとは<b>「元に戻す」トースト</b>で復活できる（ダブルタップは削除の上級ショートカット）。</li>
+    <li><b>キル/デスの自動集計</b>：キル＝つながったヒットの合計／デス＝終点のやられた数。保存時に<b>ゲームのK/Dへ反映するかを確認</b>する（勝手には書き換えない）。</li>
+    <li><b>戻す/やり直す/全消し</b>：<b>全消しも「↩ 戻す」で復活</b>できる。</li>
+    <li><b>拡大</b>：2本指ピンチ、または左下の<b>🔍＋/🔍−ボタン</b>（最大5倍）。「🔍 全体」で戻る。<b>🔒 ロック</b>で誤編集防止。</li>
+    <li><b>▶ 再生</b>：描いたルートを序盤→終盤へアニメーション再生。やられた/ヒットも起きた順にポップする。</li>
+    <li><b>🖼 画像に保存</b>：日付・フィールド名・K/D・凡例入りの<b>共有用フレーム付きPNG</b>を書き出し。</li>
+    <li><b>🗺 フィールド分析</b>：1日の記録画面に、保存した全ゲームの<b>ルート重ね表示／キル・デスのヒートマップ</b>が出る。</li>
+    <li><b>👥 集合反省会</b>：自分の記録を📤ファイルにして仲間へ送る→仲間が📥で読み込むと<b>人別の色で1枚のマップに重なる</b>。チップのタップで表示切替・✕で削除。🖼<b>透明PNG書き出し</b>にも対応（外部アプリでの重ね合わせ用）。まずは「👥 サンプル仲間データ」でお試しを。</li>
+    <li><b>❓ ヘルプ</b>：操作の要点をいつでも確認。3ステップガイドの再表示もここから。</li>
+    <li><b>記録の保存</b>：この端末のブラウザ内に自動保存（サーバー送信なし）。<b>リロードしても消えない</b>。</li>
+    <li><b>安心設計</b>：マップの変更・✕で閉じるなど<b>描いた内容が消える操作は必ず確認ダイアログ</b>が出る。ボトムシートは上のバーをタップでたためる。</li>
   </div>
 
   <div class="ask">
-    <h2>🙏 確かめてほしいこと（v10・かんたん/詳細モード＋削除ボタン）</h2>
-    <li><b>①</b> <b style="color:var(--gold);">かんたんモード（自分ルート＋やられただけ）</b>で「描く→やられた→保存」まで迷わず行ける？「詳しく記録する」への導線は分かる？</li>
-    <li><b>②</b> <b style="color:var(--gold);">選択メニューの🗑削除ボタン＋元に戻すトースト</b>、ダブルタップ削除より安心？</li>
-    <li><b>③</b> <b style="color:var(--gold);">「敵ルート予想」への改名</b>（旧フリーライン）はしっくりくる？他に良い呼び名は？</li>
-    <li><b>④</b> <b style="color:var(--gold);">ボタンの大きさ（44px相当）</b>、屋外・片手・疲れた状態で押しやすい？</li>
-    <li><b>⑤</b> 保存後サマリー・やられたの吸着・ヒットの長押し赤丸調整など、これまでの手触りで気になる所</li>
+    <h2>🙏 確かめてほしいこと（v13・追加機能）</h2>
+    <li><b>①</b> <b style="color:var(--gold);">写真のゆがみ補正</b>（四隅ドラッグ→切り出し）は直感的に使えた？</li>
+    <li><b>②</b> <b style="color:var(--gold);">フィールド分析（重ね表示・ヒートマップ）</b>は見たい情報になっている？他に見たい切り口は？</li>
+    <li><b>③</b> <b style="color:var(--gold);">▶ 再生</b>は振り返りに役立つ？もう一度見たくなる？</li>
+    <li><b>④</b> <b style="color:var(--gold);">共有用PNG</b>（フレーム・K/D・凡例入り）はそのままSNSに貼りたくなる見た目？</li>
+    <li><b>⑤</b> <b style="color:var(--gold);">リロードしても記録が残る</b>（端末内保存）ことへの安心感・気になる点</li>
+    <li><b>⑥</b> <b style="color:var(--gold);">集合反省会</b>（記録ファイルの送り合い・人別色の重ね表示）は実際の反省会で使えそう？ファイル共有の手間はどう？</li>
+  </div>
+
+  <div class="corrBack" id="corrBack" style="display:none;">
+    <div class="corrBox">
+      <p class="corrTitle">マップのゆがみ補正</p>
+      <p class="corrSub">緑の四隅をマップの角に合わせてドラッグ →「この範囲を切り出す」。斜めから撮った看板もまっすぐになります。</p>
+      <div class="corrWrap"><canvas id="corrCanvas"></canvas><svg id="corrSvg" xmlns="http://www.w3.org/2000/svg"></svg></div>
+      <div class="corrBtns">
+        <button class="btn" id="corrSkip">補正せずに使う</button>
+        <button class="btn primary" id="corrApply">この範囲を切り出す</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modalBack" id="modalBack" style="display:none;">
+    <div class="modalBox"><p id="modalMsg"></p><div class="modalBtns" id="modalBtns"></div></div>
   </div>
 
   <div class="toast" id="delToast" style="display:none;"><span id="toastMsg"></span><button class="btn" id="toastUndo">元に戻す</button></div>
 
-  <p class="foot">サバ活（サバゲー記録アプリ・開発中）の次期バージョン試作品 v11 です。<br>データは保存されません（リロードで消えます）。 © 63works</p>
+  <p class="foot">サバ活（サバゲー記録アプリ・開発中）の公開候補版 v13.1 です。<br>記録はこの端末のブラウザ内に保存されます（サーバーには送信されません）。 © 63works</p>
 </div>
 
 <script>
@@ -440,18 +547,23 @@
   const MATE_COLOR = '#FFE000';    // 味方ルート（黄）
   const HIT_LINE = '#FF6A6A';      // ヒット→ルートの接続線
   const DOT_COLOR = '#FF3B30';     // ヒット接続点（赤丸）
-  const SNAP = 0.13;               // やられたがルート端に吸着するしきい値（正規化距離）
-  const HIT_SNAP = 0.13;           // ヒットがルートに接続するしきい値（これより遠いと未接続＝単体置き）
+  const SNAP = 0.039;              // やられたがルート端に吸着するしきい値（正規化距離）
+  const HIT_SNAP = 0.039;          // ヒットがルートに接続するしきい値（これより遠いと未接続＝単体置き）
   const PIN_EMOJI = { death: '💀', hit: '🎯', flag: '🚩' };
   const PIN_FS = 38;                       // マーカー基準サイズ（編集中表示）
   const THUMB_FS = 58;                     // サムネイル表示サイズ
   const OVERLAP_R = (PIN_FS / 2) / W;      // ヒット⇄やられた の反発しきい値（直径の半分）
   const DOT_HIT_NORM = 0.035;              // 赤丸（接続点）のタップ判定半径
-  const START_COLOR = { ally: '#3D7BFF', enemy: '#B05CFF' };
-  const START_SIZE = PIN_FS * 1.5;         // スタートマーカー初期辺長
+  const TOOL_HINTS = {
+    pen:   '指でなぞって、試合中の移動ルートを記録します。序盤（青）・中盤（緑）・終盤（紫）の3色に自動で色分けされます。スライダーで色の境界を調整できます。',
+    hit:   'キルした場所に設置します。置いたあとルートの近くまでドラッグするとキルに数えます。複数撃破は選択後に ＋ ボタンで追加できます。',
+    death: 'やられた場所に設置します。ルートの終点に近づけると自分のデスに数えます。ルートから離して置くと「その付近でやられた味方」のメモになります。',
+    flag:  'フラッグを取った場所・守った場所をメモできます。何個でも設置でき、タップして選択・削除もできます。',
+    freemark: '矢印や図形で気づきをメモできます（敵の動き・射線・注意ポイントなど）。形と色は下から選べます。〰を選ぶと指でなぞって自由に線を描けます。',
+  };
   const REFLECTION_PRESETS = ['索敵不足', '射線を晒した', '無理に前進した', '味方と離れすぎた', '背後を取られた', 'その他'];
   const PALETTE = ['#FFFFFF','#FFE000','#FF9F43','#FF5A47','#FF80D0','#00C8FF','#3D7BFF','#B05CFF','#37C871','#B8E62E'];
-  const SHAPES = ['line','circle','cross','triangle','square','diamond','star','arrow8','arrowU','arrowD','arrowL','arrowR'];
+  const SHAPES = ['line','arrowU','arrowD','arrowL','arrowR','circle','cross','triangle','square','diamond','star','arrow8'];
   const SHAPE_LABELS = { line:'〰', circle:'●', cross:'✕', triangle:'▲', square:'■', diamond:'◆', star:'★', arrow8:'✳', arrowU:'↑', arrowD:'↓', arrowL:'←', arrowR:'→' };
   const FM_R = PIN_FS * 0.45;
   const THUMB_FM_R = THUMB_FS * 0.45;
@@ -459,6 +571,9 @@
     { title: '第1戦', res: 'WIN', type: '殲滅戦', kd: '2 / 1', resColor: '#44BB55' },
     { title: '第2戦', res: 'LOSE', type: '復活戦', kd: '3 / 2', resColor: '#FF5555' },
   ];
+  const FIELD_NAME = 'グリーンバレー';   // モックの固定データ（本実装では記録から取得する）
+  const DAY_LABEL = '2026/6/13';
+  const DAY_KEY = '20260613';
 
   const SAMPLE_H = 750;
   const SAMPLE_SVG =
@@ -501,7 +616,7 @@
   // ピンのドラッグ（タップ＝設置/選択・ドラッグ＝移動 を1ジェスチャで両立）
   let dragPin = null, dragExisting = false, dragMoved = false, dragStart = null;
   let dragIsDot = false;          // ドラッグ対象がヒットの接続点（赤丸）か
-  let dragIsStartCorner = false;  // ドラッグ対象がスタートのリサイズ角か
+  let dragHitSnapDisabled = false; // 既存の未接続ヒット移動中はルート自動接続を無効化
   let deathDragBlocked = null;    // Set<string> このドラッグ中は再吸着させないルート終端
   let deathDragPendingKey = null; // ドラッグ開始時に判定内にいた終端（一度外れるまで吸着しない）
   let selectedPin = null;     // タップで選択中のピン（マーカーメニューの対象）
@@ -514,6 +629,12 @@
   let freeMarkShape = 'line';     // フリーマークの形状（line=フリーライン描画、それ以外=マーク設置）
   let dotAnchor = null;           // 赤丸ドラッグ開始時の接続点座標（感度75%用）
   let dragFreeMoveEntry = null;   // freeline/freemark移動のundoエントリ（ドラッグ中は未コミット）
+  let dirty = false;              // エディタ内の未保存変更（✕で閉じるときの確認に使う）
+  let guideDone = false;          // 初回3ステップガイド（保存完了 or ✕以降は非表示）
+  let hintHitShown = false;       // ヒット設置時の「ドラッグでキルに数える」案内（1回だけ）
+  let hintDotShown = false;       // キル成立時の「長押しで赤丸調整」案内（1回だけ）
+  let showPhaseLabels = false;    // ルート上の「序・中・終」ラベル（色の見分けが難しい人向け）
+  let toolsExpanded = false;      // 「➕くわしく」でフラッグ・追加情報を展開したか
 
   // history の要素:
   //   { kind:'stroke', team:'self'|'enemy', pts:[{x,y}] }
@@ -522,12 +643,30 @@
   //     death !linked = 味方の被弾（半透明・count で多発を数える）
   //     hit  linked   = キル（ルートへ赤線接続・接続点ax,ayは赤丸で個別に調整可・count で複数撃破を数える）／!linked = 単体置き（キルに数えない）
   //     ※記録のK/D：キル=Σ(hit.linked.count)／デス=count(death.linked)
-  //   { kind:'start', team:'ally'|'enemy', x, y, size }  … スタート地点（吸着・紐づけ・メニューなし）
   const getSelfStrokes = () => work.history.filter((h) => h.kind === 'stroke').map((h) => h.pts);
   const getPins    = () => work.history.filter((h) => h.kind === 'pin');
-  const getStarts  = () => work.history.filter((h) => h.kind === 'start');
   const getFreeLines = () => work.history.filter((h) => h.kind === 'freeline');
   const getFreeMarks = () => work.history.filter((h) => h.kind === 'freemark');
+
+  // ── 記録の保存（この端末のブラウザ内。サーバー送信なし） ─────────
+  const LS_KEY = 'sabakatsu_ft_mock_v13';
+  function persist(){
+    try {
+      localStorage.setItem(LS_KEY, JSON.stringify({ routes, members, flags: { guideDone, hintHitShown, hintDotShown } }));
+    } catch (err) {
+      showToast('端末への保存に失敗しました（写真が大きすぎる可能性）');
+    }
+  }
+  function restore(){
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (!raw) return;
+      const d = JSON.parse(raw);
+      if (d && Array.isArray(d.routes)) d.routes.forEach((r, i) => { if (r && i < routes.length) routes[i] = r; });
+      if (d && Array.isArray(d.members)) members = d.members;
+      if (d && d.flags) { guideDone = !!d.flags.guideDone; hintHitShown = !!d.flags.hintHitShown; hintDotShown = !!d.flags.hintDotShown; }
+    } catch (err) {}
+  }
 
   // ── 画面遷移 ──────────────────────────────────────────
   function show(which){
@@ -542,32 +681,56 @@
   $('backToA').onclick = () => { renderDayScreen(); show('scrA'); };
   $('openEditor').onclick = openEditor;
   $('routeThumb').onclick = openEditor;
-  $('cancelEdit').onclick = () => { selectedPin = null; renderGameScreen(); show('scrB'); };
-  $('saveEdit').onclick = () => {
-    const strokes = getSelfStrokes(), pins = getPins(), starts = getStarts();
+  function closeEditor(){ selectedPin = null; renderGameScreen(); show('scrB'); }
+  // ✕＝未保存の変更を無断で捨てない（保存/破棄/キャンセルの確認）
+  $('cancelEdit').onclick = () => {
+    if (dirty) {
+      showModal('保存していない変更があります。', [
+        { label: '保存して閉じる', cls: 'primary', cb: doSave },
+        { label: '破棄して閉じる', cls: 'danger', cb: closeEditor },
+        { label: 'キャンセル', cb: null },
+      ]);
+      return;
+    }
+    closeEditor();
+  };
+  function doSave(){
+    const strokes = getSelfStrokes(), pins = getPins();
     const freeLines = getFreeLines(), freeMarks = getFreeMarks();
-    routes[curGame] = (strokes.length > 0 || pins.length > 0 || starts.length > 0 || freeLines.length > 0 || freeMarks.length > 0)
-      ? { strokes, pins, starts, freeLines, freeMarks, f1: work.f1, f2: work.f2, bg, viewH: H, href: photoHref }
+    const prev = routes[curGame];
+    routes[curGame] = (strokes.length > 0 || pins.length > 0 || freeLines.length > 0 || freeMarks.length > 0)
+      ? { strokes, pins, freeLines, freeMarks, f1: work.f1, f2: work.f2, bg, viewH: H, href: photoHref, useMapKD: !!(prev && prev.useMapKD) }
       : null;
-    selectedPin = null; renderGameScreen(); show('scrB');
-    if (routes[curGame]) {                       // v10：保存後サマリー（Strava型の「記録したら成果が見える」）
+    dirty = false; guideDone = true;             // 保存まで行けた＝ガイドの役目は終わり
+    persist();                                   // 端末内（localStorage）へ保存
+    closeEditor();
+    if (routes[curGame]) {                       // 保存後サマリー（記録したら成果が見える）
       const m = kdFromPins(pins);
       const unconn = pins.filter((p) => p.linked === false).length;
-      showToast('保存しました ／ マップ集計 キル' + m.k + ' デス' + m.d + (unconn ? ' ／ 未接続' + unconn + '件' : ''));
+      showToast('保存しました ／ マップ集計 キル' + m.k + ' デス' + m.d + (unconn ? ' ／ 集計対象外' + unconn + '件' : ''));
+      // マップ集計はゲームのK/D表示を無断で置き換えず、必ず確認してから反映する
+      if ((m.k > 0 || m.d > 0) && !routes[curGame].useMapKD) {
+        showModal('マップ集計（キル' + m.k + ' / デス' + m.d + '）を\nこのゲームのキル/デス表示に反映しますか？', [
+          { label: '反映する', cls: 'primary', cb: () => { routes[curGame].useMapKD = true; persist(); renderGameScreen(); } },
+          { label: '今はしない', cb: null },
+        ]);
+      }
     }
-  };
+  }
+  $('saveEdit').onclick = doSave;
 
   function openEditor(){
     const saved = routes[curGame];
-    work = { history: [], redo: [], f1: 1/3, f2: 2/3, clearedSnapshot: null };
+    work = { history: [], undo: [], redo: [], f1: 1/3, f2: 2/3 };
     curStroke = null; selectedPin = null; cancelDrag();
     if (saved) {
       saved.strokes.forEach((pts) => work.history.push({ kind: 'stroke', team: 'self', pts: pts.slice() }));
       saved.pins.forEach((p) => work.history.push({ kind: 'pin', type: p.type, x: p.x, y: p.y, linked: p.linked, ax: p.ax, ay: p.ay, endX: p.endX, endY: p.endY, count: p.count || 1, memo: p.memo }));
-      (saved.starts || []).forEach((s) => work.history.push({ kind: 'start', team: s.team, x: s.x, y: s.y, size: s.size }));
       (saved.freeLines || []).forEach((fl) => work.history.push({ kind: 'freeline', pts: fl.pts.map((q) => ({ x: q.x, y: q.y })), color: fl.color || '#FF9F43' }));
       (saved.freeMarks || []).forEach((fm) => work.history.push({ kind: 'freemark', x: fm.x, y: fm.y, shape: fm.shape || 'circle', color: fm.color || '#FF5A47' }));
       (saved.pins || []).forEach((p) => { if (p.memo && reflectionOptions.indexOf(p.memo) < 0) reflectionOptions.push(p.memo); });
+      // 詳細ツールで作ったマーカーがあるなら、かんたん表示のままだと編集できないので展開する
+      if (saved.pins.some((p) => p.type === 'flag') || (saved.freeLines || []).length > 0 || (saved.freeMarks || []).length > 0) expandTools();
       work.f1 = saved.f1; work.f2 = saved.f2;
       if (saved.bg === 'photo' && saved.href) { photoHref = saved.href; setBg('photo', saved.viewH); }
       else if (saved.bg === 'sample') setBg('sample', SAMPLE_H);
@@ -576,6 +739,8 @@
     $('s2').value = Math.round(work.f2 * 100);
     paintSliders();
     $('editorGameTitle').textContent = GAMES[curGame].title + ' ' + GAMES[curGame].type;
+    dirty = false;
+    if (saved) guideDone = true;   // 一度保存まで行けた人に3ステップガイドは不要
     setLocked(false);
     setTool('pen');
     render();
@@ -595,11 +760,20 @@
       $('photoImg').setAttribute('href', photoHref);
     }
     $('starter').style.display = which === 'none' ? '' : 'none';
+    $('zoomBtns').style.display = which === 'none' ? 'none' : 'flex';
   }
   function pickPhoto(){ $('filePick').click(); }
+  // 描いた内容がある状態での台紙変更は、無警告で消さず必ず確認する
+  function guardClear(next){
+    if (!work || work.history.length === 0) { next(); return; }
+    showModal('マップを変更すると、描いたルートやマーカーは消えます。\nよろしいですか？', [
+      { label: '変更する（描いた内容は消える）', cls: 'danger', cb: next },
+      { label: 'キャンセル', cb: null },
+    ]);
+  }
   $('loadPhotoBtn').onclick = pickPhoto;
-  $('changePhoto').onclick = pickPhoto;
-  $('useSampleBtn').onclick = () => { clearAll(); setBg('sample', SAMPLE_H); render(); };
+  $('changePhoto').onclick = () => guardClear(pickPhoto);
+  $('useSampleBtn').onclick = () => guardClear(() => { clearAll(); setBg('sample', SAMPLE_H); dirty = true; render(); });
   $('filePick').addEventListener('change', (e) => {
     const f = e.target.files && e.target.files[0];
     if (!f) return;
@@ -607,28 +781,331 @@
     reader.onload = () => {
       const img = new Image();
       img.onload = () => {
-        photoHref = reader.result;
-        const ratio = Math.min(2.4, Math.max(0.4, img.naturalHeight / img.naturalWidth));
-        clearAll();
-        setBg('photo', Math.round(W * ratio));
-        render();
+        // 大きすぎる写真は縮小して保持（端末内保存の容量節約・補正処理も軽くなる）
+        const maxW = 1400;
+        const sc = Math.min(1, maxW / img.naturalWidth);
+        const cw = Math.max(1, Math.round(img.naturalWidth * sc)), ch = Math.max(1, Math.round(img.naturalHeight * sc));
+        const cnv = document.createElement('canvas');
+        cnv.width = cw; cnv.height = ch;
+        cnv.getContext('2d').drawImage(img, 0, 0, cw, ch);
+        openCorrection(cnv.toDataURL('image/jpeg', 0.85));
       };
       img.src = reader.result;
     };
     reader.readAsDataURL(f);
     e.target.value = '';
   });
-  function clearAll(){ if (work) { work.history = []; work.redo = []; work.clearedSnapshot = null; curStroke = null; selectedPin = null; cancelDrag(); } }
+  function applyPhoto(href, iw, ih){
+    photoHref = href;
+    const ratio = Math.min(2.4, Math.max(0.4, ih / iw));
+    clearAll();
+    setBg('photo', Math.round(W * ratio));
+    dirty = true;
+    render();
+  }
+
+  // ── マップ写真のゆがみ補正（四隅指定→射影変換で切り出し） ──────
+  let corr = null;   // { w, h, href, pts:[左上,右上,右下,左下], drag }
+  function openCorrection(dataUrl){
+    const im = new Image();
+    im.onload = () => {
+      const cv = $('corrCanvas');
+      cv.width = im.naturalWidth; cv.height = im.naturalHeight;
+      cv.getContext('2d').drawImage(im, 0, 0);
+      const ix = im.naturalWidth * 0.08, iy = im.naturalHeight * 0.08;
+      corr = { w: im.naturalWidth, h: im.naturalHeight, href: dataUrl, drag: -1,
+        pts: [{ x: ix, y: iy }, { x: im.naturalWidth - ix, y: iy }, { x: im.naturalWidth - ix, y: im.naturalHeight - iy }, { x: ix, y: im.naturalHeight - iy }] };
+      $('corrSvg').setAttribute('viewBox', '0 0 ' + im.naturalWidth + ' ' + im.naturalHeight);
+      drawCorr();
+      $('corrBack').style.display = 'flex';
+    };
+    im.src = dataUrl;
+  }
+  function drawCorr(){
+    const p = corr.pts;
+    const hr = Math.max(corr.w, corr.h) * 0.035;
+    const quad = p.map((q) => q.x.toFixed(1) + ' ' + q.y.toFixed(1)).join(' L');
+    $('corrSvg').innerHTML =
+      '<path d="M0 0 H' + corr.w + ' V' + corr.h + ' H0 Z M' + quad + ' Z" fill="rgba(0,0,0,.55)" fill-rule="evenodd"/>' +
+      '<path d="M' + quad + ' Z" fill="none" stroke="#B8E62E" stroke-width="' + (hr * 0.16).toFixed(1) + '"/>' +
+      p.map((q) => '<circle cx="' + q.x.toFixed(1) + '" cy="' + q.y.toFixed(1) + '" r="' + hr.toFixed(1) + '" fill="rgba(184,230,46,.25)" stroke="#B8E62E" stroke-width="' + (hr * 0.16).toFixed(1) + '"/>').join('');
+  }
+  function corrPos(e){
+    const r = $('corrSvg').getBoundingClientRect();
+    return { x: (e.clientX - r.left) / r.width * corr.w, y: (e.clientY - r.top) / r.height * corr.h };
+  }
+  $('corrSvg').addEventListener('pointerdown', (e) => {
+    if (!corr) return;
+    e.preventDefault();
+    const p = corrPos(e);
+    let best = -1, bd = Infinity;
+    corr.pts.forEach((q, i) => { const d = Math.hypot(q.x - p.x, q.y - p.y); if (d < bd) { bd = d; best = i; } });
+    if (bd < Math.max(corr.w, corr.h) * 0.09) { corr.drag = best; $('corrSvg').setPointerCapture(e.pointerId); }
+  });
+  $('corrSvg').addEventListener('pointermove', (e) => {
+    if (!corr || corr.drag < 0) return;
+    e.preventDefault();
+    const p = corrPos(e);
+    corr.pts[corr.drag] = { x: Math.min(corr.w, Math.max(0, p.x)), y: Math.min(corr.h, Math.max(0, p.y)) };
+    drawCorr();
+  });
+  ['pointerup', 'pointercancel'].forEach((ev) => $('corrSvg').addEventListener(ev, () => { if (corr) corr.drag = -1; }));
+  function closeCorr(){ $('corrBack').style.display = 'none'; corr = null; }
+  $('corrSkip').onclick = () => { const c = corr; closeCorr(); applyPhoto(c.href, c.w, c.h); };
+  $('corrApply').onclick = () => {
+    const c = corr;
+    const res = warpPhoto($('corrCanvas'), c.pts);
+    closeCorr();
+    if (res) applyPhoto(res.href, res.w, res.h);
+    else applyPhoto(c.href, c.w, c.h);   // 補正に失敗したら元写真のまま使う
+  };
+  // dst（出力矩形の四隅）→ src（写真上の四隅）の射影変換行列を解く（h9=1 とした8元連立）
+  function solveHomography(dst, src){
+    const A = [], b = [];
+    for (let i = 0; i < 4; i++) {
+      const x = dst[i].x, y = dst[i].y, X = src[i].x, Y = src[i].y;
+      A.push([x, y, 1, 0, 0, 0, -X * x, -X * y]); b.push(X);
+      A.push([0, 0, 0, x, y, 1, -Y * x, -Y * y]); b.push(Y);
+    }
+    for (let c = 0; c < 8; c++) {
+      let piv = c;
+      for (let r = c + 1; r < 8; r++) if (Math.abs(A[r][c]) > Math.abs(A[piv][c])) piv = r;
+      const tA = A[c]; A[c] = A[piv]; A[piv] = tA;
+      const tb = b[c]; b[c] = b[piv]; b[piv] = tb;
+      const d = A[c][c];
+      if (Math.abs(d) < 1e-12) return null;
+      for (let k = c; k < 8; k++) A[c][k] /= d;
+      b[c] /= d;
+      for (let r = 0; r < 8; r++) {
+        if (r === c || !A[r][c]) continue;
+        const f = A[r][c];
+        for (let k = c; k < 8; k++) A[r][k] -= f * A[c][k];
+        b[r] -= f * b[c];
+      }
+    }
+    return b;
+  }
+  function warpPhoto(srcCanvas, quad){
+    const sw = srcCanvas.width, sh = srcCanvas.height;
+    const sdata = srcCanvas.getContext('2d').getImageData(0, 0, sw, sh).data;
+    const eLen = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+    let ow = Math.round(Math.max(eLen(quad[0], quad[1]), eLen(quad[3], quad[2])));
+    let oh = Math.round(Math.max(eLen(quad[0], quad[3]), eLen(quad[1], quad[2])));
+    if (ow < 8 || oh < 8) return null;
+    if (ow > 1400) { oh = Math.round(oh * 1400 / ow); ow = 1400; }
+    oh = Math.round(ow * Math.min(2.4, Math.max(0.4, oh / ow)));
+    const hm = solveHomography([{ x: 0, y: 0 }, { x: ow, y: 0 }, { x: ow, y: oh }, { x: 0, y: oh }], quad);
+    if (!hm) return null;
+    const out = document.createElement('canvas');
+    out.width = ow; out.height = oh;
+    const octx = out.getContext('2d');
+    const odata = octx.createImageData(ow, oh);
+    const od = odata.data;
+    for (let y = 0; y < oh; y++) {
+      for (let x = 0; x < ow; x++) {
+        const wv = hm[6] * x + hm[7] * y + 1;
+        const sx = Math.round((hm[0] * x + hm[1] * y + hm[2]) / wv);
+        const sy = Math.round((hm[3] * x + hm[4] * y + hm[5]) / wv);
+        const oi = (y * ow + x) * 4;
+        if (sx >= 0 && sx < sw && sy >= 0 && sy < sh) {
+          const si = (sy * sw + sx) * 4;
+          od[oi] = sdata[si]; od[oi + 1] = sdata[si + 1]; od[oi + 2] = sdata[si + 2]; od[oi + 3] = 255;
+        } else { od[oi + 3] = 255; }   // 指定範囲の外は黒
+      }
+    }
+    octx.putImageData(odata, 0, 0);
+    return { href: out.toDataURL('image/jpeg', 0.85), w: ow, h: oh };
+  }
+  function clearAll(){ if (work) { work.history = []; work.undo = []; work.redo = []; curStroke = null; selectedPin = null; cancelDrag(); } }
 
   // ── 画面A/B ──────────────────────────────────────────
-  function renderDayScreen(){ routes.forEach((r, i) => { $('badge' + i).style.display = r ? '' : 'none'; }); }
+  function renderDayScreen(){ routes.forEach((r, i) => { $('badge' + i).style.display = r ? '' : 'none'; }); renderAnalysis(); renderMeeting(); }
+
+  // ── フィールド分析（画面A）：保存済み全ゲームの重ね表示・ヒートマップ ──
+  let anaMode = 'route';
+  const ANA_COLORS = [['#B8E62E', '黄緑'], ['#FFD700', '金'], ['#00C8FF', '水色'], ['#FF80D0', 'ピンク']];
+  function renderAnalysis(){
+    const saved = [];
+    routes.forEach((r, i) => { if (r) saved.push({ r, i }); });
+    const has = saved.length > 0;
+    $('anaEmpty').style.display = has ? 'none' : '';
+    $('anaBody').style.display = has ? '' : 'none';
+    if (!has) return;
+    const base = saved[0].r, h = base.viewH;   // 台紙は最初に保存したゲームのマップを使う
+    let bgHtml = '';
+    if (base.bg === 'photo' && base.href) bgHtml = '<rect width="' + W + '" height="' + h + '" fill="#10120F"/><image href="' + base.href + '" width="' + W + '" height="' + h + '" preserveAspectRatio="xMidYMid meet"/>';
+    else if (base.bg === 'sample') bgHtml = SAMPLE_SVG;
+    let overlay = '', note = '';
+    if (anaMode === 'route') {
+      saved.forEach(({ r }) => r.strokes.filter((s) => s.length >= 2).forEach((s) => { overlay += pathHtml(pathStr(s, h), 'rgba(0,0,0,.5)', 15); }));
+      saved.forEach(({ r }, k) => r.strokes.filter((s) => s.length >= 2).forEach((s) => { overlay += pathHtml(pathStr(s, h), ANA_COLORS[k % ANA_COLORS.length][0], 8); }));
+      note = saved.map(({ i }, k) => GAMES[i].title + '＝' + ANA_COLORS[k % ANA_COLORS.length][1]).join(' ／ ') + '（同じマップの記録を重ねています）';
+    } else {
+      const isKill = anaMode === 'kill';
+      const col = isKill ? '#37C871' : '#FF5A47';
+      const type = isKill ? 'hit' : 'death';
+      overlay += '<rect width="' + W + '" height="' + h + '" fill="rgba(10,20,15,.45)"/>';
+      saved.forEach(({ r }) => (r.pins || []).forEach((p) => {
+        if (p.type !== type || !p.linked) return;
+        const n = Math.min(5, p.count || 1);   // 同一地点の多重は5個ぶんまで濃くする
+        for (let k = 0; k < n; k++) overlay += '<circle cx="' + (p.x * W).toFixed(1) + '" cy="' + (p.y * h).toFixed(1) + '" r="80" fill="url(#heatG)"/>';
+      }));
+      bgHtml = '<defs><radialGradient id="heatG"><stop offset="0%" stop-color="' + col + '" stop-opacity=".5"/><stop offset="100%" stop-color="' + col + '" stop-opacity="0"/></radialGradient></defs>' + bgHtml;
+      note = (isKill ? 'キルした場所' : 'やられた場所') + 'ほど濃く光ります（保存済み全ゲームの合算）';
+    }
+    $('anaSvg').setAttribute('viewBox', '0 0 ' + W + ' ' + h);
+    $('anaSvg').innerHTML = bgHtml + overlay;
+    $('anaNote').textContent = note;
+  }
+  document.querySelectorAll('#analysisSect [data-ana]').forEach((b) => {
+    b.onclick = () => {
+      anaMode = b.dataset.ana;
+      document.querySelectorAll('#analysisSect [data-ana]').forEach((x) => x.classList.toggle('on', x === b));
+      renderAnalysis();
+    };
+  });
+
+  // ── 集合反省会（画面A）：仲間の記録を人別の色で1枚のマップに重ねる ──
+  let meetGame = 0;
+  let meetOwnVisible = true;
+  let members = [];   // { name, color, game, strokes, pins, visible, sample? }
+  const MEET_SELF_COLOR = '#B8E62E';
+  const MEET_COLORS = ['#FFD700', '#00C8FF', '#FF80D0', '#FF9F43', '#B05CFF', '#FF5A47'];
+  function renderMeeting(){
+    const own = routes[meetGame];
+    const list = members.filter((mb) => mb.game === meetGame);
+    // 台紙：自分の記録のマップ。未保存ならサンプルマップに重ねる
+    const h = (own && own.viewH) || SAMPLE_H;
+    let bgHtml;
+    if (own && own.bg === 'photo' && own.href) bgHtml = '<rect width="' + W + '" height="' + h + '" fill="#10120F"/><image href="' + own.href + '" width="' + W + '" height="' + h + '" preserveAspectRatio="xMidYMid meet"/>';
+    else bgHtml = SAMPLE_SVG;
+    let overlay = '';
+    // 反省会は「誰がどこにいたか」が主役なので、ルートは人別の単色で塗り分ける
+    const drawPerson = (strokes, pins, color) => {
+      (strokes || []).filter((s) => s.length >= 2).forEach((s) => {
+        overlay += pathHtml(pathStr(s, h), 'rgba(0,0,0,.5)', 13) + pathHtml(pathStr(s, h), color, 7);
+      });
+      (pins || []).forEach((p) => {
+        if (p.type !== 'death' && p.type !== 'hit') return;
+        const cx = p.x * W, cy = p.y * h;
+        overlay += '<circle cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" r="24" fill="rgba(13,14,18,.6)" stroke="' + color + '" stroke-width="5"/>' +
+          '<text x="' + cx.toFixed(1) + '" y="' + (cy + 11).toFixed(1) + '" font-size="30" text-anchor="middle">' + PIN_EMOJI[p.type] + '</text>';
+      });
+    };
+    if (own && meetOwnVisible) drawPerson(own.strokes, own.pins, MEET_SELF_COLOR);
+    list.forEach((mb) => { if (mb.visible) drawPerson(mb.strokes, mb.pins, mb.color); });
+    $('meetSvg').setAttribute('viewBox', '0 0 ' + W + ' ' + h);
+    $('meetSvg').innerHTML = bgHtml + overlay;
+    $('meetNote').textContent = '「あの時どこにいた？」を人別の色で振り返り' + (own ? '' : '（自分の記録が未保存のためサンプルマップに表示中）');
+    renderMeetChips(list);
+  }
+  function renderMeetChips(list){
+    const wrap = $('meetChips');
+    const chip = (name, color, on, idx) =>
+      '<span class="companionChip" data-mem="' + idx + '" style="cursor:pointer; border-color:' + color + ';' + (on ? '' : ' opacity:.4;') + '">' +
+      '<span style="width:10px; height:10px; border-radius:50%; background:' + color + '; display:inline-block;"></span>' + name +
+      (idx >= 0 ? '<span data-del="' + idx + '" style="margin-left:2px; color:var(--sub); font-weight:800; padding:0 3px;">✕</span>' : '') + '</span>';
+    let html = chip('自分', MEET_SELF_COLOR, meetOwnVisible, -1);
+    members.forEach((mb, i) => { if (mb.game === meetGame) html += chip(mb.name, mb.color, mb.visible, i); });
+    wrap.innerHTML = html;
+    wrap.querySelectorAll('[data-mem]').forEach((el) => {
+      el.onclick = (e) => {
+        const del = e.target.getAttribute && e.target.getAttribute('data-del');
+        if (del != null) { members.splice(+del, 1); persist(); renderMeeting(); return; }
+        const i = +el.getAttribute('data-mem');
+        if (i < 0) meetOwnVisible = !meetOwnVisible;
+        else members[i].visible = !members[i].visible;
+        persist(); renderMeeting();
+      };
+    });
+  }
+  document.querySelectorAll('#meetSect [data-meet]').forEach((b) => {
+    b.onclick = () => {
+      meetGame = +b.dataset.meet;
+      document.querySelectorAll('#meetSect [data-meet]').forEach((x) => x.classList.toggle('on', x === b));
+      renderMeeting();
+    };
+  });
+  // 📥 仲間の記録（JSONファイル）を読み込む。ファイル名＝メンバー名
+  $('meetImport').onclick = () => $('meetFile').click();
+  $('meetFile').addEventListener('change', (e) => {
+    const files = Array.prototype.slice.call(e.target.files || []);
+    files.forEach((f) => {
+      const rd = new FileReader();
+      rd.onload = () => {
+        try {
+          const d = JSON.parse(rd.result);
+          if (!d || d.app !== 'sabakatsu-ft-share' || !Array.isArray(d.strokes)) throw new Error('bad');
+          const name = f.name.replace(/\.json$/i, '') || '仲間';
+          const used = members.filter((mb) => mb.game === meetGame).length;
+          members.push({ name, color: MEET_COLORS[used % MEET_COLORS.length], game: (typeof d.game === 'number' ? d.game : meetGame), strokes: d.strokes, pins: d.pins || [], visible: true });
+          persist(); renderMeeting();
+          showToast(name + ' さんの記録を重ねました');
+        } catch (err) { showToast(f.name + ' は読み込めませんでした（記録ファイルではない可能性）'); }
+      };
+      rd.readAsText(f);
+    });
+    e.target.value = '';
+  });
+  // 📤 自分の記録を共有用JSONに書き出す（ルートとキル/デスのみ・写真は含めない）
+  $('meetExportJson').onclick = () => {
+    const own = routes[meetGame];
+    if (!own) { showToast('先にこの試合のルートを保存してください'); return; }
+    const data = { app: 'sabakatsu-ft-share', ver: 1, game: meetGame, viewH: own.viewH, strokes: own.strokes, pins: own.pins };
+    const a = document.createElement('a');
+    a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+    a.download = 'sabakatsu_' + DAY_KEY + '_' + GAMES[meetGame].title + '_記録.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    showToast('ファイル名を自分の名前に変えて仲間に送ってください');
+  };
+  // 🖼 透明PNG：背景なしで自分の描画だけを書き出す（他アプリでの重ね合わせ用の布石）
+  $('meetExportPng').onclick = () => {
+    const own = routes[meetGame];
+    if (!own) { showToast('先にこの試合のルートを保存してください'); return; }
+    const h = own.viewH;
+    const svgStr = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + h + '">'
+      + coloredRoute(own.strokes, own.f1, own.f2, h, 13, 7.5)
+      + hitLinesHtml(own.pins, h)
+      + pinsHtml(own.pins, h, PIN_FS)
+      + hitDotsHtml(own.pins, h, PIN_FS)
+      + '</svg>';
+    const img = new Image();
+    img.onload = () => {
+      const scale = 1400 / W;
+      const cnv = document.createElement('canvas');
+      cnv.width = Math.round(W * scale); cnv.height = Math.round(h * scale);
+      cnv.getContext('2d').drawImage(img, 0, 0, cnv.width, cnv.height);   // 背景を塗らない＝透明のまま
+      const a = document.createElement('a');
+      a.href = cnv.toDataURL('image/png'); a.download = 'sabakatsu_' + DAY_KEY + '_' + GAMES[meetGame].title + '_透過.png';
+      document.body.appendChild(a); a.click(); a.remove();
+    };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
+  };
+  // 👥 サンプル仲間データ（架空）：ファイルを用意しなくても重ね表示を試せる
+  $('meetSample').onclick = () => {
+    if (members.some((mb) => mb.game === meetGame && mb.sample)) { showToast('サンプル仲間データは読み込み済みです'); return; }
+    const mk = (pts) => [pts.map(([x, y]) => ({ x, y }))];
+    const add = (name, strokes, pins) => {
+      const used = members.filter((mb) => mb.game === meetGame).length;
+      members.push({ name, sample: true, color: MEET_COLORS[used % MEET_COLORS.length], game: meetGame, visible: true, strokes, pins });
+    };
+    add('タロウ',
+      mk([[0.08, 0.42], [0.2, 0.44], [0.3, 0.52], [0.42, 0.6], [0.5, 0.72], [0.62, 0.76]]),
+      [{ type: 'hit', x: 0.45, y: 0.5, linked: true, count: 1 }, { type: 'death', x: 0.62, y: 0.76, linked: true }]);
+    add('ケン',
+      mk([[0.08, 0.38], [0.16, 0.28], [0.28, 0.2], [0.4, 0.16], [0.55, 0.18], [0.66, 0.24]]),
+      [{ type: 'hit', x: 0.6, y: 0.3, linked: true, count: 2 }, { type: 'death', x: 0.66, y: 0.24, linked: true }]);
+    persist(); renderMeeting();
+    showToast('タロウ・ケンの記録を重ねました（架空データ）');
+  };
   function renderGameScreen(){
     const g = GAMES[curGame];
     $('gameTitle').textContent = g.title;
     $('gRes').textContent = g.res; $('gRes').style.color = g.resColor;
     $('gType').textContent = g.type;
     const r = routes[curGame];
-    if (r) { const m = kdFromPins(r.pins); $('gKD').textContent = m.k + ' / ' + m.d + '（マップ集計）'; }
+    // マップ集計は「反映する」を選んだゲームだけ表示（手入力のK/Dを勝手に置き換えない）
+    if (r && r.useMapKD) { const m = kdFromPins(r.pins); $('gKD').textContent = m.k + ' / ' + m.d + '（マップ集計）'; }
     else { $('gKD').textContent = g.kd; }
     $('routeEmpty').style.display = r ? 'none' : '';
     $('routeThumb').style.display = r ? '' : 'none';
@@ -644,7 +1121,6 @@
       + coloredRoute(r.strokes, r.f1, r.f2, h, 22, 14)
       + freeLinesHtml(r.freeLines || [], h)
       + startGoalMarkers(r.strokes, h, 12)
-      + startsHtml(r.starts || [], h)
       + hitLinesHtml(r.pins, h)
       + pinsHtml(r.pins, h, THUMB_FS)
       + hitDotsHtml(r.pins, h, THUMB_FS)
@@ -662,6 +1138,14 @@
   }
   function applyView(){ svg.setAttribute('viewBox', view.x + ' ' + view.y + ' ' + view.w + ' ' + view.h); const z = $('zoomReset'); if (z) z.style.display = (view.w < W - 0.5) ? '' : 'none'; }
   function resetView(){ view = { x: 0, y: 0, w: W, h: H }; applyView(); }
+  // ボタンでも拡大縮小できるようにする（屋外・手袋・片手ではピンチが難しい）
+  function zoomBy(factor){
+    const cx = view.x + view.w / 2, cy = view.y + view.h / 2;
+    const k = Math.min(MAXZOOM, Math.max(1, (W / view.w) * factor));
+    const nw = W / k, nh = H / k;
+    view = { x: Math.min(W - nw, Math.max(0, cx - nw / 2)), y: Math.min(H - nh, Math.max(0, cy - nh / 2)), w: nw, h: nh };
+    applyView();
+  }
   function twoFinger(){ const p = [...pointers.values()]; return { dist: Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y), mid: { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 } }; }
   function applyPinch(prev, cur){
     const r = svg.getBoundingClientRect();
@@ -694,11 +1178,12 @@
   const phaseAt = (cum, b1, b2) => (cum < b1 ? 0 : cum < b2 ? 1 : 2);
 
   // 複数ストロークを「描いた順の合計長」で3分割して色分け（線間のすき間は長さに数えない）
-  function coloredRoute(strokes, f1, f2, h, underW, lineW){
+  function coloredRoute(strokes, f1, f2, h, underW, lineW, totalOverride){
     const valid = strokes.filter((s) => s.length >= 2);
     if (valid.length === 0) return '';
     let total = 0;
     valid.forEach((s) => { for (let i = 1; i < s.length; i++) total += dist(s[i - 1], s[i]); });
+    if (totalOverride) total = totalOverride;   // リプレイ中：色の境界を全体長で固定したまま部分描画する
     if (total === 0) return '';
     const b1 = total * f1, b2 = total * f2;
     let html = '';
@@ -726,6 +1211,32 @@
       '<circle cx="' + p.x * W + '" cy="' + p.y * h + '" r="' + r + '" fill="' + fill + '" stroke="#fff" stroke-width="' + (r / 4) + '"/>' +
       '<text x="' + p.x * W + '" y="' + (p.y * h + r / 2.6) + '" font-size="' + r + '" font-weight="bold" fill="#fff" text-anchor="middle">' + label + '</text>';
     return mk(first, C[0], 'S') + mk(last, C[2], 'G');
+  }
+  // 「序・中・終」の文字ラベル（色だけに頼らないための表示オプション）。各フェーズの中間地点に置く
+  function phaseLabelsHtml(strokes, f1, f2, h){
+    const valid = strokes.filter((s) => s.length >= 2);
+    if (valid.length === 0) return '';
+    let total = 0;
+    valid.forEach((s) => { for (let i = 1; i < s.length; i++) total += dist(s[i - 1], s[i]); });
+    if (total === 0) return '';
+    const names = ['序', '中', '終'];
+    const spans = [[0, f1], [f1, f2], [f2, 1]];
+    const targets = spans.map(([a, b]) => (b - a > 0.005 ? total * (a + b) / 2 : null));
+    const found = [null, null, null];
+    let cum = 0;
+    valid.forEach((s) => {
+      for (let i = 1; i < s.length; i++) {
+        const nc = cum + dist(s[i - 1], s[i]);
+        targets.forEach((t, ph) => { if (t != null && !found[ph] && cum <= t && t <= nc) found[ph] = s[i]; });
+        cum = nc;
+      }
+    });
+    return found.map((p, ph) => {
+      if (!p) return '';
+      const cx = p.x * W, cy = p.y * h;
+      return '<circle cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" r="16" fill="rgba(13,14,18,.85)" stroke="' + C[ph] + '" stroke-width="3"/>' +
+        '<text x="' + cx.toFixed(1) + '" y="' + (cy + 6).toFixed(1) + '" font-size="17" font-weight="bold" fill="#fff" text-anchor="middle">' + names[ph] + '</text>';
+    }).join('');
   }
 
   // ── マーカー⇄ルート ───────────────────────────────────
@@ -773,7 +1284,25 @@
     while (n < 8 && getPins().some((q) => Math.abs(q.x - nx) < 0.018 && Math.abs(q.y - ny) < 0.018)) { nx += 0.024; ny -= 0.018; n++; }
     return { x: Math.min(1, Math.max(0, nx)), y: Math.min(1, Math.max(0, ny)) };
   }
-  function commitAdd(pin){ work.history.push(pin); work.redo = []; work.clearedSnapshot = null; return pin; }
+  function captureSnap(o){
+    if (o.kind === 'freeline') return { pts: o.pts.map(q => ({x:q.x,y:q.y})) };
+    if (o.kind === 'freemark') return { x:o.x, y:o.y };
+    return { x:o.x, y:o.y, linked:o.linked, ax:o.ax, ay:o.ay, endX:o.endX, endY:o.endY };
+  }
+  function applySnap(o, s){
+    if (s.pts !== undefined){ o.pts = s.pts.map(q => ({x:q.x,y:q.y})); return; }
+    o.x = s.x; o.y = s.y;
+    if ('linked' in s){ o.linked = s.linked; o.ax = s.ax; o.ay = s.ay; o.endX = s.endX; o.endY = s.endY; }
+  }
+  function pushUndo(undoFn, redoFn){ work.undo.push({ undo: undoFn, redo: redoFn }); work.redo = []; dirty = true; }
+  function commitAdd(pin){
+    work.history.push(pin);
+    pushUndo(
+      () => { const i = work.history.indexOf(pin); if (i >= 0) work.history.splice(i, 1); },
+      () => work.history.push(pin)
+    );
+    return pin;
+  }
   function placeDeath(p){
     const end = nearestEnd(p, null);
     if (end && end.d < SNAP) {           // ルート終端に吸着＝自死（終端1個につき1個まで・始点には吸着しない）
@@ -791,16 +1320,13 @@
     const n = nudge(p.x, p.y);
     const pin = commitAdd({ kind: 'pin', type: 'hit', x: n.x, y: n.y, linked: false, count: 1 });
     resolveOverlap(pin);
+    // 「置いただけではキルに数えない」仕様は初見では分からないので、最初の1回だけ案内する
+    if (!hintHitShown) { hintHitShown = true; persist(); showToast('ルートの近くまでドラッグするとキルとして数えます'); }
     return pin;
   }
   function placeFlag(p){ const n = nudge(p.x, p.y); return commitAdd({ kind: 'pin', type: 'flag', x: n.x, y: n.y, linked: true }); }
   function placeFreemark(p){
     return commitAdd({ kind:'freemark', x:Math.min(1,Math.max(0,p.x)), y:Math.min(1,Math.max(0,p.y)), shape:freeMarkShape, color:freeDrawColor });
-  }
-  function placeStart(p, team){
-    const existing = getStarts().find((s) => s.team === team);
-    if (existing) { existing.x = p.x; existing.y = p.y; return existing; } // #2: 味方/敵スタートは各1個まで。既にあれば移動（再配置）
-    return commitAdd({ kind: 'start', team, x: p.x, y: p.y, size: START_SIZE });
   }
 
   // ── やられたドラッグ中の吸着ヒステリシス（#12） ─────────────
@@ -867,8 +1393,10 @@
     const i = work.history.indexOf(item);
     if (i < 0) return;
     work.history.splice(i, 1);
-    work.history.push({ kind: 'delete', item, idx: i });
-    work.redo = []; work.clearedSnapshot = null;
+    pushUndo(
+      () => work.history.splice(Math.min(i, work.history.length), 0, item),
+      () => { const j = work.history.indexOf(item); if (j >= 0) work.history.splice(j, 1); }
+    );
     if (selectedPin === item) selectedPin = null;
     showToast('削除しました');
     render();
@@ -883,52 +1411,26 @@
     toastTimer = setTimeout(() => { t.style.display = 'none'; t._undo = null; }, undoFn ? 4500 : 2600);
   }
   $('toastUndo').onclick = () => { const t = $('delToast'); if (t._undo) t._undo(); t.style.display = 'none'; t._undo = null; };
+  // 汎用確認モーダル：描いた内容が消える操作・K/D反映は無断で実行しない
+  function showModal(msg, buttons){
+    $('modalMsg').textContent = msg;
+    const wrap = $('modalBtns');
+    wrap.innerHTML = '';
+    buttons.forEach((b) => {
+      const btn = document.createElement('button');
+      btn.className = 'btn' + (b.cls ? ' ' + b.cls : '');
+      btn.textContent = b.label;
+      btn.onclick = () => { $('modalBack').style.display = 'none'; if (b.cb) b.cb(); };
+      wrap.appendChild(btn);
+    });
+    $('modalBack').style.display = 'flex';
+  }
+  $('modalBack').onclick = (e) => { if (e.target === $('modalBack')) $('modalBack').style.display = 'none'; };
   function cancelDrag(){
-    dragPin = null; dragExisting = false; dragMoved = false; dragIsDot = false; dragIsStartCorner = false;
+    dragPin = null; dragExisting = false; dragMoved = false; dragIsDot = false;
     deathDragBlocked = null; deathDragPendingKey = null; dotAnchor = null; dragFreeMoveEntry = null;
+    dragHitSnapDisabled = false;
     clearLongPress();
-  }
-
-  // ── スタートマーカー（#13：吸着・紐づけ・メニューなし） ─────
-  function toPx(p){ return { x: p.x * W, y: p.y * H }; }
-  function pxDist(a, b){ return Math.hypot(a.x - b.x, a.y - b.y); }
-  function startAt(p){
-    const starts = getStarts(), pPx = toPx(p);
-    for (let i = starts.length - 1; i >= 0; i--) {
-      const s = starts[i], cPx = toPx(s), half = s.size / 2 - 10;
-      if (Math.abs(pPx.x - cPx.x) <= half && Math.abs(pPx.y - cPx.y) <= half) return s;
-    }
-    return null;
-  }
-  function startCornerAt(p){
-    const starts = getStarts(), pPx = toPx(p);
-    for (let i = starts.length - 1; i >= 0; i--) {
-      const s = starts[i], cPx = toPx(s);
-      const handleDist = (s.size / 2) * Math.SQRT2 + 10, handleR = 16;
-      for (const sx of [-1, 1]) for (const sy of [-1, 1]) {
-        const hx = cPx.x + (sx / Math.SQRT2) * handleDist, hy = cPx.y + (sy / Math.SQRT2) * handleDist;
-        if (pxDist(pPx, { x: hx, y: hy }) < handleR) return s;
-      }
-    }
-    return null;
-  }
-  function chamferSquarePath(cx, cy, size, chamfer){
-    const hf = size / 2, c = Math.min(chamfer, hf);
-    const pts = [
-      [cx - hf + c, cy - hf], [cx + hf - c, cy - hf],
-      [cx + hf, cy - hf + c], [cx + hf, cy + hf - c],
-      [cx + hf - c, cy + hf], [cx - hf + c, cy + hf],
-      [cx - hf, cy + hf - c], [cx - hf, cy - hf + c],
-    ];
-    return 'M' + pts.map((q) => q[0].toFixed(1) + ' ' + q[1].toFixed(1)).join(' L') + ' Z';
-  }
-  function startsHtml(starts, h){
-    return starts.map((s) => {
-      const cx = s.x * W, cy = s.y * h, chamfer = s.size * 0.24;
-      const d = chamferSquarePath(cx, cy, s.size, chamfer);
-      const sel = (s === selectedPin) ? '<path d="' + d + '" fill="rgba(184,230,46,.12)" stroke="#B8E62E" stroke-width="6"/>' : '';
-      return sel + '<path d="' + d + '" fill="none" stroke="' + START_COLOR[s.team] + '" stroke-width="3.5"/>';
-    }).join('');
   }
 
   function freeLineHtml(strokes, h, w, color){
@@ -939,9 +1441,9 @@
     return lines.filter((l) => l.pts && l.pts.length >= 2).map((l) => {
       const ps = pathStr(l.pts, h);
       const outline = sel === l
-        ? pathHtml(ps, 'rgba(184,230,46,0.65)', 13)
-        : pathHtml(ps, 'rgba(0,0,0,.42)', 11);
-      return outline + pathHtml(ps, l.color, 6);
+        ? pathHtml(ps, 'rgba(184,230,46,0.65)', 4)
+        : pathHtml(ps, 'rgba(0,0,0,.42)', 4);
+      return outline + pathHtml(ps, l.color, 2);
     }).join('');
   }
   // フリーマーク単体SVG
@@ -1008,7 +1510,7 @@
   }
   // フリーラインのタップ判定（線分上の最近接点との距離）
   function freeLineAt(p){
-    const thr=0.038, lines=getFreeLines();
+    const thr=0.019, lines=getFreeLines();
     for(let i=lines.length-1;i>=0;i--){
       const fl=lines[i]; if(!fl.pts||fl.pts.length<2) continue;
       for(let j=1;j<fl.pts.length;j++){
@@ -1077,6 +1579,7 @@
     if (dotHit) {
       selectedPin = dotHit; dragPin = dotHit; dragExisting = true; dragMoved = false; dragStart = p; dragIsDot = true;
       dotAnchor = { x: dotHit.ax, y: dotHit.ay };
+      dragFreeMoveEntry = { target: dotHit, oldSnap: captureSnap(dotHit) };
       render(); return;
     }
 
@@ -1085,7 +1588,7 @@
     if (fmHit) {
       if (isDoubleTap(fmHit)) { cancelDrag(); performDelete(fmHit); return; }
       selectedPin = fmHit; dragPin = fmHit; dragExisting = true; dragMoved = false; dragStart = p; dragIsDot = false;
-      dragFreeMoveEntry = { kind: 'move', target: fmHit, oldX: fmHit.x, oldY: fmHit.y, newX: null, newY: null };
+      dragFreeMoveEntry = { target: fmHit, oldSnap: captureSnap(fmHit) };
       render(); return;
     }
 
@@ -1094,8 +1597,9 @@
     if (ex) {
       if (isDoubleTap(ex)) { cancelDrag(); performDelete(ex); return; }
       selectedPin = ex; dragPin = ex; dragExisting = true; dragMoved = false; dragStart = p; dragIsDot = false;
+      dragFreeMoveEntry = { target: ex, oldSnap: captureSnap(ex) };
       if (ex.type === 'death') { deathDragBlocked = new Set(); deathDragPendingKey = (!ex.linked && nearestRawEndKey(p)) || null; }
-      if (ex.type === 'hit') armHitLongPress(ex);
+      if (ex.type === 'hit') { armHitLongPress(ex); dragHitSnapDisabled = !ex.linked; }
       render(); return;
     }
 
@@ -1104,20 +1608,7 @@
     if (flHit) {
       if (isDoubleTap(flHit)) { cancelDrag(); performDelete(flHit); return; }
       selectedPin = flHit; dragPin = flHit; dragExisting = true; dragMoved = false; dragStart = p; dragIsDot = false;
-      dragFreeMoveEntry = { kind: 'move', target: flHit, oldPts: flHit.pts.map(q => ({x:q.x, y:q.y})), newPts: null };
-      render(); return;
-    }
-
-    // 5) スタートマーカー：角の少し外側＝リサイズ／本体＝移動
-    const stCorner = startCornerAt(p);
-    if (stCorner) {
-      dragPin = stCorner; dragExisting = true; dragMoved = false; dragStart = p; dragIsStartCorner = true;
-      render(); return;
-    }
-    const stBody = startAt(p);
-    if (stBody) {
-      if (isDoubleTap(stBody)) { cancelDrag(); performDelete(stBody); return; }
-      selectedPin = stBody; dragPin = stBody; dragExisting = true; dragMoved = false; dragStart = p; dragIsStartCorner = false;
+      dragFreeMoveEntry = { target: flHit, oldSnap: captureSnap(flHit) };
       render(); return;
     }
 
@@ -1125,12 +1616,16 @@
     if (mode === 'freemark') {
       const nm = placeFreemark(p);
       dragPin = nm; dragExisting = false; dragMoved = false; dragStart = p; dragIsDot = false; selectedPin = nm;
+      dragFreeMoveEntry = { target: nm, oldSnap: captureSnap(nm) };
       render(); return;
     }
     // ピンモード（death/hit/flag）：空きをタップ＝新規設置
     if (mode === 'death') { deathDragBlocked = new Set(); deathDragPendingKey = null; }
     const np = (mode === 'death') ? placeDeath(p) : (mode === 'hit') ? placeHit(p) : placeFlag(p);
-    if (np) { dragPin = np; dragExisting = false; dragMoved = false; dragStart = p; dragIsDot = false; selectedPin = np; }
+    if (np) {
+      dragPin = np; dragExisting = false; dragMoved = false; dragStart = p; dragIsDot = false; selectedPin = np;
+      dragFreeMoveEntry = { target: np, oldSnap: captureSnap(np) };
+    }
     render();
   });
   // ヒットの1秒長押し→赤丸つかみ替え（#7）。ルート最寄り点に接続点を出し、そのままルート上をドラッグ調整できる状態にする。
@@ -1167,11 +1662,7 @@
       const p = toNorm(e);
       if (dist(p, dragStart) > 0.015) { dragMoved = true; if (!dragIsDot) clearLongPress(); }
 
-      if (dragIsStartCorner) {
-        const cPx = toPx(dragPin), pPx = toPx(p);
-        const dpx = pxDist(cPx, pPx);
-        dragPin.size = Math.max(28, Math.min(400, dpx * Math.SQRT2));
-      } else if (dragIsDot) {
+      if (dragIsDot) {
         // 感度75%：指の総移動量の75%を仮想位置に適用してルート投影
         const delta75 = { x: (p.x - dragStart.x) * 0.75, y: (p.y - dragStart.y) * 0.75 };
         const vp = { x: dotAnchor.x + delta75.x, y: dotAnchor.y + delta75.y };
@@ -1179,20 +1670,23 @@
         if (proj) { dragPin.ax = proj.x; dragPin.ay = proj.y; }
       } else if (dragPin.kind === 'freeline') {
         const dx = p.x - dragStart.x, dy = p.y - dragStart.y;
-        dragPin.pts = dragPin.pts.map((q) => ({ x: Math.min(1, Math.max(0, q.x + dx)), y: Math.min(1, Math.max(0, q.y + dy)) }));
+        dragPin.pts = dragPin.pts.map((q) => ({ x: q.x + dx, y: q.y + dy }));
         dragStart = p;
       } else if (dragPin.kind === 'freemark') {
         dragPin.x = Math.min(1, Math.max(0, p.x));
         dragPin.y = Math.min(1, Math.max(0, p.y));
-      } else if (dragPin.kind === 'start') {
-        dragPin.x = p.x; dragPin.y = p.y;
       } else if (dragPin.type === 'death') {
         handleDeathDragMove(dragPin, p);
         resolveOverlap(dragPin);
       } else if (dragPin.type === 'hit') {
         dragPin.x = p.x; dragPin.y = p.y;
-        if (!dragPin.linked) {
-          const a = projectToRoute(p); if (a && a.d < HIT_SNAP) { dragPin.ax = a.x; dragPin.ay = a.y; dragPin.linked = true; }
+        if (!dragPin.linked && !dragHitSnapDisabled) {
+          const a = projectToRoute(p);
+          if (a && a.d < HIT_SNAP) {
+            dragPin.ax = a.x; dragPin.ay = a.y; dragPin.linked = true;
+            // 1秒長押しの赤丸調整はUIから見えないジェスチャなので、キル成立の瞬間に1回だけ教える
+            if (!hintDotShown) { hintDotShown = true; persist(); showToast('💡 マーカーを1秒長押しすると接続位置（赤丸）を調整できます'); }
+          }
         }
         resolveOverlap(dragPin);
       } else if (dragPin.type === 'flag') {
@@ -1212,10 +1706,18 @@
         const fl = { kind: 'freeline', pts: curStroke, color: freeDrawColor };
         work.history.push(fl);
         selectedPin = fl;
+        pushUndo(
+          () => { const i = work.history.indexOf(fl); if (i >= 0) work.history.splice(i, 1); if (selectedPin === fl) selectedPin = null; },
+          () => work.history.push(fl)
+        );
       } else {
-        work.history.push({ kind: 'stroke', team: 'self', pts: curStroke });
+        const s = { kind: 'stroke', team: 'self', pts: curStroke };
+        work.history.push(s);
+        pushUndo(
+          () => { const i = work.history.indexOf(s); if (i >= 0) work.history.splice(i, 1); },
+          () => work.history.push(s)
+        );
       }
-      work.redo = []; work.clearedSnapshot = null;
     }
     drawing = false; curStroke = null;
     render();
@@ -1226,10 +1728,26 @@
     if (pointers.size < 2) pinchPrev = null;
     if (dragPin) {                       // ドラッグ終了（タップ＝選択のまま・移動はリアルタイム反映済み）
       if (dragMoved && dragFreeMoveEntry) {
-        const me = dragFreeMoveEntry;
-        if (me.target.kind === 'freeline') me.newPts = me.target.pts.map(q => ({x:q.x, y:q.y}));
-        else { me.newX = me.target.x; me.newY = me.target.y; }
-        work.history.push(me); work.redo = [];
+        const { target, oldSnap } = dragFreeMoveEntry;
+        if (target.kind === 'freeline') {
+          const xs = target.pts.map(q => q.x), ys = target.pts.map(q => q.y);
+          const offScreen = Math.max(...xs) < 0 || Math.min(...xs) > 1 || Math.max(...ys) < 0 || Math.min(...ys) > 1;
+          if (offScreen) {
+            const i = work.history.indexOf(target);
+            if (i >= 0) work.history.splice(i, 1);
+            if (selectedPin === target) selectedPin = null;
+            pushUndo(
+              () => { applySnap(target, oldSnap); work.history.splice(Math.min(i, work.history.length), 0, target); },
+              () => { const j = work.history.indexOf(target); if (j >= 0) work.history.splice(j, 1); }
+            );
+          } else {
+            const newSnap = captureSnap(target);
+            pushUndo(() => applySnap(target, oldSnap), () => applySnap(target, newSnap));
+          }
+        } else {
+          const newSnap = captureSnap(target);
+          pushUndo(() => applySnap(target, oldSnap), () => applySnap(target, newSnap));
+        }
       }
       cancelDrag();
       render();                          // 指を離した直後にメニュー表示（#10,#11。renderSel が idle 状態で表示する）
@@ -1244,11 +1762,12 @@
   // ── 描画 ─────────────────────────────────────────────
   function render(){
     if (!work) return;
-    const self = getSelfStrokes(), pins = getPins(), starts = getStarts();
+    if (replay) { cancelAnimationFrame(replay.raf); replay = null; $('replayBtn').textContent = '▶ 再生'; }  // 何か操作したら再生は止める
+    const self = getSelfStrokes(), pins = getPins();
     const freeLines = getFreeLines(), freeMarks = getFreeMarks();
     $('routeLayer').innerHTML = coloredRoute(self, work.f1, work.f2, H, 13, 7.5)
-      + freeLinesHtml(freeLines, H, selectedPin) + startGoalMarkers(self, H, 15) + hitLinesHtml(pins, H);
-    $('startLayer').innerHTML = startsHtml(starts, H);
+      + freeLinesHtml(freeLines, H, selectedPin) + startGoalMarkers(self, H, 15)
+      + (showPhaseLabels ? phaseLabelsHtml(self, work.f1, work.f2, H) : '') + hitLinesHtml(pins, H);
     const liveCol = (mode === 'freemark' && freeMarkShape === 'line') ? freeDrawColor : 'rgba(255,255,255,.92)';
     $('liveLayer').innerHTML = (drawing && curStroke && curStroke.length >= 2)
       ? pathHtml(pathStr(curStroke, H), liveCol, 7, '14 10') : '';
@@ -1257,7 +1776,7 @@
     const hasRoute = self.length > 0;
     const statEl = $('editorStat');
     if (bg === 'none') { statEl.textContent = '📷 マップを読み込む'; }
-    else if (!hasRoute && pins.length === 0 && starts.length === 0 && freeLines.length === 0 && freeMarks.length === 0) { statEl.textContent = '📝 ルートを指でなぞる'; }
+    else if (!hasRoute && pins.length === 0 && freeLines.length === 0 && freeMarks.length === 0) { statEl.textContent = '📝 ルートを指でなぞる'; }
     else { const { k: sk, d: sd } = kdFromPins(pins); statEl.textContent = '🗺 キル ' + sk + ' / デス ' + sd; }
     const showSliders = hasRoute && mode === 'pen';
     $('sliders').classList.toggle('show', showSliders);
@@ -1275,11 +1794,30 @@
     $('pct1').textContent = Math.round(a1 * 100) + '%';
     $('pct2').textContent = Math.round(a2 * 100) + '%';
     $('pct3').textContent = Math.round(a3 * 100) + '%';
-    $('undoBtn').disabled = locked || (work.history.length === 0 && !work.clearedSnapshot);
+    $('undoBtn').disabled = locked || work.undo.length === 0;
     $('redoBtn').disabled = locked || work.redo.length === 0;
+    const isSelActive = selectedPin && work.history.indexOf(selectedPin) >= 0;
+    const showToolHint = ['pen','hit','death','flag','freemark'].includes(mode) && !showSliders && !isSelActive;
+    $('toolHintBar').style.display = showToolHint ? '' : 'none';
+    if (showToolHint) $('toolHintBar').textContent = TOOL_HINTS[mode];
     updateKD();
     renderSel();
+    renderGuide(self, pins);
   }
+
+  // ── 初回3ステップガイド：ルート→やられた→保存 の順に促す ─────
+  function renderGuide(self, pins){
+    const g = $('todoGuide');
+    if (guideDone || bg === 'none') { g.style.display = 'none'; return; }
+    const s1 = self.length > 0;
+    const s2 = pins.some((p) => p.type === 'death' && p.linked);
+    g.style.display = 'flex';
+    const set = (id, done, cur) => { const el = $(id); el.classList.toggle('done', done); el.classList.toggle('cur', cur); };
+    set('tg1', s1, !s1);
+    set('tg2', s2, s1 && !s2);
+    set('tg3', false, s1 && s2);
+  }
+  $('tgClose').onclick = () => { guideDone = true; persist(); render(); };
 
   // ── K/D 集計（記録に反映する値） ────────────────────────
   function kdFromPins(pins){
@@ -1325,18 +1863,16 @@
     let label = '', note = '';
 
     if (p.kind === 'freeline') {
-      label = '〰 フリーライン';
+      label = '〰 追加情報（線）';
       $('selDupBtn').style.display = '';
     } else if (p.kind === 'freemark') {
-      label = '◉ フリーマーク';
+      label = (SHAPE_LABELS[p.shape] || '◉') + ' 追加情報（マーク）';
       $('selDupBtn').style.display = '';
-    } else if (p.kind === 'start') {
-      label = p.team === 'ally' ? '🟦 味方スタート' : '🟪 敵スタート';
     } else if (p.type === 'flag') {
       label = '🚩 フラッグ';
     } else if (p.type === 'hit') {
-      label = '🎯 ヒット' + (p.linked ? '（接続）' : '（未接続）');
-      if (!p.linked) note = '未接続：キルに反映されません';
+      label = '🎯 ヒット' + (p.linked ? '（キルに数えます）' : '（集計対象外）');
+      if (!p.linked) note = 'ルートの近くへドラッグ（または🔗）でキルに数えます';
       $('selRow2').style.display = 'flex';
       $('selCount').style.display = 'flex';
       $('selNum').textContent = p.count || 1;
@@ -1349,8 +1885,8 @@
       $('selRow2').appendChild(hideBtn);
       $('selRow2').appendChild(delBtn);
     } else if (p.type === 'death') {
-      label = p.linked ? '💀 やられた（自死）' : '💀 やられた（味方）';
-      if (!p.linked) note = '未接続：自分のデスには数えません';
+      label = p.linked ? '💀 やられた（自分のデス）' : '💀 やられた（味方の被弾）';
+      if (!p.linked) note = '味方の記録：自分のデスには数えません';
       if (!p.linked) { $('selRow2').style.display = 'flex'; $('selCount').style.display = 'flex'; $('selNum').textContent = p.count || 1; $('selRow2').appendChild(delBtn); delBtn.style.marginLeft = 'auto'; }
       if (p.linked) { $('selMemoWrap').style.display = 'flex'; buildMemoSelect(p); $('selMemoAddRow').style.display = 'none'; $('selMemoWrap').appendChild(delBtn); }
     }
@@ -1360,18 +1896,25 @@
     $('selNote').style.display = note ? '' : 'none';
     panel.style.display = 'flex';
   }
-  $('selPlus').onclick = () => { if (selectedPin) { selectedPin.count = (selectedPin.count || 1) + 1; render(); } };
-  $('selMinus').onclick = () => { if (selectedPin && (selectedPin.count || 1) > 1) { selectedPin.count = (selectedPin.count || 1) - 1; render(); } };
+  $('selPlus').onclick = () => { if (selectedPin) { selectedPin.count = (selectedPin.count || 1) + 1; dirty = true; render(); } };
+  $('selMinus').onclick = () => { if (selectedPin && (selectedPin.count || 1) > 1) { selectedPin.count = (selectedPin.count || 1) - 1; dirty = true; render(); } };
   $('selDel').onclick = () => { if (selectedPin) performDelete(selectedPin); };
   $('selConnectBtn').onclick = () => {
     const p = selectedPin; if (!p || p.type !== 'hit') return;
-    const proj = projectToRoute(p);
-    if (proj) { p.ax = proj.x; p.ay = proj.y; p.linked = true; }
+    const oldSnap = captureSnap(p);
+    const proj = projectToRoute(p); if (!proj) return;
+    p.ax = proj.x; p.ay = proj.y; p.linked = true;
+    const newSnap = captureSnap(p);
+    pushUndo(() => applySnap(p, oldSnap), () => applySnap(p, newSnap));
+    if (!hintDotShown) { hintDotShown = true; persist(); showToast('💡 マーカーを1秒長押しすると接続位置（赤丸）を調整できます'); }
     render();
   };
   $('selDisconnectBtn').onclick = () => {
     const p = selectedPin; if (!p || p.type !== 'hit') return;
+    const oldSnap = captureSnap(p);
     p.linked = false; delete p.ax; delete p.ay;
+    const newSnap = captureSnap(p);
+    pushUndo(() => applySnap(p, oldSnap), () => applySnap(p, newSnap));
     render();
   };
   $('selDupBtn').onclick = () => {
@@ -1382,7 +1925,14 @@
     } else if (orig.kind === 'freemark') {
       dup = { kind:'freemark', x: Math.min(1, orig.x + 0.025), y: Math.min(1, orig.y + 0.025), shape: orig.shape, color: orig.color };
     }
-    if (dup) { work.history.push(dup); work.redo = []; selectedPin = dup; render(); }
+    if (dup) {
+      work.history.push(dup);
+      pushUndo(
+        () => { const i = work.history.indexOf(dup); if (i >= 0) work.history.splice(i, 1); if (selectedPin === dup) selectedPin = null; },
+        () => work.history.push(dup)
+      );
+      selectedPin = dup; render();
+    }
   };
   $('selMemoSelect').addEventListener('change', () => {
     const p = selectedPin, v = $('selMemoSelect').value;
@@ -1395,6 +1945,7 @@
       return;
     }
     p.memo = v;
+    dirty = true;
     $('selMemoAddRow').style.display = 'none';
     render();
   });
@@ -1404,6 +1955,7 @@
     if (!v) return;
     if (reflectionOptions.indexOf(v) < 0) reflectionOptions.push(v);
     p.memo = v;
+    dirty = true;
     $('selMemoAddRow').style.display = 'none';
     render();
   };
@@ -1416,8 +1968,9 @@
     input.style.background = 'linear-gradient(to right, ' + leftColor + ' 0%, ' + leftColor + ' ' + v + '%, ' + rightColor + ' ' + v + '%, ' + rightColor + ' 100%)';
   }
   function paintSliders(){ paintSlider($('s1'), C[0], C[1]); paintSlider($('s2'), C[1], C[2]); }
-  $('s1').addEventListener('input', () => { if (+$('s1').value > +$('s2').value) $('s2').value = $('s1').value; work.f1 = +$('s1').value / 100; work.f2 = +$('s2').value / 100; paintSliders(); render(); });
-  $('s2').addEventListener('input', () => { if (+$('s2').value < +$('s1').value) $('s1').value = $('s2').value; work.f1 = +$('s1').value / 100; work.f2 = +$('s2').value / 100; paintSliders(); render(); });
+  $('s1').addEventListener('input', () => { if (+$('s1').value > +$('s2').value) $('s2').value = $('s1').value; work.f1 = +$('s1').value / 100; work.f2 = +$('s2').value / 100; dirty = true; paintSliders(); render(); });
+  $('s2').addEventListener('input', () => { if (+$('s2').value < +$('s1').value) $('s1').value = $('s2').value; work.f1 = +$('s1').value / 100; work.f2 = +$('s2').value / 100; dirty = true; paintSliders(); render(); });
+  $('phaseLabelChk').addEventListener('change', () => { showPhaseLabels = $('phaseLabelChk').checked; render(); });
 
   // ── ツール ────────────────────────────────────────────
   const TOOL_MAP = { pen:'toolPen', hit:'toolHit', death:'toolDeath', flag:'toolFlag', freemark:'toolFreemark' };
@@ -1431,53 +1984,155 @@
   $('toolDeath').onclick = () => setTool('death');
   $('toolFlag').onclick = () => setTool('flag');
   $('toolFreemark').onclick = () => setTool('freemark');
+  // かんたん表示：まずは Must Have の3ツールだけ。「➕くわしく」でフラッグ・追加情報を展開
+  function expandTools(){
+    toolsExpanded = true;
+    $('toolFlag').style.display = '';
+    $('toolFreemark').style.display = '';
+    $('moreTools').style.display = 'none';
+  }
+  $('moreTools').onclick = expandTools;
+  // ボトムシート折りたたみ：ハンドルをタップでツール類を隠してマップを見やすく
+  $('bsheetToggle').onclick = () => { document.querySelector('.bsheetB').classList.toggle('collapsed'); };
+  // ❓ヘルプ：操作の要点をいつでも確認できる（3ステップガイドの再表示もここから）
+  $('helpBtn').onclick = () => {
+    showModal(
+      '✏️ 移動経路：指でなぞる（序盤=青／中盤=緑／終盤=紫）\n' +
+      '🎯 ヒット：置いてルートの近くへドラッグ＝キルに数える。1秒長押しで接続位置を調整\n' +
+      '💀 やられた：ルートの終点に近づける＝自分のデス。離すと味方の被弾メモ\n' +
+      '➕ くわしく：🚩フラッグ・〰️追加情報を追加表示\n' +
+      '🔍 拡大：2本指ピンチ or 左下の🔍ボタン\n' +
+      '🗑 削除：タップで選択→削除。「元に戻す」で復活\n' +
+      '▶ 再生：描いたルートをアニメーションで振り返り',
+      [
+        { label: '📖 3ステップガイドを再表示', cb: () => { guideDone = false; persist(); render(); } },
+        { label: '閉じる', cls: 'primary', cb: null },
+      ]
+    );
+  };
   $('undoBtn').onclick = () => {
-    if (work.history.length === 0 && work.clearedSnapshot) { work.history = work.clearedSnapshot; work.clearedSnapshot = null; selectedPin = null; render(); return; }
-    if (!work.history.length) return;
-    const last = work.history[work.history.length - 1];
-    if (last.kind === 'move') {
-      if (last.target.kind === 'freeline') last.target.pts = last.oldPts.map(q => ({x:q.x, y:q.y}));
-      else { last.target.x = last.oldX; last.target.y = last.oldY; }
-      work.redo.push(work.history.pop()); selectedPin = null; render();
-    } else if (last.kind === 'delete') {
-      work.history.pop();
-      work.history.splice(Math.min(last.idx, work.history.length), 0, last.item);
-      work.redo.push(last);
-      selectedPin = null; render();
-    } else {
-      work.redo.push(work.history.pop()); selectedPin = null; render();
-    }
+    if (!work || !work.undo.length) return;
+    const cmd = work.undo.pop();
+    cmd.undo();
+    work.redo.push(cmd);
+    selectedPin = null; render();
   };
   $('redoBtn').onclick = () => {
-    if (!work.redo.length) return;
-    const last = work.redo[work.redo.length - 1];
-    if (last.kind === 'move') {
-      if (last.target.kind === 'freeline') last.target.pts = last.newPts.map(q => ({x:q.x, y:q.y}));
-      else { last.target.x = last.newX; last.target.y = last.newY; }
-      work.history.push(work.redo.pop()); render();
-    } else if (last.kind === 'delete') {
-      work.redo.pop();
-      const i = work.history.indexOf(last.item);
-      if (i >= 0) work.history.splice(i, 1);
-      work.history.push(last);
-      selectedPin = null; render();
-    } else {
-      work.history.push(work.redo.pop()); render();
-    }
+    if (!work || !work.redo.length) return;
+    const cmd = work.redo.pop();
+    cmd.redo();
+    work.undo.push(cmd);
+    render();
   };
-  $('clearBtn').onclick = () => { if (work.history.length) { work.clearedSnapshot = work.history.slice(); work.history = []; work.redo = []; selectedPin = null; render(); } }; // 「戻す」で復活できる
+  $('clearBtn').onclick = () => {
+    if (!work || !work.history.length) return;
+    const snapshot = work.history.slice();
+    work.history = [];
+    work.undo.push({ undo: () => { work.history = snapshot.slice(); }, redo: () => { work.history = []; } });
+    work.redo = [];
+    dirty = true;
+    selectedPin = null; render();
+  };
   $('zoomReset').onclick = resetView;
+  $('zoomInBtn').onclick = () => zoomBy(1.5);
+  $('zoomOutBtn').onclick = () => zoomBy(1 / 1.5);
   function setLocked(v){
     locked = v;
     $('lockBtn').textContent = v ? '🔓 編集する' : '🔒 ロック';
     $('lockBtn').classList.toggle('on', v);
-    Object.values(TOOL_MAP).concat(['clearBtn']).forEach((id) => { $(id).disabled = v; });
+    Object.values(TOOL_MAP).concat(['clearBtn', 'moreTools']).forEach((id) => { $(id).disabled = v; });
     $('s1').disabled = v; $('s2').disabled = v;
     $('sliders').style.opacity = v ? '0.45' : '';
     if (v) { selectedPin = null; cancelDrag(); }
     render();
   }
   $('lockBtn').onclick = () => setLocked(!locked);
+
+  // ── ルートのリプレイ再生（序盤→終盤へアニメーション） ──────────
+  let replay = null;   // { start, dur, total, strokes, events, raf }
+  function cutStrokes(strokes, L){
+    const out = [];
+    let cum = 0;
+    for (const s of strokes) {
+      const ns = [s[0]];
+      for (let i = 1; i < s.length; i++) {
+        const d = dist(s[i - 1], s[i]);
+        if (cum + d >= L) {
+          const t = d > 0 ? (L - cum) / d : 0;
+          ns.push({ x: s[i - 1].x + (s[i].x - s[i - 1].x) * t, y: s[i - 1].y + (s[i].y - s[i - 1].y) * t });
+          out.push(ns);
+          return out;
+        }
+        cum += d;
+        ns.push(s[i]);
+      }
+      out.push(ns);
+    }
+    return out;
+  }
+  // ピンが「ルートのどの位置（累積長）で起きたか」＝リプレイでの出現タイミング
+  function pinCumPos(p, strokes, total){
+    if (!p.linked) return total;   // 集計対象外は最後にまとめて表示
+    let cum = 0, best = total, bd = Infinity;
+    for (const s of strokes) {
+      for (let i = 1; i < s.length; i++) {
+        const a = s[i - 1], b = s[i], segLen = dist(a, b);
+        if (p.type === 'hit' && p.ax != null) {
+          const dx = b.x - a.x, dy = b.y - a.y, l2 = dx * dx + dy * dy;
+          let t = l2 > 0 ? ((p.ax - a.x) * dx + (p.ay - a.y) * dy) / l2 : 0;
+          t = Math.max(0, Math.min(1, t));
+          const d = Math.hypot(p.ax - (a.x + dx * t), p.ay - (a.y + dy * t));
+          if (d < bd) { bd = d; best = cum + segLen * t; }
+        }
+        cum += segLen;
+      }
+      if (p.type === 'death' && p.endX != null) {
+        const end = s[s.length - 1];
+        if (Math.abs(end.x - p.endX) < 1e-6 && Math.abs(end.y - p.endY) < 1e-6) return cum;
+      }
+    }
+    return (p.type === 'death') ? total : best;
+  }
+  function startReplay(){
+    const strokesAll = getSelfStrokes().filter((s) => s.length >= 2);
+    if (strokesAll.length === 0) { showToast('先にルートを描いてください'); return; }
+    let total = 0;
+    strokesAll.forEach((s) => { for (let i = 1; i < s.length; i++) total += dist(s[i - 1], s[i]); });
+    if (total <= 0) return;
+    const events = getPins().map((p) => ({ p, at: pinCumPos(p, strokesAll, total) }));
+    selectedPin = null;
+    replay = { start: performance.now(), dur: Math.max(3000, Math.min(8000, total * 4000)), total, strokes: strokesAll, events, raf: 0 };
+    $('replayBtn').textContent = '⏹ 停止';
+    tickReplay();
+  }
+  function tickReplay(){
+    if (!replay) return;
+    const rp = replay;
+    const t = (performance.now() - rp.start) / rp.dur;
+    if (t >= 1) { stopReplay(); return; }   // 終わったら通常表示に戻す
+    const L = rp.total * t;
+    const partial = cutStrokes(rp.strokes, L);
+    const vis = rp.events.filter((ev) => ev.at <= L).map((ev) => ev.p);
+    let lead = '';
+    const lastS = partial[partial.length - 1];
+    if (lastS && lastS.length) {
+      const q = lastS[lastS.length - 1];
+      lead = '<circle cx="' + (q.x * W).toFixed(1) + '" cy="' + (q.y * H).toFixed(1) + '" r="13" fill="#fff" stroke="#0A140F" stroke-width="4"/>';
+    }
+    // 再生中は追加情報を隠して、ルートとキル/デスに集中させる
+    $('routeLayer').innerHTML = coloredRoute(partial, work.f1, work.f2, H, 13, 7.5, rp.total) + hitLinesHtml(vis, H) + lead;
+    $('liveLayer').innerHTML = '';
+    $('pinLayer').innerHTML = pinsHtml(vis, H, PIN_FS) + hitDotsHtml(vis, H, PIN_FS);
+    rp.raf = requestAnimationFrame(tickReplay);
+  }
+  function stopReplay(){
+    if (!replay) return;
+    cancelAnimationFrame(replay.raf);
+    replay = null;
+    $('replayBtn').textContent = '▶ 再生';
+    render();
+  }
+  $('replayBtn').onclick = () => { if (replay) stopReplay(); else startReplay(); };
 
   // ── 画像として保存 ────────────────────────────────────
   $('exportBtn').onclick = () => {
@@ -1487,12 +2142,35 @@
     const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(clone));
     const img = new Image();
     img.onload = () => {
+      // 共有用フレーム：日付・フィールド名・K/D・凡例を焼き込み、そのままSNSに貼れる1枚にする
       const scale = 1400 / W;
+      const mapW = Math.round(W * scale), mapH = Math.round(H * scale);
+      const pad = 36, headH = 150, footH = 96;
       const cnv = document.createElement('canvas');
-      cnv.width = Math.round(W * scale); cnv.height = Math.round(H * scale);
-      cnv.getContext('2d').drawImage(img, 0, 0, cnv.width, cnv.height);
+      cnv.width = mapW + pad * 2; cnv.height = headH + mapH + footH;
+      const ctx = cnv.getContext('2d');
+      ctx.fillStyle = '#0E1A12'; ctx.fillRect(0, 0, cnv.width, cnv.height);
+      ctx.fillStyle = '#B8E62E'; ctx.font = '900 28px sans-serif';
+      ctx.fillText('サバ活｜フィールドトラッカー', pad, 46);
+      ctx.fillStyle = '#E8F0EA'; ctx.font = '700 36px sans-serif';
+      ctx.fillText(DAY_LABEL + '　' + FIELD_NAME + '　' + GAMES[curGame].title + '（' + GAMES[curGame].type + '）', pad, 98);
+      const m = kdFromPins(getPins());
+      ctx.fillStyle = '#FFD700'; ctx.font = '900 30px sans-serif';
+      ctx.fillText('キル ' + m.k + ' ／ デス ' + m.d, pad, headH - 14);
+      ctx.drawImage(img, pad, headH, mapW, mapH);
+      let lx = pad;
+      const ly = headH + mapH + 58;
+      ctx.font = '700 26px sans-serif';
+      [[C[0], '序盤'], [C[1], '中盤'], [C[2], '終盤']].forEach(([col, name]) => {
+        ctx.fillStyle = col; ctx.fillRect(lx, ly - 22, 26, 26); lx += 34;
+        ctx.fillStyle = '#7A9980'; ctx.fillText(name, lx, ly); lx += ctx.measureText(name).width + 26;
+      });
+      ctx.fillStyle = '#7A9980'; ctx.fillText('🎯キル　💀デス', lx, ly);
+      ctx.fillStyle = '#5A6B50'; ctx.font = '400 22px sans-serif';
+      ctx.textAlign = 'right'; ctx.fillText('サバ活で記録', cnv.width - pad, ly); ctx.textAlign = 'left';
       const a = document.createElement('a');
-      a.href = cnv.toDataURL('image/png'); a.download = 'sabakatsu_route.png';
+      // 日付・ゲーム名入り：複数ゲームでの上書き事故を防ぐ（本実装では記録日から生成する）
+      a.href = cnv.toDataURL('image/png'); a.download = 'sabakatsu_' + DAY_KEY + '_' + GAMES[curGame].title + '.png';
       document.body.appendChild(a); a.click(); a.remove();
     };
     img.src = url;
@@ -1501,6 +2179,7 @@
   // パレットとシェイプ行を生成
   (function buildPalette(){
     const row = $('paletteRow');
+    row.innerHTML = '';
     PALETTE.forEach((c) => {
       const s = document.createElement('div');
       s.className = 'palSwatch' + (c === freeDrawColor ? ' on' : '');
@@ -1508,7 +2187,7 @@
       s.dataset.color = c;
       s.onclick = () => {
         freeDrawColor = c;
-        if (selectedPin && (selectedPin.kind === 'freeline' || selectedPin.kind === 'freemark')) { selectedPin.color = c; render(); }
+        if (selectedPin && (selectedPin.kind === 'freeline' || selectedPin.kind === 'freemark')) { selectedPin.color = c; dirty = true; render(); }
         row.querySelectorAll('.palSwatch').forEach((sw) => sw.classList.toggle('on', sw.dataset.color === c));
       };
       row.appendChild(s);
@@ -1516,6 +2195,7 @@
   })();
   (function buildShapeRow(){
     const row = $('shapeRow');
+    row.innerHTML = '';
     SHAPES.forEach((sh) => {
       const b = document.createElement('button');
       b.className = 'shapePick' + (sh === freeMarkShape ? ' on' : '');
@@ -1523,205 +2203,15 @@
       b.dataset.shape = sh;
       b.onclick = () => {
         freeMarkShape = sh;
-        if (selectedPin && selectedPin.kind === 'freemark') { selectedPin.shape = sh; render(); }
+        if (selectedPin && selectedPin.kind === 'freemark' && sh !== 'line') { selectedPin.shape = sh; dirty = true; render(); }
         row.querySelectorAll('.shapePick').forEach((bp) => bp.classList.toggle('on', bp.dataset.shape === sh));
       };
       row.appendChild(b);
     });
   })();
 
+  restore();          // 端末内に保存済みの記録を復元してから初期表示
   renderDayScreen();
 })();
 </script>
-
-
-<linkclump-plus><span style="margin: 0px auto; border: 0px dotted red; position: absolute; z-index: 2147483646; visibility: hidden;"></span><span style="z-index: 2147483647; display: inline-block; visibility: hidden; position: absolute; top: 0px; left: 0px; line-height: 16px; font-size: 16px; font-weight: 400; color: black; background-color: transparent; padding: 8px; border-radius: 8px; border: 4px double transparent;"></span></linkclump-plus></body><div><template shadowrootmode="closed"><style>
-.common li, .common span, .common a, .common input, .common img, .common h4,
-.popup, .engine-editor{
-    direction: ltr;
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-size: 10pt;
-	font-weight: normal;
-	text-decoration: none;
-	font-family: sans-serif;
-	vertical-align: baseline;
-	background: transparent;
-	color: #202020;
-	text-align: left;
-	line-height: normal;
-	white-space: normal;
-	-webkit-box-shadow: none;
-	-webkit-border-radius:0;
-	text-shadow: none;
-	float: none;
-	overflow: visible;
-}
-.common li, .common p, .common div, .common ul, .common h4{
-	display: block;
-}
-.common h4{
-	font-weight: bold;
-}
-.common ul{
-	list-style-type: none;
-}
-.common span, .common img{
-	display: inline;
-}
-.common input{
-	display: inline-block;
-	white-space: pre;
-}
-.common a:after, .common a[href^="http"]:after {
-  content: '';
-}
-.engine-editor{
-
-    z-index: 2147483647;
-	padding: 0.5em;
-	width: 35em;
-	font-size: 9pt;
-	background: #EDEDED;
-	border: 3px solid #878787;
-	-webkit-border-radius: 5px;
-	-webkit-box-shadow: 0px 0px 8px #B0B0B0;
-}
-.engine-editor input[type='text']{
-	width: 100%;
-	margin-bottom: 0.5em;
-	padding: 0.1em 0;
-	display: block;
-	border: 1px solid #A0A0A0;
-	background: #fff;
-	-webkit-border-radius: 2px;
-}
-.engine-editor input[type='button']{
-	width: auto;
-	display: inline-block;
-	margin-top: 0.5em;
-	margin-right: 0.5em;
-	padding: 0.2em 0.4em;
-	text-align: center;
-	background: -webkit-gradient(linear, left top, left bottom, from(#F5F5F5), to(#E0E0E0));
-	border: 1px solid #A0A0A0;
-	-webkit-border-radius: 2px;
-}
-.engine-editor input[type='button']:hover{
-	border: 1px solid #7C7C7C;
-}
-.engine-editor input[type='button']:active{
-	background: -webkit-gradient(linear, left top, left bottom, from(#E0E0E0), to(#F5F5F5));
-}
-.engine-editor input[type='button']:disabled{
-	color: #AAAAAA;
-	background: -webkit-gradient(linear, left top, left bottom, from(#E7E7E7), to(#D3D3D3));
-}
-.engine-editor h4{
-	margin: 0;
-	height: 1.5em;
-	font-size: 1.1em;
-	padding-bottom: 0.3em;
-	margin-bottom: 0.5em;
-	border-bottom: 1px solid #CECECE;
-}
-.engine-editor input.close{
-	float: right;
-	margin: 0;
-	height: 1.4em;
-	width: 1.4em;
-	padding-bottom: 0.3em;
-	vertical-align: middle;
-}
-.engine-editor span.title{
-	float: left;
-	font-weight: bold;
-	line-height: 1.5em;
-}
-
-
-.popup{
- width: 12em;
- position: absolute;
- background: #EDECEC;
- border: solid 1px #AEAAA7;
- padding: 0.3em 0.3em;
- font-size: 9pt;
- margin: 0;
- list-style-type: none;
- -webkit-box-shadow: 0px 1px 10px #ccc;
- display: block;
- font-family: sans-serif;
-z-index: 2147483647;
-}
-.popup li{
- margin: 1px 0;
- padding: 0;
- text-align: left;
- color: #202020;
- display: block;
- font-family: sans-serif;
-}
-.popup input{
-	width: 10.1em;
-}
-.popup img{
- width: 16px;
- height: 16px;
- vertical-align: middle;
- border:none;
- margin: 0;
- margin-right: 4px;
- display: inline;
-}
-.popup.mainmenu > li:first-child {
- overflow: hidden;
- text-overflow:ellipsis;
- white-space:nowrap;
- border-bottom: solid 1px #AEAAA7;
- margin-bottom: 0.5em;
- padding: 0.2em 0.3em;
-}
-.popup a{
- margin: 1px;
- text-decoration: none;
- color: #202020;
- display: block;
- padding: 0.2em 0.3em;
- -webkit-border-radius: 3px;
- font-family: sans-serif;
-}
-.popup a:hover, .popup a.active{
- background: #96B8E1;
-}
-.popup .engine-name{
- display: inline-block;
- width: 8.5em;
- overflow: hidden;
- text-overflow:ellipsis;
- white-space:nowrap;
- vertical-align: middle;
-}
-.button {
- position:absolute;
- background: #fafafa;
- background-repeat: no-repeat;
- background-position: center center;
- -webkit-border-radius: 3px;
- border: 1px solid #aaaaaa;
- width: 16px;
- height: 16px;
- font-family: sans-serif;
- z-index: 2147483647;
-}
-.popup .engine-separator{
- height: 1px;
- margin: 3px 0;
- background: #AEAAA7;
-}
-.popup.hidden{
-	display: none;
-}
-</style><style></style><style></style><div style="display: none; position: absolute;" class="engine-editor common"><h4 style="padding-left: 20px; background: url(&#39;chrome-extension://gipnlpdeieaidmmeaichnddnmjmcakoe/img/icon16.png&#39;) no-repeat left top;"><input style="background: url(&#39;chrome-extension://gipnlpdeieaidmmeaichnddnmjmcakoe/img/close.png&#39;) no-repeat center center;" class="close" type="button" value=""><span class="title">Add search engine</span></h4><div style="display: none;"><span>Name:</span><input type="text"><span>Url:</span><input type="text"><span>Icon url:</span><input type="text"></div><div style="background: url(&quot;chrome-extension://gipnlpdeieaidmmeaichnddnmjmcakoe/img/ajax-loader.gif&quot;) center center no-repeat; height: 50px; width: 100%;"></div><p style="display: none; color: #CB4345;"></p><input type="button" value="Save"><input type="button" value="Cancel"></div><ul class="popup common hidden mainmenu"><li><input type="text"></li><li><a class="engine-url"><img class="engine-img" referrerpolicy="no-referrer" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAsVBMVEVHcEz8/Pz7+/v+/v75+fr////5+vr4+Pj////8/Pz////29vb////////7+/v////s7e3r7O3/uEc1T/X///81qlXsTkFHiPXrRjf8wBHrPy/9/Po4gfUhpUlBhfT6vQDW4vyQs/j0pJ/72NJDrl/h8eT/9+cqe/SHrfhhuXfylpC1zPrtX0rR6NZ+w4794J6vtS6s1rDuc2/3u7f8zFZyofb3pABqrbhqouOHx5U8ooarLy5yAAAAE3RSTlMAYtPBeeCROqb4DUNE6EkWISHojGzqvgAAAWpJREFUOI2dk9l2gjAQhhURiEttz0kEwmYjKFC1rt3e/8GazBAFY2/6XyX5/kwmM0mv19bInUzcUe8PuR6hIOK5j/CQtjQ0LB69k9flw3sugzziS1HXYmk6BrAQCc4DKc5FBAsDzfu4ex7MG/EAo/QbA3KukNwvbcEGQ1DkthquAsD16VRzrjm1wTBVw6M0cIHLQnM6VXwGAT7kfmHedaZTfA/DzdHkkKajbngOwwwzL19R5ULNHF3kTBpWYFj7KWj9pgt+NWBqsY+Ku4bwFiGW6higDOcszA5Q74XSJfXjhS7EE9wi2zN2vT5NZQSYPelKR3uWs0rzMvXTy63W0MtDkucs36ph8SlzWMMJ2M8xhKiYVMKqKk/Yjx+XEGCM3bLAkTN5SqPkC7jVtPsFT94lV/6NK8/dF0OLHUuk2K64NaKRo/MvtttCj532q7XNRtp3/4Z0MTE/l92yENvAEMWxSBQRy3n0Nf+vX4gnPfthEwRuAAAAAElFTkSuQmCC"><span class="engine-name">Google</span></a></li><li><a class="engine-url"><img class="engine-img" referrerpolicy="no-referrer" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABr0lEQVRYhe3Xv48MYQDG8c87uTjubkmEjd+hkEs0crfRiUahYVfhDxCUCpVoVBKiENGKnEKiccUFEY2C2uxFIuQo/CgUGw171p5iRzEzCiGxs5sdxT3J5H0zmed9vsX7zjwTkiRRpqJS01cB/geAkE8StXEcxSx2o4oKJrNxQ/Z8wPq/rPcVCXrZvI1v2djCezTxMIhXfgEkavuxkAWPQh/QCOIXIVFbhzfYMaLwXB8xHeF4CeGwC/UIB0oIz3Uwwr4SAfZG2N6XpbqR0w2ioZzgrRE29WWZWMutizy/w6HZQQGqEaYKWWemeXqTe1fZs60owFRxgFwnDvN6nitnqUz0664M51U8voYLJ3m7wKl6X/uj9G/B2FBWWfnB9btcnqPd6Rtg2SD7YP4J52/w7lMRd7s4wOIS567xrFkkONfyGD5jyz9bOl3OXOL2A3q9QcKhFRK1xzgy6EoF9SjCq5LC4WWEuESAZl5IlrBzxOFpIQni7zgm7WujDK8Hcff3UtrAjLQbbpaWz8nsyktpJC2pf1JeShN8kR7xTna/Je2Ci7gfxF0Iq79mqwBlA/wEihVj07SFCdQAAAAASUVORK5CYII="><span class="engine-name">Youtube</span></a></li><li><a class="engine-url"><img class="engine-img" referrerpolicy="no-referrer" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAM1BMVEUAAAD////f398QEBAgICDv7+9wcHBAQECAgIC/v7/Pz8+vr6+QkJAwMDBQUFCfn59gYGBA/ZVxAAAA2ElEQVQ4jc1SSRLDIAzD7GuS/7+2yKQNENJrqwMMFiBbthB/gkSMrY/F/qik8d4bo69QJt9fd2SFOCh8An7k8aAIseMaw1KaslBSKig1kUL1NMFRxsIiWko98xBxWCx4s+CFihCJRquIqwsUJFZMvFKdYcFYmgvsEKAdHgQ4exOw3EucRfKXL2BoehSpBRo29EkkkbXN0LUIdzA1Q7clj3fvrt1FNoq8O9rhapj5Wv7ZoUzHWfDAXx1uUxHGjioJA07wVLCrQ4HdKdPufexD04jW/4Dl2PwELxkCBNiT/pD8AAAAAElFTkSuQmCC"><span class="engine-name">Twitter</span></a></li><li class="engine-separator"></li><li><a class="engine-url"><img class="engine-img" referrerpolicy="no-referrer" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABe0lEQVRYhe2XMW7CMBSGP5uKibkXaKUwcAfoBQhzWaouVByAFVh7AESlVmIpM3AB0jswwNADlDkTEkmHl9AkEFFKwB34JCtxbOf/37MT6Ski+E9cs6IJ1IASkCMb1sAMGJGnp/oswwG1EX/gHs0LUMhINA0Xj4YaMNwYCMTfTywcx6OuBgxVkPZPTh95Epc8NzrY83OLAxRY0dTIgTNFTSOn3RQlTXaf2l/IaYPiAFwMXAzEDdid7BXsDrSm8OZLS2hsZ2DHpKOYOzDuwvMdLByotmPDV7HeOBCOTgqfHYPdFhOLD2mpBnaZqLZh0pX7uSNR7MOqiKhVkf6kK+taU8lEBOU/4qe+pFjZStmGhSPRWOX4muSccSAebmsio+kGotiddCNp5kLhPfzOQEgYYTG4WmXJwtz5ET6QwwycgH/2I7oYMGRgbVB/rZGKxRQzDYwMGhiZLUw0t1r1WeLROLM4eDTUK18aQA0Y4lEH3DNIu2FdCJHqGMyU599+1oDHJ9NWzAAAAABJRU5ErkJggg=="><span class="engine-name">Amazon</span></a></li><li><a class="engine-url"><img class="engine-img" referrerpolicy="no-referrer" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAbFBMVEX//f3///+/AAD//v69AAC8Cgr4+fm6AAC/HR3AICD59PTQbm768vK3AADw19fUenrKW1vJVVXpwsLSdXXFPDzDKCjXjIzw3Nzz4uLrycn36+vbmJjJTk7ktbXXh4e/GBi/MzPBLS3jsrLt0NC7177vAAAA+0lEQVQ4jb2TUXeCMAyFuW1Ypa0wlbkp4mT7//9xSVFkmvKyc3Zf6Em/0ySXpCj+UZiUuV+7UaHWCZRmFLlGJSbAGBc0QoDydbMhYmKrEAJUUuKOiTYDrDhu8cZPeJsFCuzJuPfnJ+5Aw8BHDrCAlyqhp6jg/WHFVmh9Jh+IpEvjjjngapRmwwygLmt1uQsnTkFahsnJ1sj3uYmbD4i00IUYhYPjMvslJ8+kNgoOf6Yo2nR8LAOXYRj/MmI1DNX59xPWWpkFmzSOrpzugH95lPc+xolAs6ab0mibU9Nt69nYoHdyR+4S9l/fx+uCzOtEHbq+jgurs7RUf9MPHKcJnmtMAWQAAAAASUVORK5CYII="><span class="engine-name">楽天</span></a></li><li><a class="engine-url"><img class="engine-img" referrerpolicy="no-referrer" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAbFBMVEX////kAAD/JgDlCwv/XED/5N//yb//Lwv/QSD/NBD/8e//k4DmEBD/rZ//TzD97+/ygID839/4v7/rQED/1s//eGD1n5/pMDD3r6/nICD/u6//alD/fWf/oI//hXDuYGD6z8/wcHDzj4/sUFCnjHU+AAAA10lEQVQ4jYXR2RKCMAwF0CZSZFc2Fffl//9RR+ltWjJjXqDNmTshGP5TZn7WxlWDXvY9z4e8cCAFqCXgEhFJEADA1oFhvkgjkCBiDM5+3qMDVgYIkCGilIHikzFnkYuRBMitjxiNAviE28yqAIOZwr8EoDFxnUPAl6hv1xHwv+RXSQz4GvRTXgAeJGgUkIh+zR9Ace3Q31REqyXYA2xJBUhoKxX4gBupoHP9O6mgR0Cvg9b1D6SCBwImFVQb13+SCrZyRwqYgh0p4IAdkQr8J750gB114vINo0UISsETS9IAAAAASUVORK5CYII="><span class="engine-name">ヨドバシ.com</span></a></li><li><a class="engine-url"><img class="engine-img" referrerpolicy="no-referrer" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAHYklEQVRYhcWXa1CU1xnHf++7y7LsBVwQFhesLgEiJNR4GV1NUUFUwmgb2xo7htakHwpO0ovjtWoaJ5qozZDSsWbSjJNETNuY1phMiyS00aJ4G6IGUnUQxStyWRbcXfa+73v6YXUpbTL9ZPh/O+d9znn+5/9cznkl7kEI8TTwS+AbPFg4gXckSdoWnxFC1IivHw0AkhBiKfDBAz71V6FWEkJ0A5mjRCAiCSHEKDkHCMuAdxQJhLT/OXpmzVFaj19nQAVJAgFkZZrQyBI9Tj82mwnfUJiePj+i10vtGxUsW5IHwGetffy06j1ml0+hZmsxABevDLJx4xHar/eT83Am82ZlkYRE2UI7hfmpAMQJ/PUf19n3WgNgJrXAisWiRxKCU42dEFawFmVw7OAXYDHz0KQ0AhIoikowGMXjDXOk+Ranz7TRRwrrn5/G0RO3qfxxPcrAHdIfzedOj4+NO09BVzsk2/F2/wyTIQGEEJ5AMCKyHtsrYLVYVtUghBAiFFZEKBwVk4r3i7TC34tzX/QJ5FfED1Y1iGhEEQE1Vkt7//gvARsEaa8J3YQ9ItG+R2B6VcB6AS8IdDvE2m3N4vMLTvHYvP0CNomnn/tYhCOKEEJ4JCGE54OGq+bvVfwBEGyvraC8ZAJPLPwTQbMOXyCKRpbQaCQURSCEwKDXYggpNB/7Ic6BAM9WfsiALoGBOx6iUUFZmZ0sq5EnF+dS995FDr1zDswG8A7y8xfKqX2p+L7wXhngricEhAEZjUbiYscAzt5uvP0BNLKEEBAcioAkoarg6fPTc6uLj49exzE1k0sXqxlrTCDqDiJHFB6ZlMZ3l+TRfOYOR/95A5AhQQPoafzkKms3NXGypRtiX8CaZmBMlhVQiEZVjEkJQISanSVUzJ9IsjmBY397ikjPEGuqp7L6FzOACMmmRAA2vHyCiyc70GZbUJMS+O22Br6z6C1qXjyCQa/ljXeXcv5YJVt/U87lKwPU7DhA6bKDCHEvCctLJrD5xWLW/aSO4a6gkplhxGzUIcsyefYxEFVJT0siGlUBhfyHxnDlmptfb/kIEseiDgbJL0xlxvICLl8dpOVEN6pOw6u/+4xQWME61kBqUiLJU6dQu7MMIURMAY1GwmJMAKIxWaSYOEO+COGIghCCQXcIZAl/IIo/EAVkks06mk7dRm+1UbN7IepgP/k5Y9i/exHrnpuO8DiRJHBMy6Tk8WwAnF3dpGSOYfECO7IsDZehzx+5H5G4AulpeoyGBGRZInucCaIqlpTEuAI3bnuZ/Eg6Lc3PICkKawjg88cO0e8KAndZ+kQue3bMA+Bml5cJ2WcJDgXjXuIEBt0hoA/XYBCvLwKEqFp3BGefD5x+Zi95HwixeddJFEUAYVov9LPh+WkAvP52G9DPrTuxxjpwNwgovP7W53RcuwtA5w03EOZm19D/EvhmQRqlpY8ztSiDRyelUVo2h95olFx7CkZDAtduelhUOY2+Xh+qKhibO5dZ04fvsIK8VEpLZzNlTg4Acx02yhbNxysLLrS7AEgxJ1I6fxZFs23xdZIQwgOYGR145f9v82Ch/bJJl8uFy+VCo9EwceJENBrNSIPbF+DaJdDqYLIDDBkABAN+AsEQFouFcDhMd3c36enpGAwGALq6utBqtVit1q8m0NTURGNjIx6PB41Gg91uZ/nyp8jMHBczOLAadtdCD7GiKUiA7QegaCknT5yg6XgzDoeDzs5Oent7sVqtLFiwgLa2Ns6fP49Wq2XmzJlUVFQA/5UD586dY+/evdjtdmbMmIHb7aa+vp7UtLFsemkb5ta/QOVyyAW+Xw3uXth3KPaeOtjP3y/1c/TP+5BlGZPJhCzHIhwMxsrOZDIxNBSrgKqqKqxWq3eEAm1tbSQnJ1NZWcm4cbET5+Xl0evsJ6qo8P4WMAC7PoXC0tgi62ZY+wo07EJbtJ5AMMS8uXMoKSmho6OD+vp69Ho9K1aswGw2c+jQIdrb2/H7/cDIzoPb7cZms8WdAxQUFDBvTjGWRC10XQUbw84BZi+NBfLWBURwiHAkSmFhIcnJyUyePBlJkrBYLGRnZ5OSkkJOTg6BQCCeVyMIZGVl0d7eTmtrKwCKonD48GHe3ldHf1iFomK4DHz0cmyBUOHdX4EETF0MSWY0MoTDYQACgUA8DPcRjUZHzGkBTp8+zdmzZ5k+fTrjx4+nrq4Oh8OBy+WiqakJh8OBWSfDs2/CJw/Dui1wsg4GnfDhIPwoF761ivDxM3jdbiKRCACqquLz+eJyA4RCIbxeL4qiDCvg9/tpb2+noKCA6upqCgsLaWlpwel0snLlSlatWkUiQEY+vPkpfHsmHL8MnYOwoRK2Ho8lmeLDlpWFXq+PbS7LZGRkkJqaGidgMpmw2WzodDogVgVRQKOq6ghp+vr6MBqNGI1GvhRd1yEpEVKH80WoKqoQyLKMJEnxMEqSFN9bVdXYNRyzCY52K47IwPZRcg7QKAHc+1Es/5qdXwWmSPdHQojdwJNAygN27AdOA5WSJA39G8bzofdUlo4qAAAAAElFTkSuQmCC"><span class="engine-name">価格.com</span></a></li></ul><div class="button common" style="display: none; background-image: url(&quot;chrome-extension://gipnlpdeieaidmmeaichnddnmjmcakoe/img/icon16.png&quot;);"></div></template></div></html>
+</body></html>
