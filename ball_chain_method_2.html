@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ボールチェーン工法 — BB弾通路の成形・補修説明書</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1b1d22;
+  --paper:#f2f3f1;
+  --panel:#ffffff;
+  --steel:#5c6470;
+  --brass:#b08d3e;
+  --putty:#a9c4cf;
+  --putty-deep:#5f8494;
+  --danger:#c4452e;
+  --hair:#d8dad6;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Zen Kaku Gothic New",sans-serif;
+  font-size:16px;
+  line-height:1.9;
+  padding:0 20px 64px;
+}
+.sheet{max-width:720px;margin:0 auto}
+.mono{font-family:"IBM Plex Mono",monospace;font-weight:500}
+
+/* ---------- header ---------- */
+header{
+  border:2px solid var(--ink);
+  border-radius:4px;
+  margin:28px 0 40px;
+  overflow:hidden;
+  background:var(--panel);
+}
+.head-band{
+  background:var(--ink);
+  color:var(--paper);
+  padding:10px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.head-band .tag{font-size:12px;letter-spacing:.18em;color:var(--putty)}
+.head-band .no{font-size:12px;color:var(--brass)}
+.head-main{padding:26px 20px 22px}
+h1{
+  font-weight:900;
+  font-size:clamp(30px,7vw,44px);
+  line-height:1.25;
+  letter-spacing:.02em;
+}
+.head-sub{color:var(--steel);font-size:15px;margin-top:8px}
+.head-meta{
+  display:flex;flex-wrap:wrap;gap:8px;
+  padding:0 20px 20px;
+}
+.chip{
+  border:1.5px solid var(--ink);
+  border-radius:3px;
+  font-size:12.5px;
+  padding:2px 10px;
+  background:var(--paper);
+}
+.chip b{font-weight:700}
+
+/* ---------- sections ---------- */
+section{margin:0 0 52px}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:12px;
+  letter-spacing:.22em;
+  color:var(--brass);
+  margin-bottom:6px;
+}
+h2{
+  font-weight:900;
+  font-size:24px;
+  line-height:1.4;
+  border-bottom:2.5px solid var(--ink);
+  padding-bottom:8px;
+  margin-bottom:18px;
+}
+h3{font-weight:700;font-size:17px;margin:22px 0 8px}
+p{margin-bottom:14px}
+strong{font-weight:700}
+.lead{
+  background:var(--panel);
+  border:1.5px solid var(--ink);
+  border-radius:4px;
+  padding:18px 20px;
+  font-size:17px;
+  margin-bottom:18px;
+}
+.lead b{background:linear-gradient(transparent 62%, var(--putty) 62%)}
+
+/* ---------- diagram panel ---------- */
+figure{
+  background:var(--panel);
+  border:1.5px solid var(--ink);
+  border-radius:4px;
+  padding:16px 12px 10px;
+  margin:20px 0;
+}
+figure svg{width:100%;height:auto;display:block}
+figcaption{
+  font-size:13px;
+  color:var(--steel);
+  text-align:center;
+  padding:8px 6px 4px;
+  border-top:1px solid var(--hair);
+  margin-top:10px;
+}
+.svg-label{font-family:"Zen Kaku Gothic New",sans-serif;font-size:13px;fill:var(--ink);font-weight:500}
+.svg-sub{font-family:"Zen Kaku Gothic New",sans-serif;font-size:12px;fill:var(--steel)}
+.svg-num{font-family:"IBM Plex Mono",monospace;font-size:12px;fill:var(--steel)}
+
+/* ---------- steps ---------- */
+ol.steps{list-style:none;counter-reset:step}
+ol.steps>li{
+  counter-increment:step;
+  position:relative;
+  padding:0 0 26px 58px;
+}
+ol.steps>li::before{
+  content:counter(step);
+  position:absolute;left:0;top:2px;
+  width:40px;height:40px;
+  background:var(--ink);
+  color:var(--paper);
+  font-family:"IBM Plex Mono",monospace;
+  font-size:19px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:3px;
+}
+ol.steps>li:not(:last-child)::after{
+  content:"";
+  position:absolute;left:19px;top:48px;bottom:6px;
+  border-left:2px dashed var(--hair);
+}
+.step-t{font-weight:700;font-size:17px;margin-bottom:4px}
+.step-d{color:var(--ink)}
+.step-note{font-size:13.5px;color:var(--steel);margin-top:4px}
+
+/* ---------- warn / point ---------- */
+.warn,.point{
+  border:1.5px solid var(--ink);
+  border-radius:4px;
+  padding:14px 16px 12px;
+  margin:20px 0;
+  background:var(--panel);
+  position:relative;
+}
+.warn{border-color:var(--danger)}
+.box-tag{
+  display:inline-block;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.12em;
+  padding:1px 10px;
+  border-radius:2px;
+  margin-bottom:8px;
+}
+.warn .box-tag{background:var(--danger);color:#fff}
+.point .box-tag{background:var(--putty);color:var(--ink)}
+.warn p,.point p{margin-bottom:6px;font-size:15px}
+.warn p:last-child,.point p:last-child{margin-bottom:0}
+
+/* ---------- tables ---------- */
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:var(--panel);
+  border:1.5px solid var(--ink);
+  font-size:14.5px;
+  margin:16px 0;
+}
+th{
+  background:var(--ink);color:var(--paper);
+  font-weight:700;text-align:left;
+  padding:8px 12px;font-size:13.5px;
+  letter-spacing:.04em;
+}
+td{
+  border-top:1px solid var(--hair);
+  padding:9px 12px;
+  vertical-align:top;
+}
+td.item{font-weight:700;white-space:normal}
+td .why{display:block;font-size:12.5px;color:var(--steel)}
+
+/* ---------- case study ---------- */
+.case{
+  border:2px solid var(--ink);
+  border-radius:4px;
+  overflow:hidden;
+  background:var(--panel);
+  margin:18px 0;
+}
+.case-head{
+  background:var(--putty);
+  padding:10px 18px;
+  font-weight:900;
+  font-size:16px;
+  border-bottom:2px solid var(--ink);
+}
+.case-body{padding:16px 18px 6px}
+dl.spec{display:grid;grid-template-columns:5.5em 1fr;gap:6px 14px;margin-bottom:12px}
+dl.spec dt{
+  font-size:12.5px;font-weight:700;color:var(--steel);
+  letter-spacing:.06em;padding-top:3px;
+}
+dl.spec dd{font-size:15px}
+
+footer{
+  border-top:2.5px solid var(--ink);
+  margin-top:60px;
+  padding-top:16px;
+  font-size:13px;
+  color:var(--steel);
+}
+footer p{margin-bottom:6px}
+
+a{color:var(--putty-deep)}
+:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+
+/* ---------- chain animation ---------- */
+@media (prefers-reduced-motion: no-preference){
+  .chain-run{animation:pull 5.2s linear infinite}
+  @keyframes pull{from{stroke-dashoffset:0}to{stroke-dashoffset:-64}}
+}
+
+@media (max-width:560px){
+  body{padding:0 14px 56px}
+  dl.spec{grid-template-columns:1fr}
+  dl.spec dt{padding-top:6px}
+  ol.steps>li{padding-left:50px}
+  ol.steps>li::before{width:34px;height:34px;font-size:16px}
+  ol.steps>li:not(:last-child)::after{left:16px;top:42px}
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<header>
+  <div class="head-band">
+    <span class="tag">FIELD REPAIR NOTE</span>
+    <span class="no mono">SHEET 01 / 2026.07</span>
+  </div>
+  <div class="head-main">
+    <h1>ボールチェーン工法</h1>
+    <p class="head-sub">工具の入らない曲がったBB弾通路を、エポキシパテと6mm球の数珠で成形・補修する</p>
+  </div>
+  <div class="head-meta">
+    <span class="chip">対象：ガスガン・電動ガンの給弾経路</span>
+    <span class="chip">難易度：<b>★★☆</b></span>
+    <span class="chip">所要：作業1〜2h＋硬化12h</span>
+  </div>
+</header>
+
+<!-- ================================================== -->
+<section>
+  <p class="eyebrow">01 / OVERVIEW</p>
+  <h2>これは何をする工法か</h2>
+  <div class="lead">
+    曲がった通路の内側にエポキシパテを盛り、<b>離型剤を塗ったボールチェーン（6mm球の数珠）を通して引き抜く</b>ことで、「弾がちょうど通れる滑らかな道」を球自身に彫らせる工法。
+  </div>
+  <p>理屈はシンプルで、<strong>BB弾（実寸約5.95mm）よりわずかに大きい球が通れた道は、BB弾が必ず通れる</strong>。まっすぐな棒やドリルはS字カーブを曲がれないが、数珠つなぎの球は曲がれる。人間が見えない奥を手探りで成形する代わりに、正しい直径の球にルートを彫らせる——それだけです。</p>
+
+  <figure>
+    <svg viewBox="0 0 560 210" role="img" aria-label="S字通路をボールチェーンが通り抜ける原理図">
+      <path d="M50,150 C160,150 160,58 280,58 C400,58 400,150 510,150" fill="none" stroke="var(--ink)" stroke-width="46" stroke-linecap="round"/>
+      <path d="M50,150 C160,150 160,58 280,58 C400,58 400,150 510,150" fill="none" stroke="var(--panel)" stroke-width="38" stroke-linecap="round"/>
+      <path d="M50,150 C160,150 160,58 280,58 C400,58 400,150 510,150" fill="none" stroke="var(--putty)" stroke-width="38" pathLength="100" stroke-dasharray="14 200" stroke-dashoffset="-24"/>
+      <path class="chain-run" d="M50,150 C160,150 160,58 280,58 C400,58 400,150 510,150" fill="none" stroke="var(--brass)" stroke-width="26" stroke-linecap="round" stroke-dasharray="0.1 32"/>
+      <line x1="510" y1="120" x2="548" y2="98" stroke="var(--ink)" stroke-width="2"/>
+      <path d="M548,98 l-11,1 m11,-1 l-4,10" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <text class="svg-label" x="470" y="86">引き抜く</text>
+      <text class="svg-label" x="148" y="34">盛ったパテ（水色）</text>
+      <line x1="196" y1="40" x2="216" y2="76" stroke="var(--steel)" stroke-width="1" stroke-dasharray="3 3"/>
+      <text class="svg-label" x="28" y="196">6mm球の数珠</text>
+      <line x1="110" y1="190" x2="128" y2="162" stroke="var(--steel)" stroke-width="1" stroke-dasharray="3 3"/>
+    </svg>
+    <figcaption>球が通った跡が、そのまま弾の通り道になる。カーブの角度も繋ぎ目も、球が勝手に解決する。</figcaption>
+  </figure>
+</section>
+
+<!-- ================================================== -->
+<section>
+  <p class="eyebrow">02 / THEORY</p>
+  <h2>そもそも、なぜ通路は詰まるのか</h2>
+  <p>給弾不良の犯人は大きく3種類。いずれも「押す力を強くする」では解決しないのがポイントです。</p>
+
+  <h3>犯人A：段差</h3>
+  <p>3Dプリントの積層痕、削り傷、部品の合わせ目。弾が段差の立ち上がりに正面から当たると、マガジンの弱いバネ力では乗り越えられません。<strong>毎回ぴったり同じ場所で止まる</strong>のが特徴です。</p>
+
+  <h3>犯人B：アーチ（弾の石橋）</h3>
+  <p>二列で貯めた弾を一列に絞る場所で、左右から来た2個が同時に到着すると、互いに突っ張り合って<strong>その場で石橋になります</strong>。石橋は上から荷重をかけるほど石同士が押し付け合って頑丈になる——摩擦の保持力は押し付け力に比例して増えるからです。つまり<strong>バネを強くするほどアーチは固まる</strong>。塩の瓶が詰まるのも、工場のサイロに振動モーターが付いているのも、全部これと同じ現象です。</p>
+
+  <figure>
+    <svg viewBox="0 0 560 240" role="img" aria-label="合流部で2個の弾がアーチを組む様子">
+      <polyline points="200,30 200,90 168,200" fill="none" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
+      <polyline points="256,30 256,90 288,200" fill="none" stroke="var(--ink)" stroke-width="6" stroke-linejoin="round"/>
+      <circle cx="228" cy="52" r="13" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="228" cy="80" r="13" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="213" cy="122" r="13" fill="var(--danger)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="238" cy="138" r="13" fill="var(--danger)" stroke="var(--ink)" stroke-width="2"/>
+      <line x1="205" y1="118" x2="190" y2="112" stroke="var(--danger)" stroke-width="2.5"/>
+      <path d="M190,112 l10,-2 m-10,2 l7,8" fill="none" stroke="var(--danger)" stroke-width="2.5"/>
+      <line x1="247" y1="143" x2="262" y2="150" stroke="var(--danger)" stroke-width="2.5"/>
+      <path d="M262,150 l-10,2 m10,-2 l-7,-8" fill="none" stroke="var(--danger)" stroke-width="2.5"/>
+      <circle cx="210" cy="168" r="13" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="242" cy="176" r="13" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <line x1="228" y1="228" x2="228" y2="202" stroke="var(--ink)" stroke-width="3"/>
+      <path d="M228,202 l-6,9 m6,-9 l6,9" fill="none" stroke="var(--ink)" stroke-width="3"/>
+      <text class="svg-label" x="330" y="60">上の弾には圧が届かない</text>
+      <text class="svg-sub" x="330" y="80">（撃てた数発ぶんの置き荷）</text>
+      <text class="svg-label" x="330" y="128">2個が突っ張り＝アーチ</text>
+      <text class="svg-sub" x="330" y="148">力は出口でなく壁へ逃げる</text>
+      <text class="svg-label" x="330" y="216">下からの押し</text>
+      <text class="svg-sub" x="330" y="234">強く押すほど締まる</text>
+      <line x1="326" y1="122" x2="256" y2="128" stroke="var(--steel)" stroke-width="1" stroke-dasharray="3 3"/>
+    </svg>
+    <figcaption>アーチは力比べでは壊せない。振動で幾何を崩すか、そもそも組めない1本道にするか。</figcaption>
+  </figure>
+
+  <h3>犯人C：キャプスタン・ロック（カーブの摩擦倍増）</h3>
+  <p>通路にカーブがあると、それだけで力が消えます。直線では弾は壁に触れず、押した力は玉突きでそのまま前へ伝わる。ところがカーブでは、<strong>弾の進む向きを変えられるのは壁だけ</strong>。壁が弾を内側へ押し、その反作用で弾はカーブの外壁に食い込みます。摩擦は押し付けの強さに比例するので、この食い込みがそのままブレーキになる——しかも押しを強めるほど食い込みも強まるため、力比べでは勝てません。アーチと同じ「押すほど締まる」一族です。</p>
+
+  <figure>
+    <svg viewBox="0 0 560 200" role="img" aria-label="直線とカーブでの力の伝わり方の違い">
+      <defs>
+        <marker id="cap-ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="var(--danger)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <line x1="36" y1="86" x2="240" y2="86" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/>
+      <line x1="36" y1="130" x2="240" y2="130" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="70" cy="108" r="12" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="96" cy="108" r="12" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="122" cy="108" r="12" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="148" cy="108" r="12" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <line x1="34" y1="108" x2="54" y2="108" stroke="var(--danger)" stroke-width="3" marker-end="url(#cap-ah1)"/>
+      <line x1="166" y1="108" x2="230" y2="108" stroke="var(--danger)" stroke-width="3" marker-end="url(#cap-ah1)"/>
+      <text class="svg-label" x="36" y="172">直線</text>
+      <text class="svg-sub" x="36" y="192">壁に触れない → 力はそのまま前へ</text>
+      <line x1="278" y1="52" x2="278" y2="196" stroke="var(--steel)" stroke-width="1" stroke-dasharray="4 4"/>
+      <path d="M306,144 Q460,144 460,20" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/>
+      <path d="M306,100 Q416,100 416,20" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="312" cy="122" r="12" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="337" cy="120" r="12" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="366" cy="115" r="12" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="394" cy="104" r="12" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="415" cy="88" r="12" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="428" cy="68" r="12" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="436" cy="43" r="12" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <line x1="286" y1="122" x2="298" y2="122" stroke="var(--danger)" stroke-width="3" marker-end="url(#cap-ah1)"/>
+      <line x1="438" y1="16" x2="438" y2="4" stroke="var(--danger)" stroke-width="1.8" marker-end="url(#cap-ah1)"/>
+      <line x1="404" y1="112" x2="420" y2="124" stroke="var(--danger)" stroke-width="2.5" marker-end="url(#cap-ah1)"/>
+      <line x1="425" y1="96" x2="441" y2="107" stroke="var(--danger)" stroke-width="2.5" marker-end="url(#cap-ah1)"/>
+      <text class="svg-label" x="306" y="172">カーブ</text>
+      <text class="svg-sub" x="306" y="192">外壁に食い込む → 摩擦（ブレーキ）が発生</text>
+    </svg>
+    <figcaption>直線＝壁に触れずロスなし。カーブ＝外壁への食い込みがそのままブレーキになる。</figcaption>
+  </figure>
+
+  <p>さらに厄介なのは減り方です。各カーブは「その時点で残っている力」から<strong>同じ割合</strong>を通行料として取っていきます。1つ目のカーブで半分になれば、2つ目は残った50%からさらに半分。足し算でなく掛け算で減るので、S字のようにカーブが連続すると出口に届く力は急降下します。<strong>単体テスト（無負荷）では動くのに、マガジンと結合（背圧あり）すると止まる</strong>——この症状が出たら、まずこれを疑ってください。</p>
+
+  <figure>
+    <svg viewBox="0 0 560 316" role="img" aria-label="S字通路で押す力が指数的に減衰する様子">
+      <defs>
+        <marker id="cap-ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="var(--danger)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <path d="M60,54 C170,54 170,174 280,174 C390,174 390,54 500,54" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/>
+      <path d="M60,106 C170,106 170,226 280,226 C390,226 390,106 500,106" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="60" cy="80" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="97" cy="85" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="125" cy="99" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="149" cy="118" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="170" cy="140" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="191" cy="162" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="215" cy="181" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="244" cy="195" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="280" cy="200" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="316" cy="195" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="345" cy="181" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="369" cy="162" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="390" cy="140" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="411" cy="118" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="435" cy="99" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="463" cy="85" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="500" cy="80" r="14" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <line x1="16" y1="80" x2="40" y2="80" stroke="var(--danger)" stroke-width="4" marker-end="url(#cap-ah2)"/>
+      <line x1="518" y1="80" x2="538" y2="80" stroke="var(--danger)" stroke-width="1.5" marker-end="url(#cap-ah2)"/>
+      <line x1="95" y1="72" x2="90" y2="57" stroke="var(--danger)" stroke-width="2.5" marker-end="url(#cap-ah2)"/>
+      <line x1="121" y1="87" x2="116" y2="73" stroke="var(--danger)" stroke-width="2.5" marker-end="url(#cap-ah2)"/>
+      <line x1="240" y1="208" x2="236" y2="221" stroke="var(--danger)" stroke-width="2.5" marker-end="url(#cap-ah2)"/>
+      <line x1="320" y1="208" x2="324" y2="221" stroke="var(--danger)" stroke-width="2.5" marker-end="url(#cap-ah2)"/>
+      <line x1="439" y1="87" x2="444" y2="73" stroke="var(--danger)" stroke-width="2.5" marker-end="url(#cap-ah2)"/>
+      <line x1="465" y1="72" x2="470" y2="57" stroke="var(--danger)" stroke-width="2.5" marker-end="url(#cap-ah2)"/>
+      <line x1="60" y1="112" x2="60" y2="266" stroke="var(--steel)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="280" y1="232" x2="280" y2="266" stroke="var(--steel)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="500" y1="112" x2="500" y2="266" stroke="var(--steel)" stroke-width="1" stroke-dasharray="4 4"/>
+      <text class="svg-label" style="font-size:19px;font-weight:900" x="60" y="290" text-anchor="middle">100%</text>
+      <text class="svg-label" style="font-size:19px;font-weight:900" x="280" y="290" text-anchor="middle">50%</text>
+      <text class="svg-label" style="font-size:19px;font-weight:900;fill:var(--danger)" x="500" y="290" text-anchor="middle">25%</text>
+      <text class="svg-sub" x="60" y="310" text-anchor="middle">入口</text>
+      <text class="svg-sub" x="280" y="310" text-anchor="middle">S字なかば</text>
+      <text class="svg-sub" x="500" y="310" text-anchor="middle">出口</text>
+    </svg>
+    <figcaption>数字は例。カーブごとに同じ割合で削られる＝掛け算。カーブが増えるほど出口に届く力は急激に落ちる。</figcaption>
+  </figure>
+
+  <div class="point">
+    <span class="box-tag">コラム</span>
+    <p><strong>そもそも「キャプスタン」って何？</strong>　船の甲板に立っている、ロープを巻き取る縦型の太い柱（巻き上げ機）のことです。ロープをこの柱に巻き付けると、巻いた角度に応じて摩擦が指数関数的に増える——1〜2巻きするだけで、船員がロープの端を片手で押さえるだけで巨大な船を係留できます。この法則が「キャプスタンの式」<span class="mono">T₂ = T₁ × e^(μθ)</span>（θ＝巻き角、μ＝摩擦係数）。港の係船柱にロープを巻くのも、懸垂下降でロープを器具に絡ませて体重を支えるのも、全部同じ原理です。</p>
+    <p>BB弾の数珠がカーブを通るのは、ロープが柱に巻き付いた状態と同じ。そしてカーブの合計角度θは製品の形で固定なので、こちらから触れる変数はμだけ。<strong>カーブ区間の根本対策は、脱脂＋ドライ被膜で「滑らせる」こと</strong>です。</p>
+  </div>
+
+  <h3>症状から犯人を見分ける</h3>
+  <table>
+    <thead><tr><th style="width:44%">止まり方</th><th>疑う犯人 → 打ち手</th></tr></thead>
+    <tbody>
+      <tr><td class="item">毎回ぴったり同じ場所で止まる</td><td>段差・バリ・部品の噛み込み → パテ＋チェーンで面一に均す</td></tr>
+      <tr><td class="item">2〜3発は撃てて止まる。<br>底を叩くと復活する</td><td>アーチ（二列→一列の合流部）→ 脱脂＋ドライ被膜。恒久策はくさびで1列化</td></tr>
+      <tr><td class="item">1発目から上がらない。<br>単体では動くのに結合すると止まる</td><td>キャプスタン・ロック（カーブ）→ 脱脂＋ドライ被膜でμを下げる</td></tr>
+      <tr><td class="item">止まる場所が毎回バラバラ</td><td>単独犯なし＝全区間が限界スレスレ → 全区間の摩擦低減＋詰まっても振動で復帰できる構成（ゼンマイ式多弾マガジン等）</td></tr>
+    </tbody>
+  </table>
+
+  <p>結論：三犯とも「もっと押す」では倒せません。対策は<strong>段差がなく・横並びできず・よく滑る1本道</strong>を作ること。形はパテ＋チェーンで、摩擦は脱脂＋ドライ被膜で。</p>
+</section>
+
+<!-- ================================================== -->
+<section>
+  <p class="eyebrow">03 / CASE REPORT</p>
+  <h2>実例：M4マガジンアダプターのS字補修</h2>
+
+  <div class="case">
+    <div class="case-head">施工記録 No.1 — S字通路の削りすぎ復旧</div>
+    <div class="case-body">
+      <dl class="spec">
+        <dt>対象</dt><dd>SOCOM Mk23用 M4マガジンアダプター（市販の3Dプリント品）。内部にBB弾のS字通路を持つ</dd>
+        <dt>症状</dt><dd>給弾不良。S字の途中で弾が毎回止まる</dd>
+        <dt>経緯</dt><dd>積層段差をルーターで研削 → 効果はあったが削りすぎて、今度は<strong>凹みの段差</strong>を新造。弾がそこに落ちて止まるようになり悪化</dd>
+        <dt>施工</dt><dd>凹み周辺を荒らして脱脂 → 高密度エポキシパテを充填 → 離型剤を塗った6mm球チェーンを2〜3往復させて面一に成形 → 即抜去 → 12時間硬化 → タコ糸＋ピカールで仕上げ</dd>
+        <dt>結果</dt><dd><strong>BB弾が自重でスルッと通過。単体給弾は完全復帰</strong></dd>
+      </dl>
+    </div>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 560 190" role="img" aria-label="削りすぎの凹みをパテで埋めて球で均す前後比較">
+      <text class="svg-num" x="30" y="28">BEFORE</text>
+      <path d="M30,120 L100,120 L118,148 L162,148 L178,120 L250,120" fill="none" stroke="var(--ink)" stroke-width="4"/>
+      <circle cx="96" cy="98" r="17" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <line x1="118" y1="112" x2="134" y2="126" stroke="var(--danger)" stroke-width="2.5"/>
+      <path d="M134,126 l-9,-4 m9,4 l-3,-10" fill="none" stroke="var(--danger)" stroke-width="2.5"/>
+      <text class="svg-label" x="30" y="176">削りすぎの凹みに弾が落ちて止まる</text>
+      <line x1="278" y1="105" x2="308" y2="105" stroke="var(--ink)" stroke-width="3"/>
+      <path d="M308,105 l-10,-6 m10,6 l-10,6" fill="none" stroke="var(--ink)" stroke-width="3"/>
+      <text class="svg-num" x="330" y="28">AFTER</text>
+      <path d="M330,120 L400,120 L418,148 L462,148 L478,120 L530,120" fill="none" stroke="var(--ink)" stroke-width="4"/>
+      <path d="M400,120 L418,148 L462,148 L478,120 Z" fill="var(--putty)" stroke="none"/>
+      <line x1="400" y1="120" x2="478" y2="120" stroke="var(--ink)" stroke-width="4"/>
+      <circle cx="436" cy="98" r="17" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <line x1="464" y1="98" x2="492" y2="98" stroke="var(--ink)" stroke-width="2" stroke-dasharray="5 4"/>
+      <path d="M492,98 l-9,-5 m9,5 l-9,5" fill="none" stroke="var(--ink)" stroke-width="2"/>
+      <text class="svg-label" x="330" y="176">パテ充填＋球ならしで面一。弾は素通り</text>
+    </svg>
+    <figcaption>教訓：「削って直す」は削りすぎの無限ループに入る。凹みは削らず、足して球でならす。</figcaption>
+  </figure>
+</section>
+
+<!-- ================================================== -->
+<section>
+  <p class="eyebrow">04 / PARTS LIST</p>
+  <h2>用意するもの</h2>
+  <table>
+    <thead><tr><th style="width:42%">品名</th><th>役割とメモ</th></tr></thead>
+    <tbody>
+      <tr><td class="item">タミヤ エポキシ造形パテ<br>（高密度タイプ）</td><td>成形材。硬化まで約12時間、作業時間が長く取れる<span class="why">※速硬化タイプは練っている間に固まり始めるのでNG</span></td></tr>
+      <tr><td class="item">ステンレス ボールチェーン<br>（玉径 約6.0mm）</td><td>成形芯。玉径はノギスで実測してから使う<span class="why">※BBぴったり（5.95mm）の球で成形すると隙間ゼロで渋くなる。6.0〜6.2mmが目安</span></td></tr>
+      <tr><td class="item">シリコンスプレー</td><td>離型剤。チェーンにたっぷり塗る<span class="why">※これを忘れるとチェーンが固着して部品ごと死ぬ。この工法唯一の致命的失敗</span></td></tr>
+      <tr><td class="item">パーツクリーナー<br>（プラスチックセーフ）</td><td>施工前の脱脂と、仕上げ後の洗浄<span class="why">※必ず樹脂対応品を選ぶ</span></td></tr>
+      <tr><td class="item">ピカール液 ＋ タコ糸</td><td>仕上げ研磨。糸に付けて通路をフロスする</td></tr>
+      <tr><td class="item">ドライファストルブ<br>（PTFE被膜スプレー）</td><td>最後の仕上げ被膜。速乾でベタつかない<span class="why">※油系・シリコンオイルは粉を呼んで逆効果</span></td></tr>
+      <tr><td class="item">竹串・綿棒・紙やすり</td><td>パテを奥へ届ける／下地の荒らし用</td></tr>
+      <tr><td class="item">BB弾（高グレード品）数発</td><td>検査ゲージ。自重落下テスト用</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ================================================== -->
+<section>
+  <p class="eyebrow">05 / PROCEDURE</p>
+  <h2>手順</h2>
+  <ol class="steps">
+    <li>
+      <p class="step-t">患部を特定する</p>
+      <p class="step-d">チェーンかBB弾をゆっくり通し、引っかかる位置を探す。チェーンにテープで印を付ければ「開口から何cm」が測れる。観測窓があれば目視。</p>
+    </li>
+    <li>
+      <p class="step-t">下地を作る</p>
+      <p class="step-d">施工面を紙やすりで軽く荒らし、パーツクリーナーで脱脂する。</p>
+      <p class="step-note">ツルツル面に直接盛ると、硬化後にパテごとポロッと剥がれる。硬化済みパテの上に追い盛りする時も、毎回荒らし＋脱脂。</p>
+    </li>
+    <li>
+      <p class="step-t">パテを練る</p>
+      <p class="step-d">白と水色を同量切り出し、色ムラが完全に消えるまで練る。ここから約1時間が作業可能時間。</p>
+      <p class="step-note">手袋推奨。指に付く時は少量の水を付けると扱いやすい。</p>
+    </li>
+    <li>
+      <p class="step-t">盛る</p>
+      <p class="step-d">竹串の先に小豆大を取り、患部に押し込む。凹みならやや多め、それ以外は薄めに。奥で届かない時はパテ玉を先に入れ、チェーンの球で押し込む。</p>
+      <p class="step-note">少なめ×複数回が安全。ドカ盛りすると余分が通路全体に伸びて汚れる。</p>
+    </li>
+    <li>
+      <p class="step-t">チェーンで成形する</p>
+      <p class="step-d">チェーンに離型剤をたっぷり塗ってから、反対側の開口から通し、患部を2〜3往復させる。球が余分を削ぎ、凹みを面一に均す。開口部のはみ出しは硬化前に拭き取る。</p>
+    </li>
+    <li>
+      <p class="step-t">すぐ抜いて、12時間待つ</p>
+      <p class="step-d">成形が済んだらチェーンを即座に抜く。盛った区間が真下を向かない姿勢で置き、12時間以上放置。</p>
+      <p class="step-note">指で触って硬くても本硬化は別物。途中で覗いて突かない、撃たない、BB弾も通さない。</p>
+    </li>
+    <li>
+      <p class="step-t">検査して仕上げる</p>
+      <p class="step-d">BB弾を入れて自重でスルッと落ちるか確認。渋ければタコ糸＋ピカールで軽く磨く（削る工具はもう使わない）。最後に洗浄→乾燥→ドライファストルブを薄く一吹き。</p>
+    </li>
+  </ol>
+
+  <div class="warn">
+    <span class="box-tag">警告</span>
+    <p><strong>チェーンを入れたまま硬化させない。</strong>離型剤なし・抜き忘れは、チェーンごと固着して部品が死ぬ。パテは粘土なので形を保つ——成形したら即抜きで問題ない。</p>
+    <p><strong>ガスタンク・バルブ・リップの給弾機構には、パテも削りカスも絶対に入れない。</strong></p>
+  </div>
+
+  <div class="point">
+    <span class="box-tag">ポイント</span>
+    <p>パテ（粘土）は「肉を足す」用、低粘度の液体エポキシは「全面を薄くツルツルに覆う」用。凹み・段差の補修は前者、積層のザラつき全体を均したい時は後者と使い分ける。液体の場合だけ、芯はゲル化まで入れておき固まりかけで抜く。</p>
+  </div>
+</section>
+
+<!-- ================================================== -->
+<section>
+  <p class="eyebrow">06 / GRAVEYARD</p>
+  <h2>遠回り供養 — 試してダメだった方法</h2>
+  <p>同じ轍を踏まないための記録。閉じた曲がり通路には「入れる・削る」系がことごとく敗北しました。</p>
+  <table>
+    <thead><tr><th style="width:40%">方法</th><th>敗因</th></tr></thead>
+    <tbody>
+      <tr><td class="item">シリコンチューブ内張り</td><td>柔らかすぎて曲げ部が潰れる。摩擦も高い。そもそも穴に入らない</td></tr>
+      <tr><td class="item">PTFEチューブ内張り</td><td>素材は理想（低摩擦）だが、硬くてきついS字に入らない。緩いカーブなら有効</td></tr>
+      <tr><td class="item">真鍮パイプ内張り</td><td>曲げるとキンク（潰れ）して内径が死ぬ。直線区間専用</td></tr>
+      <tr><td class="item">ドリルで大穴→パイプ挿入</td><td>ドリルは曲がれない。S字は掘削不可能</td></tr>
+      <tr><td class="item">UV硬化テープ補強</td><td>影の奥まで光が届かず生焼け。表面補強にしかならない</td></tr>
+      <tr><td class="item">段差を削って均す</td><td>削りすぎ→新たな段差→また削る、の無限ループ。実例No.1の患部はこれで悪化した</td></tr>
+    </tbody>
+  </table>
+  <p>生き残ったのが「<strong>足して、球に彫らせる</strong>」＝本工法だけ、という顛末です。</p>
+</section>
+
+<!-- ================================================== -->
+<section>
+  <p class="eyebrow">07 / APPLICATION</p>
+  <h2>応用：マガジンの1列化（くさびシム）</h2>
+  <p>フォロアー（弾を押し上げる板バネ）を抜いて外部給弾化したマガジンは、二列で貯める区間がそのまま<strong>アーチ製造機</strong>になります。対策は貯蔵能力を捨てて輸送路に徹すること——つまり全長を1列幅にする。</p>
+  <p>やることは実例No.1と同じ手の動きです。広がっている側の壁にパテをくさび状に盛り（広い所で厚く、1列区間に向けて厚みゼロへ）、離型剤を塗ったチェーンを下の入口から上のリップ方向へ引き抜く。球が「端の道から中央の出口まで」を勝手に滑らかに繋いでくれるので、繋ぎ目の角度を人間が設計する必要はありません。仕上がり幅の目安は6.3〜6.8mm。</p>
+
+  <figure>
+    <svg viewBox="0 0 560 300" role="img" aria-label="マガジン通路のくさびシム施工前後の比較">
+      <text class="svg-num" x="60" y="26">BEFORE</text>
+      <polyline points="80,46 80,258" fill="none" stroke="var(--ink)" stroke-width="5"/>
+      <polyline points="104,46 104,110 128,258" fill="none" stroke="var(--ink)" stroke-width="5"/>
+      <circle cx="92" cy="62" r="9" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="92" cy="82" r="9" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="101" cy="170" r="9" fill="var(--danger)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="89" cy="186" r="9" fill="var(--danger)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="103" cy="206" r="9" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <line x1="142" y1="140" x2="142" y2="216" stroke="var(--steel)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <text class="svg-label" x="152" y="172">危険帯</text>
+      <text class="svg-sub" x="152" y="190">2個並べて1個しか出ない幅</text>
+      <text class="svg-sub" x="60" y="284">下広がりの通路＝サイロの底</text>
+      <text class="svg-num" x="340" y="26">AFTER</text>
+      <polyline points="360,46 360,258" fill="none" stroke="var(--ink)" stroke-width="5"/>
+      <polyline points="384,46 384,110 408,258" fill="none" stroke="var(--ink)" stroke-width="5"/>
+      <polygon points="384,110 408,258 384,258" fill="var(--putty)"/>
+      <line x1="384" y1="110" x2="384" y2="258" stroke="var(--ink)" stroke-width="3"/>
+      <circle cx="372" cy="64" r="9" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="372" cy="86" r="9" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="372" cy="108" r="9" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="372" cy="130" r="9" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="372" cy="152" r="9" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="372" cy="174" r="9" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="372" cy="196" r="9" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="372" cy="218" r="9" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <circle cx="372" cy="240" r="9" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>
+      <line x1="428" y1="150" x2="404" y2="180" stroke="var(--steel)" stroke-width="1" stroke-dasharray="3 3"/>
+      <text class="svg-label" x="432" y="146">くさびシム（パテ）</text>
+      <text class="svg-sub" x="432" y="164">下端で厚く、上端で0へ</text>
+      <text class="svg-label" x="432" y="216">全長1列レーン</text>
+      <text class="svg-sub" x="432" y="234">横並び不可＝アーチ不可</text>
+      <text class="svg-sub" x="340" y="284">チェーンを通してレーンを写し取る</text>
+    </svg>
+    <figcaption>危険なのは一番広い所ではなく「2個が並べるのに1個しか出られない」中間帯。くさびでその帯ごと消す。</figcaption>
+  </figure>
+
+  <p>役割分担に注意：この1列化が根絶できるのは<strong>合流部のアーチだけ</strong>で、カーブ区間のキャプスタン・ロックには効きません。カーブの角度は製品形状で固定なので、そちらの根本対策はあくまで脱脂＋ドライ被膜。<strong>マグ区間＝くさびで1列化、カーブ区間＝被膜で低摩擦化</strong>、の二本立てで仕上げます。</p>
+
+  <div class="warn">
+    <span class="box-tag">警告</span>
+    <p>リップの給弾機構（ノズルが触る最上部）・ガスタンク・注入バルブ周りは純正のまま残す。観測窓も塞がない（詰まりの位置が見える貴重な診断窓）。</p>
+    <p>未改造のマガジンを1本残しておくと、不調時に純正と撃ち比べて切り分けられる。</p>
+  </div>
+</section>
+
+<footer>
+  <p>本シートは個人のサバゲー整備記録です。改造・分解は自己責任で。銃刀法・青少年保護育成条例および法定威力上限（0.98J）を必ず遵守してください。</p>
+  <p class="mono">BALL-CHAIN BORE FORMING — FIELD REPAIR NOTE / 2026.07</p>
+</footer>
+
+</div>
+</body>
+</html>
