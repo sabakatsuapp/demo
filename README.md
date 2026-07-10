@@ -5,7 +5,7 @@
 
 ## 公開URL
 
-👉 **[フィールドトラッカー 版比較（v11〜v13.1 切替）を開く](https://sabakatsuapp.github.io/demo/field-tracker-versions.html)**
+👉 **[フィールドトラッカー 版比較（v11〜v14 切替）を開く](https://sabakatsuapp.github.io/demo/field-tracker-versions.html)**
 
 `https://sabakatsuapp.github.io/demo/field-tracker-versions.html`
 
@@ -13,7 +13,7 @@
 
 | デモ | 内容 | リンク |
 |---|---|---|
-| フィールドトラッカー **版比較（v11〜v13.1）** | v11(試作品)・v12・v13・v13.1 の各モックを**上部タブで切り替えて試せる**1枚。各版は独立表示で実際に動く。**まずはこれ**（パスワード保護）。 | [開く](https://sabakatsuapp.github.io/demo/field-tracker-versions.html)（`field-tracker-versions.html`） |
+| フィールドトラッカー **版比較（v11〜v14）** | v11(試作品)・v12・v13・v13.1・**v14(最新・スタンプ化/SVGマーカー)** の各モックを**上部タブで切り替えて試せる**1枚。各版は独立表示で実際に動く。**まずはこれ**（パスワード保護）。 | [開く](https://sabakatsuapp.github.io/demo/field-tracker-versions.html)（`field-tracker-versions.html`） |
 | ボールチェーン工法 説明書 | BB弾通路（M4マガジンアダプター等）の詰まりをボールチェーン＋パテで成形・補修するDIY説明書。静的な読み物ページ。 | [開く](https://sabakatsuapp.github.io/demo/ball_chain_method_2.html)（`ball_chain_method_2.html`） |
 
 ## メモ
